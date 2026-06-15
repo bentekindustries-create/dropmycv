@@ -167,7 +167,7 @@ export default function Home() {
             {/* How it works */}
             <div className="grid grid-cols-3 gap-6 pt-2 border-t border-slate-100">
               {[
-                { step: "1", title: "Drop your CV", desc: "PDF read locally in your browser — text processed securely, never stored" },
+                { step: "1", title: "Drop your CV", desc: "Read in your browser. Email, phone & links stripped before anything leaves your device" },
                 { step: "2", title: "AI scans the market", desc: "Thousands of live roles matched to your skills" },
                 { step: "3", title: "Get your shortlist", desc: "Ranked results ready to apply to in seconds" },
               ].map((item) => (
