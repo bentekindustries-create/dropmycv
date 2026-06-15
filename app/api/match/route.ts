@@ -1,6 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 // ─── Rate limiting ───────────────────────────────────────────────────────────
 const WINDOW_MS = 60_000;
