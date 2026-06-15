@@ -109,9 +109,9 @@ export default function Home() {
       {/* Header */}
       <header className="border-b border-slate-100 px-6 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <button onClick={reset} className="text-xl font-bold text-slate-800 tracking-tight hover:text-indigo-600 transition-colors">
-            dropmycv<span className="text-indigo-600">.</span>
-          </button>
+          <a href="https://www.dropmycv.app" onClick={(e) => { e.preventDefault(); reset(); }} className="text-2xl font-extrabold tracking-tight transition-colors group">
+            <span className="text-indigo-600">drop</span><span className="text-slate-800 group-hover:text-indigo-600">mycv</span><span className="text-indigo-600">.</span>
+          </a>
           <span className="text-xs text-slate-400 hidden sm:block">
             No account · No storage · Free
           </span>
