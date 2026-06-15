@@ -110,7 +110,7 @@ export default function Home() {
       <header className="border-b border-slate-100 px-6 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <a href="https://www.dropmycv.app" onClick={(e) => { e.preventDefault(); reset(); }} className="text-2xl font-extrabold tracking-tight transition-colors group">
-            <span className="text-indigo-600">drop</span><span className="text-slate-800 group-hover:text-indigo-600">mycv</span><span className="text-indigo-600">.</span>
+            <span className="text-indigo-600">drop</span><span className="text-slate-800 group-hover:text-indigo-600">mycv</span><span className="text-indigo-600">.app</span>
           </a>
           <span className="text-xs text-slate-400 hidden sm:block">
             No account · No storage · Free
