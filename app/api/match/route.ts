@@ -82,6 +82,19 @@ const BRAVE_COUNTRY: Record<string, string> = {
   de: "DE", fr: "FR", nl: "NL", sg: "SG",
 };
 
+// ─── Country → targeted job board sites for Brave ────────────────────────────
+const BRAVE_JOB_SITES: Record<string, string> = {
+  au: "(site:seek.com.au OR site:linkedin.com/jobs OR site:indeed.com.au OR site:au.jora.com)",
+  gb: "(site:reed.co.uk OR site:totaljobs.com OR site:linkedin.com/jobs OR site:indeed.co.uk)",
+  us: "(site:linkedin.com/jobs OR site:indeed.com OR site:glassdoor.com OR site:wellfound.com)",
+  ca: "(site:linkedin.com/jobs OR site:indeed.ca OR site:workopolis.com)",
+  nz: "(site:trademe.co.nz/jobs OR site:linkedin.com/jobs OR site:seek.co.nz)",
+  de: "(site:linkedin.com/jobs OR site:xing.com OR site:stepstone.de)",
+  fr: "(site:linkedin.com/jobs OR site:indeed.fr OR site:pole-emploi.fr)",
+  nl: "(site:linkedin.com/jobs OR site:indeed.nl OR site:nationale-vacaturebank.nl)",
+  sg: "(site:linkedin.com/jobs OR site:jobstreet.com.sg OR site:indeed.com.sg)",
+};
+
 // ─── Country → Jooble location suffix ────────────────────────────────────────
 const JOOBLE_LOCATION_SUFFIX: Record<string, string> = {
   au: "Australia", gb: "United Kingdom", us: "United States",
@@ -103,38 +116,30 @@ interface AdzunaJob {
 }
 
 async function fetchAdzuna(
-  searchQuery: string,
+  jobTitles: string[],
+  skills: string[],
   country: string,
   where?: string
 ): Promise<NormalizedJob[]> {
   if (!process.env.ADZUNA_APP_ID || !process.env.ADZUNA_APP_KEY) return [];
 
-  function buildUrl(loc?: string) {
+  const skillsQuery = skills.slice(0, 3).join(" ");
+
+  function buildUrl(title: string, loc?: string) {
     const url = new URL(
       `https://api.adzuna.com/v1/api/jobs/${country}/search/1`
     );
     url.searchParams.set("app_id", process.env.ADZUNA_APP_ID!);
     url.searchParams.set("app_key", process.env.ADZUNA_APP_KEY!);
-    url.searchParams.set("results_per_page", "20");
-    url.searchParams.set("what_or", searchQuery);
+    url.searchParams.set("results_per_page", "15");
+    url.searchParams.set("what_phrase", title);
+    if (skillsQuery) url.searchParams.set("what_or", skillsQuery);
     if (loc) url.searchParams.set("where", loc);
     return url.toString();
   }
 
-  try {
-    let res = await fetch(buildUrl(where));
-    if (!res.ok) return [];
-    let data = await res.json();
-    let jobs: AdzunaJob[] = data.results ?? [];
-
-    if (jobs.length === 0 && where) {
-      res = await fetch(buildUrl());
-      if (!res.ok) return [];
-      data = await res.json();
-      jobs = data.results ?? [];
-    }
-
-    return jobs.map((j) => ({
+  function normalise(j: AdzunaJob): NormalizedJob {
+    return {
       id: `adzuna-${j.id}`,
       title: j.title,
       company: j.company?.display_name ?? "",
@@ -145,7 +150,30 @@ async function fetchAdzuna(
       url: j.redirect_url,
       created: j.created,
       source: "adzuna",
-    }));
+    };
+  }
+
+  try {
+    const titles = jobTitles.slice(0, 2);
+    const results = await Promise.all(
+      titles.map(async (title) => {
+        let res = await fetch(buildUrl(title, where));
+        if (!res.ok) return [] as AdzunaJob[];
+        let data = await res.json();
+        let jobs: AdzunaJob[] = data.results ?? [];
+
+        // Fall back to nationwide if location returns nothing
+        if (jobs.length === 0 && where) {
+          res = await fetch(buildUrl(title));
+          if (!res.ok) return [] as AdzunaJob[];
+          data = await res.json();
+          jobs = data.results ?? [];
+        }
+        return jobs;
+      })
+    );
+
+    return results.flat().map(normalise);
   } catch {
     return [];
   }
@@ -174,12 +202,14 @@ function parseJoobleSalary(salary: string): { min?: number; max?: number } {
 }
 
 async function fetchJooble(
-  searchQuery: string,
+  jobTitles: string[],
+  skills: string[],
   country: string,
   where?: string
 ): Promise<NormalizedJob[]> {
   if (!process.env.JOOBLE_API_KEY) return [];
 
+  const keywords = [jobTitles[0], ...skills.slice(0, 2)].filter(Boolean).join(" ");
   const locationSuffix = JOOBLE_LOCATION_SUFFIX[country] ?? "";
   const location = where
     ? `${where}, ${locationSuffix}`
@@ -191,7 +221,7 @@ async function fetchJooble(
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ keywords: searchQuery, location, page: 1 }),
+        body: JSON.stringify({ keywords, location, page: 1 }),
       }
     );
     if (!res.ok) return [];
@@ -227,14 +257,20 @@ interface BraveWebResult {
 }
 
 async function fetchBrave(
-  searchQuery: string,
+  jobTitles: string[],
+  skills: string[],
   country: string,
 ): Promise<NormalizedJob[]> {
   if (!process.env.BRAVE_API_KEY) return [];
 
   const braveCountry = BRAVE_COUNTRY[country] ?? "AU";
+  const jobSites = BRAVE_JOB_SITES[country] ?? "";
+  const primaryTitle = jobTitles[0] ?? "";
+  const skillsHint = skills.slice(0, 2).join(" ");
+  const q = `"${primaryTitle}" ${skillsHint} jobs ${jobSites}`.trim();
+
   const params = new URLSearchParams({
-    q: `${searchQuery} jobs`,
+    q,
     country: braveCountry,
     count: "10",
     freshness: "pw",
@@ -265,6 +301,47 @@ async function fetchBrave(
       url: r.url,
       created: new Date().toISOString(),
       source: "brave",
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ─── Remotive fetcher (free, no auth, remote roles) ─────────────────────────
+interface RemotiveJob {
+  id: number;
+  url: string;
+  title: string;
+  company_name: string;
+  candidate_required_location: string;
+  description: string;
+  publication_date: string;
+}
+
+async function fetchRemotive(
+  jobTitles: string[],
+  skills: string[],
+): Promise<NormalizedJob[]> {
+  const query = [jobTitles[0], ...skills.slice(0, 2)].filter(Boolean).join(" ");
+  const params = new URLSearchParams({ search: query, limit: "20" });
+
+  try {
+    const res = await fetch(`https://remotive.com/api/remote-jobs?${params}`, {
+      headers: { Accept: "application/json" },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    const jobs: RemotiveJob[] = data.jobs ?? [];
+
+    return jobs.slice(0, 20).map((j) => ({
+      id: `remotive-${j.id}`,
+      title: j.title,
+      company: j.company_name ?? "",
+      location: j.candidate_required_location || "Remote",
+      description: j.description?.replace(/<[^>]*>/g, "").slice(0, 300) ?? "",
+      url: j.url,
+      created: j.publication_date ?? new Date().toISOString(),
+      source: "remotive",
     }));
   } catch {
     return [];
@@ -493,27 +570,24 @@ ${cvText.slice(0, 6000)}`,
     }
 
     // Step 2: query all job sources in parallel
-    const searchQuery = [...profile.jobTitles, ...profile.skills.slice(0, 3)]
-      .filter(Boolean)
-      .join(" ");
-
     const where = locationOverride?.trim() || profile.location || undefined;
 
-    const [adzunaJobs, joobleJobs, braveJobs] = await Promise.all([
-      fetchAdzuna(searchQuery, country, where),
-      fetchJooble(searchQuery, country, where),
-      fetchBrave(searchQuery, country),
+    const [adzunaJobs, joobleJobs, braveJobs, remotiveJobs] = await Promise.all([
+      fetchAdzuna(profile.jobTitles, profile.skills, country, where),
+      fetchJooble(profile.jobTitles, profile.skills, country, where),
+      fetchBrave(profile.jobTitles, profile.skills, country),
+      fetchRemotive(profile.jobTitles, profile.skills),
     ]);
 
-    // Merge and dedup — Adzuna first (structured + affiliate links), then Jooble, then Brave
-    const allJobs = dedupJobs([...adzunaJobs, ...joobleJobs, ...braveJobs]);
+    // Merge and dedup — Adzuna first (structured), then Jooble, Brave, Remotive
+    const allJobs = dedupJobs([...adzunaJobs, ...joobleJobs, ...braveJobs, ...remotiveJobs]);
 
     if (allJobs.length === 0) {
       return Response.json({ jobs: [], profile });
     }
 
     // Step 3: rank with Claude Haiku
-    const snippets = allJobs.slice(0, 30).map((j, i) => ({
+    const snippets = allJobs.slice(0, 50).map((j, i) => ({
       i,
       title: j.title,
       company: j.company,
@@ -549,7 +623,7 @@ Return a JSON array of the indices of the 8 best-matching jobs, best first. e.g.
     }
 
     const validIndices = indices.filter(
-      (i) => typeof i === "number" && i >= 0 && i < allJobs.length
+      (i) => typeof i === "number" && i >= 0 && i < Math.min(allJobs.length, 50)
     );
     const finalIndices = validIndices.length > 0 ? validIndices.slice(0, 8) : defaultIndices;
 
