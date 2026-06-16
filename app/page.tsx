@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CvDropzone } from "@/components/cv-dropzone";
 import { JobCard } from "@/components/job-card";
 import { COUNTRIES, getCurrency } from "@/lib/countries";
@@ -10,10 +10,40 @@ type Stage = "idle" | "matching" | "results" | "error";
 type SortKey = "relevance" | "salary" | "newest";
 
 const TIERS = [
-  { label: "Top Matches", range: [0, 2], accent: "text-emerald-600", dot: "bg-emerald-500" },
-  { label: "Good Matches", range: [3, 5], accent: "text-blue-600", dot: "bg-blue-400" },
-  { label: "Worth a Look", range: [6, 7], accent: "text-slate-500", dot: "bg-slate-400" },
+  { label: "Top Matches", range: [0, 4], accent: "text-emerald-600", dot: "bg-emerald-500" },
+  { label: "Good Matches", range: [5, 9], accent: "text-blue-600", dot: "bg-blue-400" },
+  { label: "Worth a Look", range: [10, 14], accent: "text-slate-500", dot: "bg-slate-400" },
 ];
+
+const MATCHING_STEPS = [
+  "Reading your CV…",
+  "Searching live jobs…",
+  "Ranking your matches…",
+];
+
+const STORAGE_KEY = "dropmycv_last_session";
+const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
+
+function saveSession(result: MatchResult, fileName: string, country: string, location: string) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ result, fileName, country, location, savedAt: Date.now() }));
+  } catch {}
+}
+
+function loadSession(): { result: MatchResult; fileName: string; country: string; location: string } | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (Date.now() - parsed.savedAt > SESSION_TTL_MS) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
 
 function sortJobs(jobs: JobMatch[], key: SortKey): JobMatch[] {
   if (key === "relevance") return jobs;
@@ -27,11 +57,14 @@ export default function Home() {
   const [stage, setStage] = useState<Stage>("idle");
   const [country, setCountry] = useState("au");
   const [location, setLocation] = useState("");
+  const [keywords, setKeywords] = useState("");
   const [result, setResult] = useState<MatchResult | null>(null);
   const [error, setError] = useState("");
   const [fileName, setFileName] = useState("");
   const [sortKey, setSortKey] = useState<SortKey>("relevance");
   const [lastCvText, setLastCvText] = useState("");
+  const [matchingStep, setMatchingStep] = useState(0);
+  const [hasSavedSession, setHasSavedSession] = useState(false);
 
   const currency = getCurrency(country);
   const sortedJobs = useMemo(
@@ -39,7 +72,33 @@ export default function Home() {
     [result?.jobs, sortKey]
   );
 
-  async function runMatch(cvText: string, locationOverride?: string) {
+  // Check for a saved session on mount
+  useEffect(() => {
+    const saved = loadSession();
+    if (saved) setHasSavedSession(true);
+  }, []);
+
+  // Cycle through progress steps during matching
+  useEffect(() => {
+    if (stage !== "matching") return;
+    setMatchingStep(0);
+    const t1 = setTimeout(() => setMatchingStep(1), 3000);
+    const t2 = setTimeout(() => setMatchingStep(2), 8000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [stage]);
+
+  function restoreSession() {
+    const saved = loadSession();
+    if (!saved) return;
+    setResult(saved.result);
+    setFileName(saved.fileName);
+    setCountry(saved.country);
+    setLocation(saved.location);
+    setStage("results");
+    setHasSavedSession(false);
+  }
+
+  async function runMatch(cvText: string, locationOverride?: string, keywordsOverride?: string) {
     setStage("matching");
     setError("");
     setSortKey("relevance");
@@ -52,6 +111,7 @@ export default function Home() {
           cvText,
           country,
           ...(locationOverride !== undefined ? { location: locationOverride } : {}),
+          ...(keywordsOverride ? { keywords: keywordsOverride } : {}),
         }),
       });
 
@@ -64,6 +124,7 @@ export default function Home() {
       const matchResult = data as MatchResult;
       setResult(matchResult);
       setStage("results");
+      saveSession(matchResult, fileName, country, location);
 
       if (!locationOverride && matchResult.profile.location) {
         setLocation(matchResult.profile.location);
@@ -79,12 +140,12 @@ export default function Home() {
   async function handleExtracted(cvText: string, name: string) {
     setFileName(name);
     setLastCvText(cvText);
-    runMatch(cvText, location || undefined);
+    runMatch(cvText, location || undefined, keywords || undefined);
   }
 
-  function handleRefineLocation() {
+  function handleRefine() {
     if (!lastCvText) return;
-    runMatch(lastCvText, location || undefined);
+    runMatch(lastCvText, location || undefined, keywords || undefined);
   }
 
   function reset() {
@@ -95,6 +156,7 @@ export default function Home() {
     setLastCvText("");
     setSortKey("relevance");
     setLocation("");
+    setKeywords("");
   }
 
   return (
@@ -123,6 +185,19 @@ export default function Home() {
         {/* ── IDLE ── */}
         {stage === "idle" && (
           <div className="py-14 space-y-8">
+            {/* Restore session banner */}
+            {hasSavedSession && (
+              <div className="flex items-center justify-between bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3">
+                <p className="text-sm text-indigo-700 font-medium">You have results from your last session.</p>
+                <button
+                  onClick={restoreSession}
+                  className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 underline underline-offset-2"
+                >
+                  View them →
+                </button>
+              </div>
+            )}
+
             {/* Hero */}
             <div className="text-center space-y-3">
               <h1 className="text-4xl font-bold text-slate-800 tracking-tight leading-tight">
@@ -135,11 +210,37 @@ export default function Home() {
               </p>
             </div>
 
+            {/* Trust bar */}
+            <div className="flex items-center justify-center gap-6 flex-wrap">
+              {[
+                { icon: "🔒", label: "No cookies or tracking" },
+                { icon: "🗑️", label: "CV never stored" },
+                { icon: "⚡", label: "Results in seconds" },
+              ].map(({ icon, label }) => (
+                <div key={label} className="flex items-center gap-1.5 text-xs text-slate-400">
+                  <span>{icon}</span>
+                  <span>{label}</span>
+                </div>
+              ))}
+            </div>
+
             {/* Country + location */}
             <div className="flex flex-col items-center gap-3">
-              <span className="text-sm text-slate-400">
-                Searching jobs in 🇦🇺 Australia
-              </span>
+              <div className="flex items-center gap-2 flex-wrap justify-center">
+                <label htmlFor="country-select" className="text-sm text-slate-500 shrink-0">
+                  Country:
+                </label>
+                <select
+                  id="country-select"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+                >
+                  {COUNTRIES.map((c) => (
+                    <option key={c.code} value={c.code}>{c.label}</option>
+                  ))}
+                </select>
+              </div>
               <div className="flex items-center gap-2 w-full max-w-xs">
                 <label htmlFor="location-input" className="text-sm text-slate-500 shrink-0">
                   Location:
@@ -185,18 +286,26 @@ export default function Home() {
 
         {/* ── MATCHING ── */}
         {stage === "matching" && (
-          <div className="flex flex-col items-center justify-center py-32 gap-5 text-center">
+          <div className="flex flex-col items-center justify-center py-32 gap-6 text-center">
             <div className="w-14 h-14 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
             <div>
-              <p className="text-lg font-semibold text-slate-700">
-                Scanning the job market…
+              <p className="text-lg font-semibold text-slate-700 transition-all">
+                {MATCHING_STEPS[matchingStep]}
               </p>
               <p className="text-slate-400 mt-1 text-sm">
-                Matching <span className="font-medium text-slate-600">{fileName}</span> to live roles
-                {location && (
-                  <> near <span className="font-medium text-slate-600">{location}</span></>
-                )}
+                {matchingStep === 0 && <>Parsing <span className="font-medium text-slate-600">{fileName}</span></>}
+                {matchingStep === 1 && <>Checking Adzuna, Seek, LinkedIn &amp; more</>}
+                {matchingStep === 2 && <>Almost there — finding your best matches</>}
               </p>
+            </div>
+            {/* Step indicators */}
+            <div className="flex items-center gap-2">
+              {MATCHING_STEPS.map((_, i) => (
+                <div
+                  key={i}
+                  className={`w-2 h-2 rounded-full transition-all duration-500 ${i <= matchingStep ? "bg-indigo-500" : "bg-slate-200"}`}
+                />
+              ))}
             </div>
           </div>
         )}
@@ -223,28 +332,41 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Location refine */}
-            <div className="flex items-center gap-2 flex-wrap">
-              <label htmlFor="refine-location" className="text-xs font-semibold text-slate-400 uppercase tracking-widest shrink-0">
-                Location
-              </label>
-              <input
-                id="refine-location"
-                type="text"
-                value={location}
-                onChange={(e) => setLocation(e.target.value)}
-                placeholder="Anywhere in Australia"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") handleRefineLocation();
-                }}
-                className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent w-48"
-              />
-              <button
-                onClick={handleRefineLocation}
-                className="text-xs px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 font-medium transition-colors"
-              >
-                Update results
-              </button>
+            {/* Refine controls */}
+            <div className="flex flex-col gap-2 p-4 bg-slate-50 rounded-xl border border-slate-100">
+              <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Refine results</p>
+              <div className="flex items-center gap-2 flex-wrap">
+                <label htmlFor="refine-location" className="text-xs text-slate-500 shrink-0 w-16">Location</label>
+                <input
+                  id="refine-location"
+                  type="text"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                  placeholder={`Anywhere in ${COUNTRIES.find((c) => c.code === country)?.label.replace(/^.+ /, "") ?? "the country"}`}
+                  onKeyDown={(e) => { if (e.key === "Enter") handleRefine(); }}
+                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent w-44"
+                />
+              </div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <label htmlFor="refine-keywords" className="text-xs text-slate-500 shrink-0 w-16">Keywords</label>
+                <input
+                  id="refine-keywords"
+                  type="text"
+                  value={keywords}
+                  onChange={(e) => setKeywords(e.target.value)}
+                  placeholder="e.g. remote, fintech, Python"
+                  onKeyDown={(e) => { if (e.key === "Enter") handleRefine(); }}
+                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent w-44"
+                />
+              </div>
+              <div>
+                <button
+                  onClick={handleRefine}
+                  className="text-xs px-4 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 font-medium transition-colors"
+                >
+                  Update results
+                </button>
+              </div>
             </div>
 
             {/* Extracted keywords */}
@@ -292,7 +414,7 @@ export default function Home() {
               <div className="text-center py-16 text-slate-400">
                 <p className="text-4xl mb-3">🔍</p>
                 <p className="font-medium text-slate-600">No live matches right now.</p>
-                <p className="text-sm mt-1">Try uploading a different CV or check back later.</p>
+                <p className="text-sm mt-1">Try adding keywords above or upload a different CV.</p>
                 <button
                   onClick={reset}
                   className="mt-5 inline-flex items-center px-5 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors"

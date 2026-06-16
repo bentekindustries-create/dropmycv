@@ -338,8 +338,9 @@ function isRemotiveJobAllowed(location: string, country: string): boolean {
   const userTerms = REMOTIVE_COUNTRY_TERMS[country] ?? [];
   // Allow if location explicitly includes the user's country
   if (userTerms.some((t) => loc.includes(t))) return true;
-  // Allow if it looks like a general worldwide listing
-  if (loc.includes("worldwide") || loc.includes("anywhere") || loc.includes("remote")) return true;
+  // Allow if it looks like a general worldwide listing (but not "remote - US only" style)
+  if (loc === "worldwide" || loc === "anywhere" || loc === "remote") return true;
+  if (loc.includes("worldwide") || loc.includes("anywhere")) return true;
   // Block if it only mentions other specific countries
   return false;
 }
@@ -518,11 +519,13 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { cvText, country: rawCountry = "au", location: rawLocation } = body as {
+    const { cvText, country: rawCountry = "au", location: rawLocation, keywords: rawKeywords } = body as {
       cvText: string;
       country?: string;
       location?: string;
+      keywords?: string;
     };
+    const extraKeywords = sanitiseString(rawKeywords, 200);
 
     const country = ALLOWED_COUNTRIES.has(rawCountry) ? rawCountry : "au";
     const locationOverride = sanitiseString(rawLocation, MAX_LOCATION_LENGTH) || undefined;
@@ -601,12 +604,15 @@ ${cvText.slice(0, 6000)}`,
 
     // Step 2: query all job sources in parallel
     const where = locationOverride?.trim() || profile.location || undefined;
+    const augmentedSkills = extraKeywords
+      ? [...profile.skills, ...extraKeywords.split(/\s+/).filter(Boolean)].slice(0, 15)
+      : profile.skills;
 
     const [adzunaJobs, joobleJobs, braveJobs, remotiveJobs] = await Promise.all([
-      fetchAdzuna(profile.jobTitles, profile.skills, country, where),
-      fetchJooble(profile.jobTitles, profile.skills, country, where),
-      fetchBrave(profile.jobTitles, profile.skills, country),
-      fetchRemotive(profile.jobTitles, profile.skills, country),
+      fetchAdzuna(profile.jobTitles, augmentedSkills, country, where),
+      fetchJooble(profile.jobTitles, augmentedSkills, country, where),
+      fetchBrave(profile.jobTitles, augmentedSkills, country),
+      fetchRemotive(profile.jobTitles, augmentedSkills, country),
     ]);
 
     // Merge and dedup — Adzuna first (structured), then Jooble, Brave, Remotive
@@ -627,7 +633,7 @@ ${cvText.slice(0, 6000)}`,
 
     const rankResponse = await client.messages.create({
       model: "claude-haiku-4-5",
-      max_tokens: 128,
+      max_tokens: 256,
       messages: [
         {
           role: "user",
@@ -635,7 +641,7 @@ ${cvText.slice(0, 6000)}`,
 
 Jobs: ${JSON.stringify(snippets)}
 
-Return a JSON array of the indices of the 8 best-matching jobs, best first. e.g. [2,0,5,3,1,7,4,6]. JSON only.`,
+Return a JSON array of the indices of the 15 best-matching jobs, best first. e.g. [2,0,5,3,1,7,4,6,8,9,10,11,12,13,14]. JSON only.`,
         },
       ],
     });
@@ -643,7 +649,7 @@ Return a JSON array of the indices of the 8 best-matching jobs, best first. e.g.
     const rankBlock = rankResponse.content[0];
     const rankRaw = rankBlock.type === "text" ? rankBlock.text : "";
 
-    const defaultIndices = allJobs.slice(0, 8).map((_, i) => i);
+    const defaultIndices = allJobs.slice(0, 15).map((_, i) => i);
     let indices: number[];
     try {
       const parsed = JSON.parse(stripCodeFence(rankRaw));
@@ -655,7 +661,7 @@ Return a JSON array of the indices of the 8 best-matching jobs, best first. e.g.
     const validIndices = indices.filter(
       (i) => typeof i === "number" && i >= 0 && i < Math.min(allJobs.length, 50)
     );
-    const finalIndices = validIndices.length > 0 ? validIndices.slice(0, 8) : defaultIndices;
+    const finalIndices = validIndices.length > 0 ? validIndices.slice(0, 15) : defaultIndices;
 
     const jobs = finalIndices
       .map((i) => {
