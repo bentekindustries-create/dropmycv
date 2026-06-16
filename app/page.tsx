@@ -365,6 +365,8 @@ export default function Home() {
         <a href="/privacy" className="hover:text-slate-500 transition-colors">Privacy</a>
         <span className="mx-2">·</span>
         <a href="/terms" className="hover:text-slate-500 transition-colors">Terms</a>
+        <span className="mx-2">·</span>
+        <a href="mailto:hello@dropmycv.app" className="hover:text-slate-500 transition-colors">Contact us</a>
       </footer>
     </div>
   );

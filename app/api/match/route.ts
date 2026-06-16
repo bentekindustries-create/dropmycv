@@ -229,7 +229,6 @@ interface BraveWebResult {
 async function fetchBrave(
   searchQuery: string,
   country: string,
-  client: Anthropic
 ): Promise<NormalizedJob[]> {
   if (!process.env.BRAVE_API_KEY) return [];
 
@@ -257,54 +256,16 @@ async function fetchBrave(
     const data = await res.json();
     const results: BraveWebResult[] = data.web?.results ?? [];
 
-    if (results.length === 0) return [];
-
-    const snippets = results.map((r) => ({
+    return results.slice(0, 10).map((r, i) => ({
+      id: `brave-${i}`,
       title: r.title,
+      company: "",
+      location: "",
+      description: [r.description, ...(r.extra_snippets ?? [])].join(" ").slice(0, 300),
       url: r.url,
-      snippet: [r.description, ...(r.extra_snippets ?? [])].join(" ").slice(0, 300),
+      created: new Date().toISOString(),
+      source: "brave",
     }));
-
-    const parseResponse = await client.messages.create({
-      model: "claude-haiku-4-5",
-      max_tokens: 1024,
-      messages: [
-        {
-          role: "user",
-          content: `Extract individual job listings from these web search results. Only include results that are actual job postings (skip aggregator index pages, career advice articles, etc.).
-
-Return a JSON array. Each element:
-{"title":"Job Title","company":"Company Name","location":"City, State","salary_min":null,"salary_max":null,"description":"Brief description","url":"original url","date":"ISO date or empty string"}
-
-If a result is not a specific job posting, skip it. Return [] if none qualify. JSON only.
-
-Results:
-${JSON.stringify(snippets)}`,
-        },
-      ],
-    });
-
-    const block = parseResponse.content[0];
-    const raw = block.type === "text" ? block.text : "[]";
-    const parsed = JSON.parse(stripCodeFence(raw));
-
-    if (!Array.isArray(parsed)) return [];
-
-    return parsed
-      .filter((j: Record<string, unknown>) => j.title && j.url)
-      .slice(0, 10)
-      .map((j: Record<string, unknown>, i: number) => ({
-        id: `brave-${i}`,
-        title: String(j.title ?? ""),
-        company: String(j.company ?? ""),
-        location: String(j.location ?? ""),
-        salaryMin: typeof j.salary_min === "number" ? j.salary_min : undefined,
-        salaryMax: typeof j.salary_max === "number" ? j.salary_max : undefined,
-        description: String(j.description ?? "").slice(0, 300),
-        url: String(j.url ?? ""),
-        created: String(j.date ?? new Date().toISOString()),
-        source: "brave",
-      }));
   } catch {
     return [];
   }
@@ -541,7 +502,7 @@ ${cvText.slice(0, 6000)}`,
     const [adzunaJobs, joobleJobs, braveJobs] = await Promise.all([
       fetchAdzuna(searchQuery, country, where),
       fetchJooble(searchQuery, country, where),
-      fetchBrave(searchQuery, country, client),
+      fetchBrave(searchQuery, country),
     ]);
 
     // Merge and dedup — Adzuna first (structured + affiliate links), then Jooble, then Brave
