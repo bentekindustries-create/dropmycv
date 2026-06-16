@@ -318,12 +318,39 @@ interface RemotiveJob {
   publication_date: string;
 }
 
+// Country names/codes that Remotive uses in candidate_required_location
+const REMOTIVE_COUNTRY_TERMS: Record<string, string[]> = {
+  au: ["australia", "aus"],
+  gb: ["united kingdom", "uk", "britain"],
+  us: ["united states", "usa", "us only"],
+  ca: ["canada"],
+  nz: ["new zealand"],
+  de: ["germany", "deutschland"],
+  fr: ["france"],
+  nl: ["netherlands", "holland"],
+  sg: ["singapore"],
+};
+
+function isRemotiveJobAllowed(location: string, country: string): boolean {
+  const loc = location.toLowerCase();
+  if (!loc || loc === "worldwide" || loc === "anywhere" || loc === "") return true;
+
+  const userTerms = REMOTIVE_COUNTRY_TERMS[country] ?? [];
+  // Allow if location explicitly includes the user's country
+  if (userTerms.some((t) => loc.includes(t))) return true;
+  // Allow if it looks like a general worldwide listing
+  if (loc.includes("worldwide") || loc.includes("anywhere") || loc.includes("remote")) return true;
+  // Block if it only mentions other specific countries
+  return false;
+}
+
 async function fetchRemotive(
   jobTitles: string[],
   skills: string[],
+  country: string,
 ): Promise<NormalizedJob[]> {
   const query = [jobTitles[0], ...skills.slice(0, 2)].filter(Boolean).join(" ");
-  const params = new URLSearchParams({ search: query, limit: "20" });
+  const params = new URLSearchParams({ search: query, limit: "30" });
 
   try {
     const res = await fetch(`https://remotive.com/api/remote-jobs?${params}`, {
@@ -333,16 +360,19 @@ async function fetchRemotive(
     const data = await res.json();
     const jobs: RemotiveJob[] = data.jobs ?? [];
 
-    return jobs.slice(0, 20).map((j) => ({
-      id: `remotive-${j.id}`,
-      title: j.title,
-      company: j.company_name ?? "",
-      location: j.candidate_required_location || "Remote",
-      description: j.description?.replace(/<[^>]*>/g, "").slice(0, 300) ?? "",
-      url: j.url,
-      created: j.publication_date ?? new Date().toISOString(),
-      source: "remotive",
-    }));
+    return jobs
+      .filter((j) => isRemotiveJobAllowed(j.candidate_required_location ?? "", country))
+      .slice(0, 20)
+      .map((j) => ({
+        id: `remotive-${j.id}`,
+        title: j.title,
+        company: j.company_name ?? "",
+        location: j.candidate_required_location || "Remote",
+        description: j.description?.replace(/<[^>]*>/g, "").slice(0, 300) ?? "",
+        url: j.url,
+        created: j.publication_date ?? new Date().toISOString(),
+        source: "remotive",
+      }));
   } catch {
     return [];
   }
@@ -576,7 +606,7 @@ ${cvText.slice(0, 6000)}`,
       fetchAdzuna(profile.jobTitles, profile.skills, country, where),
       fetchJooble(profile.jobTitles, profile.skills, country, where),
       fetchBrave(profile.jobTitles, profile.skills, country),
-      fetchRemotive(profile.jobTitles, profile.skills),
+      fetchRemotive(profile.jobTitles, profile.skills, country),
     ]);
 
     // Merge and dedup — Adzuna first (structured), then Jooble, Brave, Remotive
