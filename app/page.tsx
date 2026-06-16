@@ -6,8 +6,52 @@ import { JobCard } from "@/components/job-card";
 import { COUNTRIES, getCurrency } from "@/lib/countries";
 import type { JobMatch, MatchResult } from "@/lib/types";
 
-type Stage = "idle" | "matching" | "results" | "error";
+type Stage = "idle" | "questionnaire" | "matching" | "results" | "error";
 type SortKey = "relevance" | "salary" | "newest";
+
+const QUESTIONS = [
+  {
+    id: "role",
+    question: "What kind of work are you looking for?",
+    hint: "e.g. Software Engineer, Marketing Manager, Nurse, Accountant",
+    type: "text" as const,
+    optional: false,
+  },
+  {
+    id: "experience",
+    question: "How much work experience do you have?",
+    hint: "",
+    type: "choice" as const,
+    options: ["Less than 2 years", "2–5 years", "5–10 years", "10+ years"],
+    optional: false,
+  },
+  {
+    id: "skills",
+    question: "What are your main skills or areas of expertise?",
+    hint: "e.g. Python, project management, customer service, graphic design",
+    type: "text" as const,
+    optional: false,
+  },
+  {
+    id: "preference",
+    question: "Anything specific you're after?",
+    hint: "e.g. remote work, part-time, fintech, startups — or leave blank",
+    type: "text" as const,
+    optional: true,
+  },
+];
+
+type QAnswers = Record<string, string>;
+
+function buildCvText(answers: QAnswers): string {
+  return [
+    `Professional profile`,
+    `Role: ${answers.role ?? ""}`,
+    `Experience: ${answers.experience ?? ""}`,
+    `Skills and expertise: ${answers.skills ?? ""}`,
+    answers.preference ? `Preferences: ${answers.preference}` : "",
+  ].filter(Boolean).join("\n");
+}
 
 const TIERS = [
   { label: "Top Matches", range: [0, 4], accent: "text-emerald-600", dot: "bg-emerald-500" },
@@ -65,6 +109,8 @@ export default function Home() {
   const [lastCvText, setLastCvText] = useState("");
   const [matchingStep, setMatchingStep] = useState(0);
   const [hasSavedSession, setHasSavedSession] = useState(false);
+  const [qStep, setQStep] = useState(0);
+  const [qAnswers, setQAnswers] = useState<QAnswers>({});
 
   const currency = getCurrency(country);
   const sortedJobs = useMemo(
@@ -148,6 +194,21 @@ export default function Home() {
     runMatch(lastCvText, location || undefined, keywords || undefined);
   }
 
+  function handleQNext() {
+    const q = QUESTIONS[qStep];
+    const answer = qAnswers[q.id] ?? "";
+    if (!q.optional && !answer.trim()) return;
+    if (qStep < QUESTIONS.length - 1) {
+      setQStep(qStep + 1);
+    } else {
+      const cvText = buildCvText(qAnswers);
+      const syntheticName = `${qAnswers.role ?? "profile"} (no CV)`;
+      setFileName(syntheticName);
+      setLastCvText(cvText);
+      runMatch(cvText, location || undefined);
+    }
+  }
+
   function reset() {
     setStage("idle");
     setResult(null);
@@ -157,6 +218,8 @@ export default function Home() {
     setSortKey("relevance");
     setLocation("");
     setKeywords("");
+    setQStep(0);
+    setQAnswers({});
   }
 
   return (
@@ -265,6 +328,16 @@ export default function Home() {
               }}
             />
 
+            {/* No CV option */}
+            <div className="text-center">
+              <button
+                onClick={() => { setQStep(0); setQAnswers({}); setStage("questionnaire"); }}
+                className="text-sm text-slate-400 hover:text-indigo-600 transition-colors underline underline-offset-2"
+              >
+                No CV? Answer a few questions instead →
+              </button>
+            </div>
+
             {/* How it works */}
             <div className="grid grid-cols-3 gap-6 pt-2 border-t border-slate-100">
               {[
@@ -284,6 +357,94 @@ export default function Home() {
           </div>
         )}
 
+        {/* ── QUESTIONNAIRE ── */}
+        {stage === "questionnaire" && (() => {
+          const q = QUESTIONS[qStep];
+          const answer = qAnswers[q.id] ?? "";
+          const canAdvance = q.optional || answer.trim().length > 0;
+          const isLast = qStep === QUESTIONS.length - 1;
+
+          return (
+            <div className="py-16 max-w-lg mx-auto space-y-8">
+              {/* Header */}
+              <div className="space-y-1">
+                <button onClick={reset} className="text-xs text-slate-400 hover:text-slate-600 transition-colors">
+                  ← Back
+                </button>
+                <h2 className="text-2xl font-bold text-slate-800">Let&apos;s find you something</h2>
+                <p className="text-slate-400 text-sm">Answer {QUESTIONS.length} quick questions and we&apos;ll search live jobs for you.</p>
+              </div>
+
+              {/* Progress */}
+              <div className="flex items-center gap-2">
+                {QUESTIONS.map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${i <= qStep ? "bg-indigo-500" : "bg-slate-100"}`}
+                  />
+                ))}
+              </div>
+
+              {/* Question card */}
+              <div className="space-y-4">
+                <div>
+                  <p className="text-xs font-semibold text-indigo-500 uppercase tracking-widest mb-1">
+                    Question {qStep + 1} of {QUESTIONS.length}
+                  </p>
+                  <h3 className="text-lg font-semibold text-slate-800">{q.question}</h3>
+                  {q.optional && <p className="text-xs text-slate-400 mt-0.5">Optional — skip if not applicable</p>}
+                </div>
+
+                {q.type === "choice" && q.options ? (
+                  <div className="grid grid-cols-2 gap-3">
+                    {q.options.map((opt) => (
+                      <button
+                        key={opt}
+                        onClick={() => setQAnswers({ ...qAnswers, [q.id]: opt })}
+                        className={[
+                          "px-4 py-3 rounded-xl border-2 text-sm font-medium text-left transition-all",
+                          answer === opt
+                            ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+                            : "border-slate-200 text-slate-600 hover:border-indigo-300 hover:bg-slate-50",
+                        ].join(" ")}
+                      >
+                        {opt}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <input
+                    autoFocus
+                    type="text"
+                    value={answer}
+                    onChange={(e) => setQAnswers({ ...qAnswers, [q.id]: e.target.value })}
+                    onKeyDown={(e) => { if (e.key === "Enter" && canAdvance) handleQNext(); }}
+                    placeholder={q.hint}
+                    className="w-full text-sm border border-slate-200 rounded-xl px-4 py-3 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+                  />
+                )}
+              </div>
+
+              {/* Navigation */}
+              <div className="flex items-center justify-between">
+                <button
+                  onClick={() => qStep > 0 ? setQStep(qStep - 1) : reset()}
+                  className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
+                >
+                  ← {qStep > 0 ? "Back" : "Cancel"}
+                </button>
+                <button
+                  onClick={handleQNext}
+                  disabled={!canAdvance}
+                  className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                >
+                  {isLast ? "Find my matches →" : "Next →"}
+                </button>
+              </div>
+            </div>
+          );
+        })()}
+
         {/* ── MATCHING ── */}
         {stage === "matching" && (
           <div className="flex flex-col items-center justify-center py-32 gap-6 text-center">
@@ -293,7 +454,7 @@ export default function Home() {
                 {MATCHING_STEPS[matchingStep]}
               </p>
               <p className="text-slate-400 mt-1 text-sm">
-                {matchingStep === 0 && <>Parsing <span className="font-medium text-slate-600">{fileName}</span></>}
+                {matchingStep === 0 && <>{fileName.includes("(no CV)") ? <>Building your profile…</> : <>Parsing <span className="font-medium text-slate-600">{fileName}</span></>}</>}
                 {matchingStep === 1 && <>Checking Adzuna, Seek, LinkedIn &amp; more</>}
                 {matchingStep === 2 && <>Almost there — finding your best matches</>}
               </p>
