@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { CvDropzone } from "@/components/cv-dropzone";
 import { JobCard } from "@/components/job-card";
+import { SkillPicker } from "@/components/skill-picker";
 import { COUNTRIES, getCurrency } from "@/lib/countries";
 import type { JobMatch, MatchResult } from "@/lib/types";
 
@@ -412,6 +413,11 @@ export default function Home() {
                       </button>
                     ))}
                   </div>
+                ) : q.id === "skills" ? (
+                  <SkillPicker
+                    value={answer}
+                    onChange={(v) => setQAnswers({ ...qAnswers, skills: v })}
+                  />
                 ) : (
                   <input
                     autoFocus
