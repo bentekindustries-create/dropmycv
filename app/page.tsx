@@ -12,8 +12,15 @@ type SortKey = "relevance" | "salary" | "newest";
 
 const QUESTIONS = [
   {
+    id: "skills",
+    question: "What's your area of expertise?",
+    hint: "e.g. Python, project management, customer service, graphic design",
+    type: "text" as const,
+    optional: false,
+  },
+  {
     id: "role",
-    question: "What kind of work are you looking for?",
+    question: "What specific role are you looking for?",
     hint: "e.g. Software Engineer, Marketing Manager, Nurse, Accountant",
     type: "text" as const,
     optional: false,
@@ -24,13 +31,6 @@ const QUESTIONS = [
     hint: "",
     type: "choice" as const,
     options: ["Less than 2 years", "2–5 years", "5–10 years", "10+ years"],
-    optional: false,
-  },
-  {
-    id: "skills",
-    question: "What are your main skills or areas of expertise?",
-    hint: "e.g. Python, project management, customer service, graphic design",
-    type: "text" as const,
     optional: false,
   },
   {
