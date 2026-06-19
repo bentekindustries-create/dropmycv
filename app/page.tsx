@@ -61,7 +61,7 @@ const TIERS = [
 ];
 
 const MATCHING_STEPS = [
-  "Reading your CV…",
+  "Reading & anonymising your CV…",
   "Searching live jobs…",
   "Ranking your matches…",
 ];
@@ -545,7 +545,7 @@ export default function Home() {
                 {MATCHING_STEPS[matchingStep]}
               </p>
               <p className="text-slate-400 mt-1 text-sm">
-                {matchingStep === 0 && <>{fileName.includes("(no CV)") ? <>Building your profile…</> : <>Parsing <span className="font-medium text-slate-600">{fileName}</span></>}</>}
+                {matchingStep === 0 && <>{fileName.includes("(no CV)") ? <>Building your profile…</> : <>Stripping out your email, phone &amp; personal details</>}</>}
                 {matchingStep === 1 && <>Checking Adzuna, Seek, LinkedIn &amp; more</>}
                 {matchingStep === 2 && <>Almost there — finding your best matches</>}
               </p>
@@ -559,6 +559,11 @@ export default function Home() {
                 />
               ))}
             </div>
+            {/* Persistent privacy reassurance */}
+            <p className="flex items-center gap-1.5 text-xs text-slate-400 mt-2">
+              <span>🔒</span>
+              <span>Your personal details are removed in your browser — they never reach our servers.</span>
+            </p>
           </div>
         )}
 
