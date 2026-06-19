@@ -232,6 +232,11 @@ export default function Home() {
         </div>
       )}
 
+      {/* Beta banner */}
+      <div className="bg-indigo-600 text-white text-xs font-medium text-center py-1.5 tracking-wide">
+        🚧 Beta — we&apos;re still ironing out the kinks, go easy on us! 😄
+      </div>
+
       {/* Header */}
       <header className="border-b border-slate-100 px-6 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -649,6 +654,8 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-slate-100 py-5 text-center text-xs text-slate-300">
+        A <span className="font-medium text-slate-400">BenTek Industries</span> product
+        <span className="mx-3">·</span>
         dropmycv · No data stored · No account needed
         <span className="mx-3">·</span>
         <a href="/privacy" className="hover:text-slate-500 transition-colors">Privacy</a>
