@@ -59,6 +59,7 @@ interface NormalizedJob {
   url: string;
   created: string;
   source: string;
+  _rawTitle?: string; // debug only — raw Brave page title before parsing
 }
 
 interface CvProfile {
@@ -257,25 +258,63 @@ async function fetchJooble(
   }
 }
 
-// ─── Parse Brave page titles into clean job title + company ─────────────────
-function parseBraveTitle(raw: string): { title: string; company: string } {
-  // "Senior Engineer at Google - Jobs | LinkedIn"
-  const atMatch = raw.match(/^(.+?)\s+at\s+([^|\-–]+?)(?:\s*[|\-–])/i);
-  if (atMatch) return { title: atMatch[1].trim(), company: atMatch[2].trim() };
+// Job-board / site names that should never be treated as a company
+const BOARD_NAMES = /^(seek|linkedin|indeed|jora|glassdoor|wellfound|reed|totaljobs|workopolis|trademe|xing|stepstone|jobstreet|pole.?emploi|nationale.?vacaturebank|jobs?|careers?|hiring|vacancies)\b/i;
 
-  // "Senior Engineer - Google | LinkedIn"
-  const dashPipeMatch = raw.match(/^(.+?)\s*[-–]\s*([^|]+?)\s*\|/);
-  if (dashPipeMatch) return { title: dashPipeMatch[1].trim(), company: dashPipeMatch[2].trim() };
+function cleanCompany(c: string): string {
+  const t = c.replace(/\.(com|co\.uk|com\.au|co\.nz|ca|fr|nl|de|sg)\b.*$/i, "").trim();
+  if (!t || BOARD_NAMES.test(t)) return "";
+  return t;
+}
 
-  // "Senior Engineer | Google | LinkedIn"
-  const doublePipeMatch = raw.match(/^(.+?)\s*\|\s*([^|]+?)\s*\|/);
-  if (doublePipeMatch) return { title: doublePipeMatch[1].trim(), company: doublePipeMatch[2].trim() };
+// A Brave result is a listing/search page (not a single job) if its title looks
+// like an aggregate ("123 X jobs", "X jobs in Y") or its URL is a search path.
+function isBraveListingPage(title: string, url: string): boolean {
+  if (/^\s*[\d,]+\s+/.test(title)) return true; // "1,234 Software Engineer jobs…"
+  if (/\bjobs?\s+in\b/i.test(title) && !/\b(at|hiring|\-|–|\|)\b/.test(title)) return true;
+  if (/[?&](q|k|where|search)=/i.test(url)) return true;
+  if (/\/(search|browse|jobs-in|k-|q-|m-)/i.test(url)) return true;
+  return false;
+}
+
+// ─── Parse Brave page titles into clean title + company + location ──────────
+function parseBraveTitle(raw: string): { title: string; company: string; location: string } {
+  // LinkedIn: "Atlassian hiring Senior Engineer in Sydney, NSW, Australia | LinkedIn"
+  const linkedin = raw.match(/^(.+?)\s+hiring\s+(.+?)\s+in\s+(.+?)\s*[|｜]/i);
+  if (linkedin) {
+    return { title: linkedin[2].trim(), company: cleanCompany(linkedin[1]), location: linkedin[3].trim() };
+  }
+
+  // Indeed-style: "Title - Company - Location - Indeed.com"
+  const dashParts = raw.split(/\s+[-–]\s+/);
+  if (dashParts.length >= 3 && /indeed/i.test(dashParts[dashParts.length - 1])) {
+    return { title: dashParts[0].trim(), company: cleanCompany(dashParts[1]), location: dashParts[2].trim() };
+  }
+
+  // "Title at Company in Location" (optionally trailed by a separator)
+  const atIn = raw.match(/^(.+?)\s+at\s+(.+?)\s+in\s+([^|\-–]+?)(?:\s*[|\-–]|$)/i);
+  if (atIn) {
+    return { title: atIn[1].trim(), company: cleanCompany(atIn[2]), location: atIn[3].trim() };
+  }
+
+  // "Title at Company - Board"
+  const at = raw.match(/^(.+?)\s+at\s+([^|\-–]+?)(?:\s*[|\-–]|$)/i);
+  if (at) return { title: at[1].trim(), company: cleanCompany(at[2]), location: "" };
+
+  // "Title - Company | Board"  or  "Title | Company | Board"
+  const sep = raw.match(/^(.+?)\s*[-–|]\s*([^|\-–]+?)\s*[|\-–]/);
+  if (sep) {
+    // Try to pull a trailing "in Location" out of the title half
+    const inLoc = sep[1].match(/^(.+?)\s+in\s+([A-Z][^,|]+(?:,\s*[A-Z][^,|]+)?)\s*$/);
+    if (inLoc) return { title: inLoc[1].trim(), company: cleanCompany(sep[2]), location: inLoc[2].trim() };
+    return { title: sep[1].trim(), company: cleanCompany(sep[2]), location: "" };
+  }
 
   // Strip everything after first separator
   const firstSep = raw.search(/\s*[|\-–]/);
-  if (firstSep > 5) return { title: raw.slice(0, firstSep).trim(), company: "" };
+  if (firstSep > 5) return { title: raw.slice(0, firstSep).trim(), company: "", location: "" };
 
-  return { title: raw, company: "" };
+  return { title: raw, company: "", location: "" };
 }
 
 // ─── Brave Search fetcher ────────────────────────────────────────────────────
@@ -284,6 +323,7 @@ interface BraveWebResult {
   url: string;
   description: string;
   extra_snippets?: string[];
+  page_age?: string;
 }
 
 async function fetchBrave(
@@ -328,19 +368,24 @@ async function fetchBrave(
     const data = await res.json();
     const results: BraveWebResult[] = data.web?.results ?? [];
 
-    return results.slice(0, 20).map((r, i) => {
-      const { title, company } = parseBraveTitle(r.title);
-      return {
-        id: `brave-${i}`,
-        title,
-        company,
-        location: "",
-        description: [r.description, ...(r.extra_snippets ?? [])].join(" ").slice(0, 600),
-        url: r.url,
-        created: new Date().toISOString(),
-        source: "brave",
-      };
-    });
+    return results
+      .filter((r) => !isBraveListingPage(r.title, r.url))
+      .slice(0, 20)
+      .map((r, i) => {
+        const { title, company, location } = parseBraveTitle(r.title);
+        return {
+          id: `brave-${i}`,
+          title,
+          company,
+          location,
+          description: [r.description, ...(r.extra_snippets ?? [])].join(" ").slice(0, 600),
+          url: r.url,
+          // Brave gives a real page age for many results; fall back to now
+          created: r.page_age ?? new Date().toISOString(),
+          source: "brave",
+          _rawTitle: r.title,
+        };
+      });
   } catch {
     return [];
   }
@@ -869,6 +914,12 @@ ${cvText.slice(0, 6000)}`,
       remotive: remotiveJobs.length,
       jobicy: jobicyJobs.length,
       afterDedup: allJobs.length,
+      braveSample: braveJobs.slice(0, 8).map((j) => ({
+        raw: j._rawTitle,
+        title: j.title,
+        company: j.company,
+        location: j.location,
+      })),
     };
 
     if (allJobs.length === 0) {
