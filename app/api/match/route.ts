@@ -59,7 +59,6 @@ interface NormalizedJob {
   url: string;
   created: string;
   source: string;
-  _rawTitle?: string; // debug only — raw Brave page title before parsing
 }
 
 interface CvProfile {
@@ -271,6 +270,8 @@ function cleanCompany(c: string): string {
 // like an aggregate ("123 X jobs", "X jobs in Y") or its URL is a search path.
 function isBraveListingPage(title: string, url: string): boolean {
   if (/^\s*[\d,]+\s+/.test(title)) return true;        // "1,234 Software Engineer jobs…"
+  if (/^\s*[$£€]/.test(title)) return true;             // "$106k-$157k … Jobs (salary listing)
+  if (/\(\s*now hiring\s*\)/i.test(title)) return true; // aggregator "(NOW HIRING)" pages
   if (/^\s*all jobs\b/i.test(title)) return true;       // "All jobs from Hacker News…"
   if (/\bjobs?\s+in\b/i.test(title) && !/\b(at|hiring|looking for|@|\-|–|\|)\b/.test(title)) return true;
   if (/\bjobs?\s*$/i.test(title) && !/\b(at|hiring|looking for|@)\b/.test(title)) return true; // "Full Stack Developer Jobs"
@@ -394,7 +395,6 @@ async function fetchBrave(
           // Brave gives a real page age for many results; fall back to now
           created: r.page_age ?? new Date().toISOString(),
           source: "brave",
-          _rawTitle: r.title,
         };
       })
       // Drop anything that still parsed to an empty/board-only/too-short title
@@ -928,12 +928,6 @@ ${cvText.slice(0, 6000)}`,
       remotive: remotiveJobs.length,
       jobicy: jobicyJobs.length,
       afterDedup: allJobs.length,
-      braveSample: braveJobs.slice(0, 8).map((j) => ({
-        raw: j._rawTitle,
-        title: j.title,
-        company: j.company,
-        location: j.location,
-      })),
     };
 
     if (allJobs.length === 0) {
