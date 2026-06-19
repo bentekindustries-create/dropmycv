@@ -270,8 +270,10 @@ function cleanCompany(c: string): string {
 // A Brave result is a listing/search page (not a single job) if its title looks
 // like an aggregate ("123 X jobs", "X jobs in Y") or its URL is a search path.
 function isBraveListingPage(title: string, url: string): boolean {
-  if (/^\s*[\d,]+\s+/.test(title)) return true; // "1,234 Software Engineer jobs…"
-  if (/\bjobs?\s+in\b/i.test(title) && !/\b(at|hiring|\-|–|\|)\b/.test(title)) return true;
+  if (/^\s*[\d,]+\s+/.test(title)) return true;        // "1,234 Software Engineer jobs…"
+  if (/^\s*all jobs\b/i.test(title)) return true;       // "All jobs from Hacker News…"
+  if (/\bjobs?\s+in\b/i.test(title) && !/\b(at|hiring|looking for|@|\-|–|\|)\b/.test(title)) return true;
+  if (/\bjobs?\s*$/i.test(title) && !/\b(at|hiring|looking for|@)\b/.test(title)) return true; // "Full Stack Developer Jobs"
   if (/[?&](q|k|where|search)=/i.test(url)) return true;
   if (/\/(search|browse|jobs-in|k-|q-|m-)/i.test(url)) return true;
   return false;
@@ -279,6 +281,16 @@ function isBraveListingPage(title: string, url: string): boolean {
 
 // ─── Parse Brave page titles into clean title + company + location ──────────
 function parseBraveTitle(raw: string): { title: string; company: string; location: string } {
+  // "Title @ Company" (greenhouse/lever/startup boards) — strip any board suffix
+  const atSign = raw.match(/^(.+?)\s+@\s+([^|]+?)(?:\s*[|｜].*)?$/);
+  if (atSign) return { title: atSign[1].trim(), company: cleanCompany(atSign[2]), location: "" };
+
+  // "Company is looking for [a/an] Title in Location"
+  const lookingFor = raw.match(/^(.+?)\s+is looking for\s+(?:an?\s+)?(.+?)\s+in\s+(.+)$/i);
+  if (lookingFor) {
+    return { title: lookingFor[2].trim(), company: cleanCompany(lookingFor[1]), location: lookingFor[3].trim() };
+  }
+
   // LinkedIn: "Atlassian hiring Senior Engineer in Sydney, NSW, Australia | LinkedIn"
   const linkedin = raw.match(/^(.+?)\s+hiring\s+(.+?)\s+in\s+(.+?)\s*[|｜]/i);
   if (linkedin) {
@@ -370,7 +382,6 @@ async function fetchBrave(
 
     return results
       .filter((r) => !isBraveListingPage(r.title, r.url))
-      .slice(0, 20)
       .map((r, i) => {
         const { title, company, location } = parseBraveTitle(r.title);
         return {
@@ -385,7 +396,10 @@ async function fetchBrave(
           source: "brave",
           _rawTitle: r.title,
         };
-      });
+      })
+      // Drop anything that still parsed to an empty/board-only/too-short title
+      .filter((j) => j.title.length >= 4 && !BOARD_NAMES.test(j.title))
+      .slice(0, 20);
   } catch {
     return [];
   }
