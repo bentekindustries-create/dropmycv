@@ -432,12 +432,6 @@ interface JobicyJob {
   salaryMax?: string | number;
 }
 
-// Country → Jobicy geo slug
-const JOBICY_GEO: Record<string, string> = {
-  au: "australia", gb: "united-kingdom", us: "usa", ca: "canada",
-  nz: "new-zealand", de: "germany", fr: "france", nl: "netherlands", sg: "singapore",
-};
-
 function toNum(v: unknown): number | undefined {
   if (typeof v === "number" && v > 0) return v;
   if (typeof v === "string") {
@@ -449,12 +443,11 @@ function toNum(v: unknown): number | undefined {
 
 async function fetchJobicy(
   jobTitles: string[],
-  country: string,
 ): Promise<NormalizedJob[]> {
-  const geo = JOBICY_GEO[country] ?? "";
+  // Remote roles are location-flexible, so filter by role (tag) not geo —
+  // geo+tag combined returns almost nothing (few remote jobs are region-locked).
   const tag = jobTitles[0] ?? "";
   const params = new URLSearchParams({ count: "50" });
-  if (geo) params.set("geo", geo);
   if (tag) params.set("tag", tag);
 
   try {
@@ -852,7 +845,7 @@ ${cvText.slice(0, 6000)}`,
       fetchBrave(expandedTitles, augmentedSkills, country),
       fetchCareerjet(expandedTitles, augmentedSkills, country, where, ip),
       skipRemote ? Promise.resolve([]) : fetchRemotive(expandedTitles, augmentedSkills, country),
-      skipRemote ? Promise.resolve([]) : fetchJobicy(expandedTitles, country),
+      skipRemote ? Promise.resolve([]) : fetchJobicy(expandedTitles),
     ]);
 
     // Round-robin interleave so no single source dominates the ranking pool
