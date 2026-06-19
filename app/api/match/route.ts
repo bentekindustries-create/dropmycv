@@ -736,12 +736,14 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { cvText, country: rawCountry = "au", location: rawLocation, keywords: rawKeywords } = body as {
+    const { cvText, country: rawCountry = "au", location: rawLocation, keywords: rawKeywords, debug: rawDebug } = body as {
       cvText: string;
       country?: string;
       location?: string;
       keywords?: string;
+      debug?: boolean;
     };
+    const debug = rawDebug === true;
     const extraKeywords = sanitiseString(rawKeywords, 200);
 
     const country = ALLOWED_COUNTRIES.has(rawCountry) ? rawCountry : "au";
@@ -853,14 +855,31 @@ ${cvText.slice(0, 6000)}`,
       skipRemote ? Promise.resolve([]) : fetchJobicy(expandedTitles, country),
     ]);
 
-    // Merge and dedup — structured sources first (Adzuna/Jooble/Careerjet), then web + remote
-    const allJobs = dedupJobs([
-      ...adzunaJobs, ...joobleJobs, ...careerjetJobs,
-      ...braveJobs, ...remotiveJobs, ...jobicyJobs,
-    ]);
+    // Round-robin interleave so no single source dominates the ranking pool
+    // (Adzuna can return 60+; concatenating it first would crowd out everything
+    // else before the ranker's 50-job cap).
+    const sources = [adzunaJobs, joobleJobs, careerjetJobs, braveJobs, remotiveJobs, jobicyJobs];
+    const interleaved: NormalizedJob[] = [];
+    const maxLen = Math.max(0, ...sources.map((s) => s.length));
+    for (let i = 0; i < maxLen; i++) {
+      for (const s of sources) {
+        if (i < s.length) interleaved.push(s[i]);
+      }
+    }
+    const allJobs = dedupJobs(interleaved);
+
+    const sourceCounts = {
+      adzuna: adzunaJobs.length,
+      jooble: joobleJobs.length,
+      careerjet: careerjetJobs.length,
+      brave: braveJobs.length,
+      remotive: remotiveJobs.length,
+      jobicy: jobicyJobs.length,
+      afterDedup: allJobs.length,
+    };
 
     if (allJobs.length === 0) {
-      return Response.json({ jobs: [], profile });
+      return Response.json({ jobs: [], profile, ...(debug ? { _debug: sourceCounts } : {}) });
     }
 
     // Step 3: rank with Claude Haiku using explicit rubric + match scores
@@ -961,7 +980,7 @@ JSON only, no markdown.`,
       })
       .filter(Boolean);
 
-    return Response.json({ jobs, profile });
+    return Response.json({ jobs, profile, ...(debug ? { _debug: sourceCounts } : {}) });
   } catch (err) {
     console.error("[match] error:", err);
     return Response.json(
