@@ -20,8 +20,8 @@ function timeAgo(dateStr: string): string {
 }
 
 function scoreColors(score: number) {
-  if (score >= 85) return "bg-emerald-50 text-emerald-700";
-  if (score >= 65) return "bg-blue-50 text-blue-700";
+  if (score >= 85) return "bg-teal-light text-teal";
+  if (score >= 65) return "bg-[#eef1f7] text-navy";
   return "bg-slate-100 text-slate-500";
 }
 
@@ -34,7 +34,7 @@ export function JobCard({ job, currency }: JobCardProps) {
   const salary = formatSalary(currency, job.salaryMin, job.salaryMax);
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 hover:border-indigo-200 hover:shadow-sm transition-all flex flex-col gap-3">
+    <div className="bg-white rounded-xl border border-slate-200 p-5 hover:border-teal hover:shadow-sm transition-all flex flex-col gap-3">
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <h3 className="font-semibold text-slate-800 leading-snug">{job.title}</h3>
@@ -73,7 +73,7 @@ export function JobCard({ job, currency }: JobCardProps) {
         href={job.url}
         target="_blank"
         rel="noopener noreferrer"
-        className="mt-auto inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-indigo-700 active:bg-indigo-800 transition-colors"
+        className="mt-auto inline-flex items-center justify-center rounded-lg bg-navy px-4 py-2.5 text-sm font-semibold text-white hover:bg-navy-dark active:bg-[#0d1f36] transition-colors"
       >
         Apply Now →
       </a>

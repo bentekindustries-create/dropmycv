@@ -113,7 +113,7 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
           {selectedSkills.map((skill) => (
             <span
               key={skill}
-              className="inline-flex items-center gap-1 text-xs bg-indigo-100 text-indigo-700 px-2.5 py-1 rounded-full font-medium"
+              className="inline-flex items-center gap-1 text-xs bg-teal-light text-navy px-2.5 py-1 rounded-full font-medium"
             >
               {skill}
               <button
@@ -150,8 +150,8 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
                   className={[
                     "text-sm px-3 py-1.5 rounded-full border-2 font-medium transition-all",
                     selected
-                      ? "border-indigo-500 bg-indigo-50 text-indigo-700"
-                      : "border-slate-200 text-slate-600 hover:border-indigo-300 hover:bg-slate-50",
+                      ? "border-teal bg-teal-light text-navy"
+                      : "border-slate-200 text-slate-600 hover:border-teal hover:bg-slate-50",
                   ].join(" ")}
                 >
                   {selected && <span className="mr-1">✓</span>}
@@ -169,12 +169,12 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
               <button
                 key={cat.id}
                 onClick={() => setSelectedCategory(cat.id)}
-                className="flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 text-sm font-medium text-left transition-all border-slate-200 text-slate-600 hover:border-indigo-300 hover:bg-slate-50"
+                className="flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 text-sm font-medium text-left transition-all border-slate-200 text-slate-600 hover:border-teal hover:bg-slate-50"
               >
                 <span className="text-base">{cat.icon}</span>
                 <span className="flex-1">{cat.label}</span>
                 {selectedCount > 0 && (
-                  <span className="text-xs bg-indigo-100 text-indigo-600 px-1.5 py-0.5 rounded-full font-semibold">
+                  <span className="text-xs bg-teal-light text-teal px-1.5 py-0.5 rounded-full font-semibold">
                     {selectedCount}
                   </span>
                 )}
@@ -190,7 +190,7 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
         value={customText}
         onChange={(e) => setCustomText(e.target.value)}
         placeholder="Or type your own skills, comma separated…"
-        className="w-full text-sm border border-slate-200 rounded-xl px-4 py-3 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+        className="w-full text-sm border border-slate-200 rounded-xl px-4 py-3 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
       />
     </div>
   );

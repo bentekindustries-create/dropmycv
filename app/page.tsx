@@ -55,8 +55,8 @@ function buildCvText(answers: QAnswers): string {
 }
 
 const TIERS = [
-  { label: "Top Matches", range: [0, 4], accent: "text-emerald-600", dot: "bg-emerald-500" },
-  { label: "Good Matches", range: [5, 9], accent: "text-blue-600", dot: "bg-blue-400" },
+  { label: "Top Matches", range: [0, 4], accent: "text-teal", dot: "bg-teal" },
+  { label: "Good Matches", range: [5, 9], accent: "text-navy", dot: "bg-navy" },
   { label: "Worth a Look", range: [10, 14], accent: "text-slate-500", dot: "bg-slate-400" },
 ];
 
@@ -233,17 +233,17 @@ export default function Home() {
       )}
 
       {/* Beta banner */}
-      <div className="bg-indigo-600 text-white text-xs font-medium text-center py-1.5 tracking-wide">
+      <div className="bg-teal text-navy text-xs font-medium text-center py-1.5 tracking-wide">
         🚧 Beta — we&apos;re still ironing out the kinks, go easy on us! 😄
       </div>
 
       {/* Header */}
-      <header className="border-b border-slate-100 px-6 py-4">
+      <header className="bg-navy px-6 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <a href="https://www.dropmycv.app" onClick={(e) => { e.preventDefault(); reset(); }} className="text-2xl font-extrabold tracking-tight transition-colors group">
-            <span className="text-indigo-600">drop</span><span className="text-slate-800 group-hover:text-indigo-600">mycv</span><span className="text-indigo-600">.app</span>
+            <span className="text-teal">drop</span><span className="text-white group-hover:text-teal">mycv</span><span className="text-teal">.app</span>
           </a>
-          <span className="text-xs text-slate-400 hidden sm:block">
+          <span className="text-xs text-white/60 hidden sm:block">
             No account · No storage · Free
           </span>
         </div>
@@ -256,11 +256,11 @@ export default function Home() {
           <div className="py-14 space-y-8">
             {/* Restore session banner */}
             {hasSavedSession && (
-              <div className="flex items-center justify-between bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3">
-                <p className="text-sm text-indigo-700 font-medium">You have results from your last session.</p>
+              <div className="flex items-center justify-between bg-teal-light border border-[#c8ecea] rounded-xl px-4 py-3">
+                <p className="text-sm text-navy font-medium">You have results from your last session.</p>
                 <button
                   onClick={restoreSession}
-                  className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 underline underline-offset-2"
+                  className="text-xs font-semibold text-teal hover:text-navy underline underline-offset-2"
                 >
                   View them →
                 </button>
@@ -269,9 +269,9 @@ export default function Home() {
 
             {/* Hero */}
             <div className="text-center space-y-3">
-              <h1 className="text-4xl font-bold text-slate-800 tracking-tight leading-tight">
+              <h1 className="text-4xl font-serif font-bold text-navy tracking-tight leading-tight">
                 Finding your next job shouldn&apos;t feel like<br />
-                <span className="text-indigo-600">a full-time job.</span>
+                <span className="text-teal">a full-time job.</span>
               </h1>
               <p className="text-slate-500 text-base max-w-lg mx-auto">
                 Drop your CV and get matched to thousands of live roles instantly.
@@ -303,7 +303,7 @@ export default function Home() {
                   id="country-select"
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
-                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
                 >
                   {COUNTRIES.map((c) => (
                     <option key={c.code} value={c.code}>{c.label}</option>
@@ -320,7 +320,7 @@ export default function Home() {
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="Any — or type a city, state, postcode"
-                  className="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+                  className="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
                 />
               </div>
             </div>
@@ -338,7 +338,7 @@ export default function Home() {
             <div className="text-center">
               <button
                 onClick={() => { setQStep(0); setQAnswers({}); setStage("questionnaire"); }}
-                className="text-sm text-slate-400 hover:text-indigo-600 transition-colors underline underline-offset-2"
+                className="text-sm text-slate-400 hover:text-teal transition-colors underline underline-offset-2"
               >
                 No CV? Answer a few questions instead →
               </button>
@@ -352,7 +352,7 @@ export default function Home() {
                 { step: "3", title: "Get your shortlist", desc: "Ranked results ready to apply to in seconds" },
               ].map((item) => (
                 <div key={item.step} className="text-center pt-4">
-                  <div className="text-xs font-semibold text-indigo-500 uppercase tracking-widest mb-1">
+                  <div className="text-xs font-semibold text-teal uppercase tracking-widest mb-1">
                     Step {item.step}
                   </div>
                   <div className="font-semibold text-slate-700 text-sm">{item.title}</div>
@@ -386,7 +386,7 @@ export default function Home() {
                 {QUESTIONS.map((_, i) => (
                   <div
                     key={i}
-                    className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${i <= qStep ? "bg-indigo-500" : "bg-slate-100"}`}
+                    className={`h-1.5 flex-1 rounded-full transition-all duration-300 ${i <= qStep ? "bg-teal" : "bg-slate-100"}`}
                   />
                 ))}
               </div>
@@ -394,7 +394,7 @@ export default function Home() {
               {/* Question card */}
               <div className="space-y-4">
                 <div>
-                  <p className="text-xs font-semibold text-indigo-500 uppercase tracking-widest mb-1">
+                  <p className="text-xs font-semibold text-teal uppercase tracking-widest mb-1">
                     Question {qStep + 1} of {QUESTIONS.length}
                   </p>
                   <h3 className="text-lg font-semibold text-slate-800">{q.question}</h3>
@@ -410,8 +410,8 @@ export default function Home() {
                         className={[
                           "px-4 py-3 rounded-xl border-2 text-sm font-medium text-left transition-all",
                           answer === opt
-                            ? "border-indigo-500 bg-indigo-50 text-indigo-700"
-                            : "border-slate-200 text-slate-600 hover:border-indigo-300 hover:bg-slate-50",
+                            ? "border-teal bg-teal-light text-navy"
+                            : "border-slate-200 text-slate-600 hover:border-teal hover:bg-slate-50",
                         ].join(" ")}
                       >
                         {opt}
@@ -431,7 +431,7 @@ export default function Home() {
                     onChange={(e) => setQAnswers({ ...qAnswers, [q.id]: e.target.value })}
                     onKeyDown={(e) => { if (e.key === "Enter" && canAdvance) handleQNext(); }}
                     placeholder={q.hint}
-                    className="w-full text-sm border border-slate-200 rounded-xl px-4 py-3 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent"
+                    className="w-full text-sm border border-slate-200 rounded-xl px-4 py-3 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
                   />
                 )}
               </div>
@@ -447,7 +447,7 @@ export default function Home() {
                 <button
                   onClick={handleQNext}
                   disabled={!canAdvance}
-                  className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="px-6 py-2.5 bg-navy text-white rounded-xl text-sm font-semibold hover:bg-navy-dark transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                 >
                   {isLast ? "Find my matches →" : "Next →"}
                 </button>
@@ -459,7 +459,7 @@ export default function Home() {
         {/* ── MATCHING ── */}
         {stage === "matching" && (
           <div className="flex flex-col items-center justify-center py-32 gap-6 text-center">
-            <div className="w-14 h-14 border-4 border-slate-100 border-t-indigo-600 rounded-full animate-spin" />
+            <div className="w-14 h-14 border-4 border-slate-100 border-t-teal rounded-full animate-spin" />
             <div>
               <p className="text-lg font-semibold text-slate-700 transition-all">
                 {MATCHING_STEPS[matchingStep]}
@@ -475,7 +475,7 @@ export default function Home() {
               {MATCHING_STEPS.map((_, i) => (
                 <div
                   key={i}
-                  className={`w-2 h-2 rounded-full transition-all duration-500 ${i <= matchingStep ? "bg-indigo-500" : "bg-slate-200"}`}
+                  className={`w-2 h-2 rounded-full transition-all duration-500 ${i <= matchingStep ? "bg-teal" : "bg-slate-200"}`}
                 />
               ))}
             </div>
@@ -498,7 +498,7 @@ export default function Home() {
               </div>
               <button
                 onClick={reset}
-                className="text-sm text-indigo-600 hover:text-indigo-800 font-medium"
+                className="text-sm text-teal hover:text-navy font-medium"
               >
                 ← Upload another CV
               </button>
@@ -516,7 +516,7 @@ export default function Home() {
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder={`Anywhere in ${COUNTRIES.find((c) => c.code === country)?.label.replace(/^.+ /, "") ?? "the country"}`}
                   onKeyDown={(e) => { if (e.key === "Enter") handleRefine(); }}
-                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent w-44"
+                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent w-44"
                 />
               </div>
               <div className="flex items-center gap-2 flex-wrap">
@@ -528,13 +528,13 @@ export default function Home() {
                   onChange={(e) => setKeywords(e.target.value)}
                   placeholder="e.g. remote, fintech, Python"
                   onKeyDown={(e) => { if (e.key === "Enter") handleRefine(); }}
-                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-transparent w-44"
+                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent w-44"
                 />
               </div>
               <div>
                 <button
                   onClick={handleRefine}
-                  className="text-xs px-4 py-1.5 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 font-medium transition-colors"
+                  className="text-xs px-4 py-1.5 rounded-lg bg-navy text-white hover:bg-navy-dark font-medium transition-colors"
                 >
                   Update results
                 </button>
@@ -571,7 +571,7 @@ export default function Home() {
                     className={[
                       "text-xs px-3 py-1.5 rounded-full font-medium transition-colors",
                       sortKey === key
-                        ? "bg-indigo-600 text-white"
+                        ? "bg-navy text-white"
                         : "bg-slate-100 text-slate-500 hover:bg-slate-200",
                     ].join(" ")}
                   >
@@ -589,7 +589,7 @@ export default function Home() {
                 <p className="text-sm mt-1">Try adding keywords above or upload a different CV.</p>
                 <button
                   onClick={reset}
-                  className="mt-5 inline-flex items-center px-5 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors"
+                  className="mt-5 inline-flex items-center px-5 py-2 bg-navy text-white rounded-lg text-sm font-semibold hover:bg-navy-dark transition-colors"
                 >
                   Try again
                 </button>
@@ -645,7 +645,7 @@ export default function Home() {
             </div>
             <button
               onClick={reset}
-              className="inline-flex items-center px-6 py-2.5 bg-indigo-600 text-white rounded-lg text-sm font-semibold hover:bg-indigo-700 transition-colors"
+              className="inline-flex items-center px-6 py-2.5 bg-navy text-white rounded-lg text-sm font-semibold hover:bg-navy-dark transition-colors"
             >
               Try again
             </button>
@@ -653,18 +653,18 @@ export default function Home() {
         )}
       </main>
 
-      <footer className="border-t border-slate-100 py-5 text-center text-xs text-slate-300">
-        A <span className="font-medium text-slate-400">BenTek Industries</span> product
+      <footer className="bg-navy py-5 text-center text-xs text-white/40">
+        A <span className="font-medium text-white/60">BenTek Industries</span> product
         <span className="mx-3">·</span>
         dropmycv · No data stored · No account needed
         <span className="mx-3">·</span>
-        <a href="/privacy" className="hover:text-slate-500 transition-colors">Privacy</a>
+        <a href="/privacy" className="hover:text-white/80 transition-colors">Privacy</a>
         <span className="mx-2">·</span>
-        <a href="/terms" className="hover:text-slate-500 transition-colors">Terms</a>
+        <a href="/terms" className="hover:text-white/80 transition-colors">Terms</a>
         <span className="mx-2">·</span>
-        <a href="mailto:hello@dropmycv.app" className="hover:text-slate-500 transition-colors">Contact us</a>
+        <a href="mailto:hello@dropmycv.app" className="hover:text-white/80 transition-colors">Contact us</a>
         <span className="mx-2">·</span>
-        <a href="https://ko-fi.com/benjones42104" target="_blank" rel="noopener noreferrer" className="hover:text-slate-500 transition-colors">☕ Support this project</a>
+        <a href="https://ko-fi.com/benjones42104" target="_blank" rel="noopener noreferrer" className="hover:text-white/80 transition-colors">☕ Support this project</a>
       </footer>
     </div>
   );
