@@ -482,16 +482,15 @@ async function fetchJobicy(
   }
 }
 
-// ─── Careerjet fetcher (broad global aggregator — needs free publisher key) ──
-// Dormant until CAREERJET_API_KEY is set; covers all countries AND all industries
-// (incl. trades/local roles), so it complements the remote-only sources.
+// ─── Careerjet fetcher (broad global aggregator — needs free affiliate id) ───
+// Dormant until CAREERJET_API_KEY (the affid) is set; covers all countries AND
+// all industries (incl. trades/local roles), complementing the remote sources.
+// Uses the classic public API: affid + Referer header, HTTP only, no IP allowlist.
 interface CareerjetJob {
   title?: string;
   company?: string;
   locations?: string;
   salary?: string;
-  salary_min?: number;
-  salary_max?: number;
   description?: string;
   url?: string;
   date?: string;
@@ -513,38 +512,45 @@ async function fetchCareerjet(
 
   const keywords = [jobTitles[0], skills.slice(0, 2).join(" ")].filter(Boolean).join(" ");
   const locale = CAREERJET_LOCALE[country] ?? "en_GB";
-  const auth = Buffer.from(`${process.env.CAREERJET_API_KEY}:`).toString("base64");
 
   const params = new URLSearchParams({
+    affid: process.env.CAREERJET_API_KEY,
     keywords,
     locale_code: locale,
-    page_size: "20",
+    pagesize: "20",
     sort: "relevance",
     user_ip: ip && ip !== "unknown" ? ip : "8.8.8.8",
-    user_agent: "dropmycv.app/1.0",
+    user_agent: "Mozilla/5.0 (compatible; dropmycv.app)",
   });
   if (where) params.set("location", where);
 
   try {
-    const res = await fetch(`https://search.api.careerjet.net/v4/query?${params}`, {
-      headers: { Accept: "application/json", Authorization: `Basic ${auth}` },
+    const res = await fetch(`http://public.api.careerjet.net/search?${params}`, {
+      headers: {
+        Accept: "application/json",
+        Referer: "https://www.dropmycv.app",
+      },
     });
     if (!res.ok) return [];
     const data = await res.json();
+    if (data.type !== "JOBS") return [];
     const jobs: CareerjetJob[] = data.jobs ?? [];
 
-    return jobs.slice(0, 20).map((j, i) => ({
-      id: `careerjet-${i}-${j.url ?? ""}`.slice(0, 80),
-      title: j.title ?? "",
-      company: j.company ?? "",
-      location: j.locations ?? "",
-      salaryMin: j.salary_min,
-      salaryMax: j.salary_max,
-      description: (j.description ?? "").replace(/<[^>]*>/g, "").slice(0, 600),
-      url: j.url ?? "",
-      created: j.date ?? new Date().toISOString(),
-      source: "careerjet",
-    }));
+    return jobs.slice(0, 20).map((j, i) => {
+      const { min, max } = parseJoobleSalary(j.salary ?? "");
+      return {
+        id: `careerjet-${i}-${j.url ?? ""}`.slice(0, 90),
+        title: j.title ?? "",
+        company: j.company ?? "",
+        location: j.locations ?? "",
+        salaryMin: min,
+        salaryMax: max,
+        description: (j.description ?? "").replace(/<[^>]*>/g, "").slice(0, 600),
+        url: j.url ?? "",
+        created: j.date ?? new Date().toISOString(),
+        source: "careerjet",
+      };
+    });
   } catch {
     return [];
   }
