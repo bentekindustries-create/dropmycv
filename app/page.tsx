@@ -98,6 +98,41 @@ function sortJobs(jobs: JobMatch[], key: SortKey): JobMatch[] {
   return [...jobs].sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime());
 }
 
+type WorkFilter = "any" | "remote" | "hybrid" | "onsite";
+
+function jobWorkType(job: JobMatch): "remote" | "hybrid" | "onsite" {
+  const hay = `${job.location} ${job.description}`.toLowerCase();
+  if (/\bhybrid\b/.test(hay)) return "hybrid";
+  if (/\b(remote|work from home|wfh|anywhere|telecommute)\b/.test(hay)) return "remote";
+  return "onsite";
+}
+
+function hasSalary(job: JobMatch): boolean {
+  return Boolean(job.salaryMin || job.salaryMax);
+}
+
+const HIDDEN_KEY = "dropmycv_hidden";
+
+function loadHidden(): { jobs: string[]; companies: string[] } {
+  try {
+    const raw = localStorage.getItem(HIDDEN_KEY);
+    if (!raw) return { jobs: [], companies: [] };
+    const parsed = JSON.parse(raw);
+    return {
+      jobs: Array.isArray(parsed.jobs) ? parsed.jobs : [],
+      companies: Array.isArray(parsed.companies) ? parsed.companies : [],
+    };
+  } catch {
+    return { jobs: [], companies: [] };
+  }
+}
+
+function saveHidden(jobs: string[], companies: string[]) {
+  try {
+    localStorage.setItem(HIDDEN_KEY, JSON.stringify({ jobs, companies }));
+  } catch {}
+}
+
 export default function Home() {
   const [stage, setStage] = useState<Stage>("idle");
   const [country, setCountry] = useState("au");
@@ -112,17 +147,62 @@ export default function Home() {
   const [hasSavedSession, setHasSavedSession] = useState(false);
   const [qStep, setQStep] = useState(0);
   const [qAnswers, setQAnswers] = useState<QAnswers>({});
+  const [workFilter, setWorkFilter] = useState<WorkFilter>("any");
+  const [onlySalary, setOnlySalary] = useState(false);
+  const [hiddenJobs, setHiddenJobs] = useState<string[]>([]);
+  const [hiddenCompanies, setHiddenCompanies] = useState<string[]>([]);
 
   const currency = getCurrency(country);
-  const sortedJobs = useMemo(
-    () => sortJobs(result?.jobs ?? [], sortKey),
-    [result?.jobs, sortKey]
-  );
 
-  // Check for a saved session on mount
+  // Apply hide list + work-type + salary filters, then sort
+  const visibleJobs = useMemo(() => {
+    const all = result?.jobs ?? [];
+    const hiddenJobSet = new Set(hiddenJobs);
+    const hiddenCompanySet = new Set(hiddenCompanies.map((c) => c.toLowerCase()));
+    const filtered = all.filter((job) => {
+      if (hiddenJobSet.has(job.id)) return false;
+      if (job.company && hiddenCompanySet.has(job.company.toLowerCase())) return false;
+      if (onlySalary && !hasSalary(job)) return false;
+      if (workFilter !== "any" && jobWorkType(job) !== workFilter) return false;
+      return true;
+    });
+    return sortJobs(filtered, sortKey);
+  }, [result?.jobs, sortKey, workFilter, onlySalary, hiddenJobs, hiddenCompanies]);
+
+  const sortedJobs = visibleJobs;
+  const hiddenCount = (result?.jobs ?? []).length - (result?.jobs ?? []).filter((job) => {
+    return !hiddenJobs.includes(job.id) && !(job.company && hiddenCompanies.map((c) => c.toLowerCase()).includes(job.company.toLowerCase()));
+  }).length;
+
+  function hideJob(id: string) {
+    setHiddenJobs((prev) => {
+      const next = prev.includes(id) ? prev : [...prev, id];
+      saveHidden(next, hiddenCompanies);
+      return next;
+    });
+  }
+
+  function hideCompany(company: string) {
+    setHiddenCompanies((prev) => {
+      const next = prev.includes(company) ? prev : [...prev, company];
+      saveHidden(hiddenJobs, next);
+      return next;
+    });
+  }
+
+  function clearHidden() {
+    setHiddenJobs([]);
+    setHiddenCompanies([]);
+    saveHidden([], []);
+  }
+
+  // Check for a saved session + hidden list on mount
   useEffect(() => {
     const saved = loadSession();
     if (saved) setHasSavedSession(true);
+    const hidden = loadHidden();
+    setHiddenJobs(hidden.jobs);
+    setHiddenCompanies(hidden.companies);
   }, []);
 
   // Cycle through progress steps during matching
@@ -560,10 +640,11 @@ export default function Home() {
               </div>
             )}
 
-            {/* Sort control */}
-            {sortedJobs.length > 1 && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs text-slate-400">Sort by:</span>
+            {/* Sort + filter controls */}
+            <div className="flex flex-col gap-3">
+              {/* Sort */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs text-slate-400 w-16">Sort by:</span>
                 {(["relevance", "salary", "newest"] as SortKey[]).map((key) => (
                   <button
                     key={key}
@@ -579,26 +660,94 @@ export default function Home() {
                   </button>
                 ))}
               </div>
-            )}
+
+              {/* Work type */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs text-slate-400 w-16">Work type:</span>
+                {([
+                  { key: "any", label: "Any" },
+                  { key: "remote", label: "🌏 Remote" },
+                  { key: "hybrid", label: "🏠 Hybrid" },
+                  { key: "onsite", label: "🏢 On-site" },
+                ] as { key: WorkFilter; label: string }[]).map(({ key, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => setWorkFilter(key)}
+                    className={[
+                      "text-xs px-3 py-1.5 rounded-full font-medium transition-colors",
+                      workFilter === key
+                        ? "bg-navy text-white"
+                        : "bg-slate-100 text-slate-500 hover:bg-slate-200",
+                    ].join(" ")}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Salary toggle */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs text-slate-400 w-16">Salary:</span>
+                <button
+                  onClick={() => setOnlySalary((v) => !v)}
+                  className={[
+                    "text-xs px-3 py-1.5 rounded-full font-medium transition-colors",
+                    onlySalary
+                      ? "bg-navy text-white"
+                      : "bg-slate-100 text-slate-500 hover:bg-slate-200",
+                  ].join(" ")}
+                >
+                  {onlySalary ? "✓ Only jobs with salary" : "Only jobs with salary"}
+                </button>
+              </div>
+
+              {/* Hidden notice */}
+              {hiddenCount > 0 && (
+                <div className="flex items-center gap-2 text-xs text-slate-400">
+                  <span>{hiddenCount} job{hiddenCount === 1 ? "" : "s"} hidden</span>
+                  <button
+                    onClick={clearHidden}
+                    className="text-teal hover:text-navy font-medium underline underline-offset-2"
+                  >
+                    Show all
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* Tiered job results */}
             {sortedJobs.length === 0 ? (
-              <div className="text-center py-16 text-slate-400">
-                <p className="text-4xl mb-3">🔍</p>
-                <p className="font-medium text-slate-600">No live matches right now.</p>
-                <p className="text-sm mt-1">Try adding keywords above or upload a different CV.</p>
-                <button
-                  onClick={reset}
-                  className="mt-5 inline-flex items-center px-5 py-2 bg-navy text-white rounded-lg text-sm font-semibold hover:bg-navy-dark transition-colors"
-                >
-                  Try again
-                </button>
-              </div>
+              (result.jobs.length > 0) ? (
+                /* Jobs exist but filters hid them all */
+                <div className="text-center py-16 text-slate-400">
+                  <p className="text-4xl mb-3">🫥</p>
+                  <p className="font-medium text-slate-600">No jobs match your filters.</p>
+                  <p className="text-sm mt-1">Try widening the work type or salary filter.</p>
+                  <button
+                    onClick={() => { setWorkFilter("any"); setOnlySalary(false); clearHidden(); }}
+                    className="mt-5 inline-flex items-center px-5 py-2 bg-navy text-white rounded-lg text-sm font-semibold hover:bg-navy-dark transition-colors"
+                  >
+                    Clear filters
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center py-16 text-slate-400">
+                  <p className="text-4xl mb-3">🔍</p>
+                  <p className="font-medium text-slate-600">No live matches right now.</p>
+                  <p className="text-sm mt-1">Try adding keywords above or upload a different CV.</p>
+                  <button
+                    onClick={reset}
+                    className="mt-5 inline-flex items-center px-5 py-2 bg-navy text-white rounded-lg text-sm font-semibold hover:bg-navy-dark transition-colors"
+                  >
+                    Try again
+                  </button>
+                </div>
+              )
             ) : sortKey !== "relevance" ? (
               /* Flat grid when sorted */
               <div className="grid sm:grid-cols-2 gap-4">
                 {sortedJobs.map((job, i) => (
-                  <JobCard key={job.id || i} job={job} currency={currency} />
+                  <JobCard key={job.id || i} job={job} currency={currency} onHideJob={hideJob} onHideCompany={hideCompany} />
                 ))}
               </div>
             ) : (
@@ -620,7 +769,7 @@ export default function Home() {
                       </div>
                       <div className="grid sm:grid-cols-2 gap-4">
                         {tier.map((job, i) => (
-                          <JobCard key={job.id || i} job={job} currency={currency} />
+                          <JobCard key={job.id || i} job={job} currency={currency} onHideJob={hideJob} onHideCompany={hideCompany} />
                         ))}
                       </div>
                     </div>
