@@ -427,9 +427,9 @@ export default function Home() {
             {/* How it works */}
             <div className="grid grid-cols-3 gap-6 pt-2 border-t border-slate-100">
               {[
-                { step: "1", title: "Drop your CV", desc: "Read in your browser. Email, phone & links stripped before anything leaves your device" },
-                { step: "2", title: "AI scans the market", desc: "Thousands of live roles matched to your skills" },
-                { step: "3", title: "Get your shortlist", desc: "Ranked results ready to apply to in seconds" },
+                { step: "1", title: "Drop it in", desc: "Scanned right in your browser — your name, number & email never leave your device" },
+                { step: "2", title: "We read the whole market", desc: "Thousands of live roles scanned in seconds, so you don't have to" },
+                { step: "3", title: "Skip the scrolling", desc: "A ranked shortlist you can actually apply to — not 900 tabs to sift through" },
               ].map((item) => (
                 <div key={item.step} className="text-center pt-4">
                   <div className="text-xs font-semibold text-teal uppercase tracking-widest mb-1">
