@@ -211,40 +211,47 @@ async function fetchJooble(
 ): Promise<NormalizedJob[]> {
   if (!process.env.JOOBLE_API_KEY) return [];
 
-  const keywords = [...jobTitles.slice(0, 2), ...skills.slice(0, 2)].filter(Boolean).join(" ");
   const locationSuffix = JOOBLE_LOCATION_SUFFIX[country] ?? "";
-  const location = where
-    ? `${where}, ${locationSuffix}`
-    : locationSuffix;
+  const location = where ? `${where}, ${locationSuffix}` : locationSuffix;
+  const skillsHint = skills.slice(0, 2).join(" ");
+  // One query per title (top 2) so synonyms get their own pass, not just the primary
+  const titles = jobTitles.slice(0, 2);
+  if (titles.length === 0) return [];
+
+  function normalise(j: JoobleJob): NormalizedJob {
+    const { min, max } = parseJoobleSalary(j.salary);
+    return {
+      id: `jooble-${j.id}`,
+      title: j.title,
+      company: j.company || "",
+      location: j.location || "",
+      salaryMin: min,
+      salaryMax: max,
+      description: j.snippet?.slice(0, 600) ?? "",
+      url: j.link,
+      created: j.updated,
+      source: "jooble",
+    };
+  }
 
   try {
-    const res = await fetch(
-      `https://jooble.org/api/${process.env.JOOBLE_API_KEY}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ keywords, location, page: 1 }),
-      }
+    const results = await Promise.all(
+      titles.map(async (title) => {
+        const keywords = [title, skillsHint].filter(Boolean).join(" ");
+        const res = await fetch(
+          `https://jooble.org/api/${process.env.JOOBLE_API_KEY}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ keywords, location, page: 1 }),
+          }
+        );
+        if (!res.ok) return [] as JoobleJob[];
+        const data = await res.json();
+        return (data.jobs ?? []).slice(0, 15) as JoobleJob[];
+      })
     );
-    if (!res.ok) return [];
-    const data = await res.json();
-    const jobs: JoobleJob[] = data.jobs ?? [];
-
-    return jobs.slice(0, 20).map((j) => {
-      const { min, max } = parseJoobleSalary(j.salary);
-      return {
-        id: `jooble-${j.id}`,
-        title: j.title,
-        company: j.company || "",
-        location: j.location || "",
-        salaryMin: min,
-        salaryMax: max,
-        description: j.snippet?.slice(0, 600) ?? "",
-        url: j.link,
-        created: j.updated,
-        source: "jooble",
-      };
-    });
+    return results.flat().map(normalise);
   } catch {
     return [];
   }
@@ -288,16 +295,20 @@ async function fetchBrave(
 
   const braveCountry = BRAVE_COUNTRY[country] ?? "AU";
   const jobSites = BRAVE_JOB_SITES[country] ?? "";
-  const primaryTitle = jobTitles[0] ?? "";
-  // Include first synonym title as OR alternative for broader coverage
-  const synonymClause = jobTitles[1] ? ` OR "${jobTitles[1]}"` : "";
+  // OR together up to 3 titles in a single query — Brave's free tier is rate
+  // limited to ~1 req/sec, so one broad query beats several parallel ones.
+  const titleClause = jobTitles
+    .slice(0, 3)
+    .filter(Boolean)
+    .map((t) => `"${t}"`)
+    .join(" OR ");
   const skillsHint = skills.slice(0, 2).join(" ");
-  const q = `("${primaryTitle}"${synonymClause}) ${skillsHint} jobs ${jobSites}`.trim();
+  const q = `(${titleClause}) ${skillsHint} jobs ${jobSites}`.trim();
 
   const params = new URLSearchParams({
     q,
     country: braveCountry,
-    count: "15",
+    count: "20",
     freshness: "pw",
     extra_snippets: "true",
   });
@@ -317,7 +328,7 @@ async function fetchBrave(
     const data = await res.json();
     const results: BraveWebResult[] = data.web?.results ?? [];
 
-    return results.slice(0, 15).map((r, i) => {
+    return results.slice(0, 20).map((r, i) => {
       const { title, company } = parseBraveTitle(r.title);
       return {
         id: `brave-${i}`,
@@ -407,8 +418,140 @@ async function fetchRemotive(
   }
 }
 
-// ─── Industries where Remotive (remote-tech-only) adds no signal ─────────────
-const REMOTIVE_SKIP_INDUSTRIES = new Set([
+// ─── Jobicy fetcher (free, no auth, broad remote roles incl. non-tech) ───────
+interface JobicyJob {
+  id: number | string;
+  url: string;
+  jobTitle: string;
+  companyName: string;
+  jobGeo: string;
+  jobExcerpt: string;
+  jobDescription: string;
+  pubDate: string;
+  salaryMin?: string | number;
+  salaryMax?: string | number;
+}
+
+// Country → Jobicy geo slug
+const JOBICY_GEO: Record<string, string> = {
+  au: "australia", gb: "united-kingdom", us: "usa", ca: "canada",
+  nz: "new-zealand", de: "germany", fr: "france", nl: "netherlands", sg: "singapore",
+};
+
+function toNum(v: unknown): number | undefined {
+  if (typeof v === "number" && v > 0) return v;
+  if (typeof v === "string") {
+    const n = parseInt(v.replace(/[^\d]/g, ""), 10);
+    return Number.isFinite(n) && n > 0 ? n : undefined;
+  }
+  return undefined;
+}
+
+async function fetchJobicy(
+  jobTitles: string[],
+  country: string,
+): Promise<NormalizedJob[]> {
+  const geo = JOBICY_GEO[country] ?? "";
+  const tag = jobTitles[0] ?? "";
+  const params = new URLSearchParams({ count: "50" });
+  if (geo) params.set("geo", geo);
+  if (tag) params.set("tag", tag);
+
+  try {
+    const res = await fetch(`https://jobicy.com/api/v2/remote-jobs?${params}`, {
+      headers: { Accept: "application/json" },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    const jobs: JobicyJob[] = data.jobs ?? [];
+
+    return jobs.slice(0, 20).map((j) => ({
+      id: `jobicy-${j.id}`,
+      title: j.jobTitle ?? "",
+      company: j.companyName ?? "",
+      location: j.jobGeo || "Remote",
+      salaryMin: toNum(j.salaryMin),
+      salaryMax: toNum(j.salaryMax),
+      description: (j.jobExcerpt || j.jobDescription || "").replace(/<[^>]*>/g, "").slice(0, 600),
+      url: j.url,
+      created: j.pubDate ?? new Date().toISOString(),
+      source: "jobicy",
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ─── Careerjet fetcher (broad global aggregator — needs free publisher key) ──
+// Dormant until CAREERJET_API_KEY is set; covers all countries AND all industries
+// (incl. trades/local roles), so it complements the remote-only sources.
+interface CareerjetJob {
+  title?: string;
+  company?: string;
+  locations?: string;
+  salary?: string;
+  salary_min?: number;
+  salary_max?: number;
+  description?: string;
+  url?: string;
+  date?: string;
+}
+
+const CAREERJET_LOCALE: Record<string, string> = {
+  au: "en_AU", gb: "en_GB", us: "en_US", ca: "en_CA", nz: "en_NZ",
+  de: "de_DE", fr: "fr_FR", nl: "nl_NL", sg: "en_SG",
+};
+
+async function fetchCareerjet(
+  jobTitles: string[],
+  skills: string[],
+  country: string,
+  where: string | undefined,
+  ip: string,
+): Promise<NormalizedJob[]> {
+  if (!process.env.CAREERJET_API_KEY) return [];
+
+  const keywords = [jobTitles[0], skills.slice(0, 2).join(" ")].filter(Boolean).join(" ");
+  const locale = CAREERJET_LOCALE[country] ?? "en_GB";
+  const auth = Buffer.from(`${process.env.CAREERJET_API_KEY}:`).toString("base64");
+
+  const params = new URLSearchParams({
+    keywords,
+    locale_code: locale,
+    page_size: "20",
+    sort: "relevance",
+    user_ip: ip && ip !== "unknown" ? ip : "8.8.8.8",
+    user_agent: "dropmycv.app/1.0",
+  });
+  if (where) params.set("location", where);
+
+  try {
+    const res = await fetch(`https://search.api.careerjet.net/v4/query?${params}`, {
+      headers: { Accept: "application/json", Authorization: `Basic ${auth}` },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    const jobs: CareerjetJob[] = data.jobs ?? [];
+
+    return jobs.slice(0, 20).map((j, i) => ({
+      id: `careerjet-${i}-${j.url ?? ""}`.slice(0, 80),
+      title: j.title ?? "",
+      company: j.company ?? "",
+      location: j.locations ?? "",
+      salaryMin: j.salary_min,
+      salaryMax: j.salary_max,
+      description: (j.description ?? "").replace(/<[^>]*>/g, "").slice(0, 600),
+      url: j.url ?? "",
+      created: j.date ?? new Date().toISOString(),
+      source: "careerjet",
+    }));
+  } catch {
+    return [];
+  }
+}
+
+// ─── Industries where remote-only sources (Remotive, Jobicy) add no signal ───
+const REMOTE_SKIP_INDUSTRIES = new Set([
   "trades", "construction", "healthcare", "retail", "hospitality",
   "transport", "logistics", "education", "manufacturing", "mining",
 ]);
@@ -692,18 +835,23 @@ ${cvText.slice(0, 6000)}`,
       ? [...profile.skills, ...extraKeywords.split(/\s+/).filter(Boolean)].slice(0, 15)
       : profile.skills;
 
-    // Skip Remotive for industries where remote-tech roles are irrelevant
-    const skipRemotive = REMOTIVE_SKIP_INDUSTRIES.has(profile.industry?.toLowerCase() ?? "");
+    // Skip remote-only sources for industries where remote roles are irrelevant
+    const skipRemote = REMOTE_SKIP_INDUSTRIES.has(profile.industry?.toLowerCase() ?? "");
 
-    const [adzunaJobs, joobleJobs, braveJobs, remotiveJobs] = await Promise.all([
+    const [adzunaJobs, joobleJobs, braveJobs, careerjetJobs, remotiveJobs, jobicyJobs] = await Promise.all([
       fetchAdzuna(expandedTitles, augmentedSkills, country, where),
       fetchJooble(expandedTitles, augmentedSkills, country, where),
       fetchBrave(expandedTitles, augmentedSkills, country),
-      skipRemotive ? Promise.resolve([]) : fetchRemotive(expandedTitles, augmentedSkills, country),
+      fetchCareerjet(expandedTitles, augmentedSkills, country, where, ip),
+      skipRemote ? Promise.resolve([]) : fetchRemotive(expandedTitles, augmentedSkills, country),
+      skipRemote ? Promise.resolve([]) : fetchJobicy(expandedTitles, country),
     ]);
 
-    // Merge and dedup — Adzuna first (structured), then Jooble, Brave, Remotive
-    const allJobs = dedupJobs([...adzunaJobs, ...joobleJobs, ...braveJobs, ...remotiveJobs]);
+    // Merge and dedup — structured sources first (Adzuna/Jooble/Careerjet), then web + remote
+    const allJobs = dedupJobs([
+      ...adzunaJobs, ...joobleJobs, ...careerjetJobs,
+      ...braveJobs, ...remotiveJobs, ...jobicyJobs,
+    ]);
 
     if (allJobs.length === 0) {
       return Response.json({ jobs: [], profile });
