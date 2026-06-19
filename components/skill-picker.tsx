@@ -2,7 +2,22 @@
 
 import { useEffect, useState } from "react";
 
-const SKILL_CATEGORIES = [
+interface SkillSubcategory {
+  id: string;
+  label: string;
+  icon: string;
+  skills: string[];
+}
+
+interface SkillCategoryDef {
+  id: string;
+  label: string;
+  icon: string;
+  skills?: string[];
+  subcategories?: SkillSubcategory[];
+}
+
+const SKILL_CATEGORIES: SkillCategoryDef[] = [
   {
     id: "technology",
     label: "Technology",
@@ -13,7 +28,38 @@ const SKILL_CATEGORIES = [
     id: "trades",
     label: "Trades",
     icon: "🔧",
-    skills: ["Electrician", "Plumber", "Carpenter", "Bricklayer", "Welder", "Painter", "Tiler", "HVAC Technician", "Concretor", "Plasterer"],
+    subcategories: [
+      {
+        id: "domestic",
+        label: "Domestic / Residential",
+        icon: "🏠",
+        skills: ["Residential Electrician", "Domestic Plumber", "Carpenter", "Painter & Decorator", "Wall & Floor Tiler", "Plasterer", "Bricklayer", "Concreter", "Kitchen Renovation", "Bathroom Renovation", "Landscape Gardener", "Handyman"],
+      },
+      {
+        id: "commercial",
+        label: "Commercial / Fit-Out",
+        icon: "🏢",
+        skills: ["Commercial Electrician", "Commercial Plumber", "Shop Fitter", "Commercial Painter", "Commercial Tiler", "Suspended Ceiling Installer", "Glazier", "Fire Protection Installer", "Commercial Flooring", "Partition Installer"],
+      },
+      {
+        id: "industrial",
+        label: "Industrial / Heavy",
+        icon: "🏭",
+        skills: ["Industrial Electrician", "Boilermaker", "Pipefitter", "Rigger", "Scaffolder", "Industrial Mechanic", "Instrumentation Technician", "Millwright", "Shutdown Maintenance", "Process Operator"],
+      },
+      {
+        id: "civil",
+        label: "Civil / Infrastructure",
+        icon: "🛣️",
+        skills: ["Civil Construction", "Road Worker", "Drainer & Sewerage", "Gas Fitter", "Cable Jointer", "Underground Services", "Water & Wastewater", "Traffic Controller", "Earthworks Operator", "Linesperson"],
+      },
+      {
+        id: "general",
+        label: "General / Multi-trade",
+        icon: "🔨",
+        skills: ["Welder", "HVAC Technician", "Refrigeration Mechanic", "General Maintenance", "Facilities Maintenance", "Estimator (Trades)", "Building Inspector", "Trade Assistant", "Safety & Compliance"],
+      },
+    ],
   },
   {
     id: "healthcare",
@@ -77,6 +123,11 @@ const SKILL_CATEGORIES = [
   },
 ];
 
+function getAllSkills(cat: SkillCategoryDef): string[] {
+  if (cat.skills) return cat.skills;
+  return cat.subcategories?.flatMap((s) => s.skills) ?? [];
+}
+
 interface SkillPickerProps {
   value: string;
   onChange: (v: string) => void;
@@ -84,6 +135,7 @@ interface SkillPickerProps {
 
 export function SkillPicker({ value, onChange }: SkillPickerProps) {
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState<string | null>(null);
   const [selectedSkills, setSelectedSkills] = useState<string[]>(() =>
     value ? value.split(",").map((s) => s.trim()).filter(Boolean) : []
   );
@@ -103,7 +155,29 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
     );
   }
 
+  function goBack() {
+    if (selectedSubcategory) {
+      setSelectedSubcategory(null);
+    } else {
+      setSelectedCategory(null);
+    }
+  }
+
   const activeCategory = SKILL_CATEGORIES.find((c) => c.id === selectedCategory);
+  const activeSubcategory = activeCategory?.subcategories?.find((s) => s.id === selectedSubcategory);
+
+  const skillChips: string[] = activeSubcategory
+    ? activeSubcategory.skills
+    : (activeCategory?.skills ?? []);
+
+  const isShowingSkills = selectedCategory && (activeCategory?.skills || selectedSubcategory);
+  const isShowingSubcategories = selectedCategory && activeCategory?.subcategories && !selectedSubcategory;
+
+  const breadcrumb = activeSubcategory
+    ? `${activeCategory?.icon} ${activeCategory?.label} › ${activeSubcategory.label}`
+    : activeCategory
+    ? `${activeCategory.icon} ${activeCategory.label}`
+    : null;
 
   return (
     <div className="space-y-4">
@@ -118,7 +192,7 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
               {skill}
               <button
                 onClick={() => setSelectedSkills((prev) => prev.filter((s) => s !== skill))}
-                className="ml-0.5 hover:text-indigo-900 font-bold leading-none"
+                className="ml-0.5 hover:text-navy-dark font-bold leading-none"
                 aria-label={`Remove ${skill}`}
               >
                 ×
@@ -128,47 +202,28 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
         </div>
       )}
 
-      {/* Category grid or skill chips */}
-      {selectedCategory ? (
-        <div className="space-y-3">
+      {/* Navigation header */}
+      {selectedCategory && (
+        <div className="flex items-center gap-2">
           <button
-            onClick={() => setSelectedCategory(null)}
+            onClick={goBack}
             className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
           >
-            ← All categories
+            ←
           </button>
-          <p className="text-sm font-semibold text-slate-700">
-            {activeCategory?.icon} {activeCategory?.label}
-          </p>
-          <div className="flex flex-wrap gap-2">
-            {activeCategory?.skills.map((skill) => {
-              const selected = selectedSkills.includes(skill);
-              return (
-                <button
-                  key={skill}
-                  onClick={() => toggleSkill(skill)}
-                  className={[
-                    "text-sm px-3 py-1.5 rounded-full border-2 font-medium transition-all",
-                    selected
-                      ? "border-teal bg-teal-light text-navy"
-                      : "border-slate-200 text-slate-600 hover:border-teal hover:bg-slate-50",
-                  ].join(" ")}
-                >
-                  {selected && <span className="mr-1">✓</span>}
-                  {skill}
-                </button>
-              );
-            })}
-          </div>
+          <p className="text-sm font-semibold text-slate-700">{breadcrumb}</p>
         </div>
-      ) : (
+      )}
+
+      {/* Category grid */}
+      {!selectedCategory && (
         <div className="grid grid-cols-2 gap-2">
           {SKILL_CATEGORIES.map((cat) => {
-            const selectedCount = cat.skills.filter((s) => selectedSkills.includes(s)).length;
+            const selectedCount = getAllSkills(cat).filter((s) => selectedSkills.includes(s)).length;
             return (
               <button
                 key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
+                onClick={() => { setSelectedCategory(cat.id); setSelectedSubcategory(null); }}
                 className="flex items-center gap-2 px-3 py-2.5 rounded-xl border-2 text-sm font-medium text-left transition-all border-slate-200 text-slate-600 hover:border-teal hover:bg-slate-50"
               >
                 <span className="text-base">{cat.icon}</span>
@@ -178,6 +233,55 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
                     {selectedCount}
                   </span>
                 )}
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Subcategory grid (Trades and any future nested categories) */}
+      {isShowingSubcategories && activeCategory.subcategories && (
+        <div className="grid grid-cols-1 gap-2">
+          {activeCategory.subcategories.map((sub) => {
+            const selectedCount = sub.skills.filter((s) => selectedSkills.includes(s)).length;
+            return (
+              <button
+                key={sub.id}
+                onClick={() => setSelectedSubcategory(sub.id)}
+                className="flex items-center gap-3 px-4 py-3 rounded-xl border-2 text-sm font-medium text-left transition-all border-slate-200 text-slate-600 hover:border-teal hover:bg-slate-50"
+              >
+                <span className="text-xl">{sub.icon}</span>
+                <span className="flex-1">{sub.label}</span>
+                {selectedCount > 0 && (
+                  <span className="text-xs bg-teal-light text-teal px-1.5 py-0.5 rounded-full font-semibold">
+                    {selectedCount}
+                  </span>
+                )}
+                <span className="text-slate-300 text-xs">→</span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      {/* Skill chips */}
+      {isShowingSkills && (
+        <div className="flex flex-wrap gap-2">
+          {skillChips.map((skill) => {
+            const selected = selectedSkills.includes(skill);
+            return (
+              <button
+                key={skill}
+                onClick={() => toggleSkill(skill)}
+                className={[
+                  "text-sm px-3 py-1.5 rounded-full border-2 font-medium transition-all",
+                  selected
+                    ? "border-teal bg-teal-light text-navy"
+                    : "border-slate-200 text-slate-600 hover:border-teal hover:bg-slate-50",
+                ].join(" ")}
+              >
+                {selected && <span className="mr-1">✓</span>}
+                {skill}
               </button>
             );
           })}
