@@ -64,6 +64,8 @@ interface NormalizedJob {
 interface CvProfile {
   jobTitles: string[];
   skills: string[];
+  industry: string;
+  yearsExperience: string;
   location: string;
   experienceLevel: string;
 }
@@ -380,12 +382,33 @@ async function fetchRemotive(
 }
 
 // ─── Dedup across all sources ────────────────────────────────────────────────
+const SENIORITY_WORDS = /\b(senior|junior|lead|principal|staff|associate|head of|vp|director of|manager of|graduate|entry.level)\b/g;
+const COMPANY_SUFFIXES = /\b(pty|ltd|limited|inc|llc|plc|co|corp|corporation|group)\b\.?/g;
+
+function normTitle(t: string) {
+  return t.toLowerCase().replace(SENIORITY_WORDS, "").replace(/[^\w\s]/g, "").replace(/\s+/g, " ").trim();
+}
+function normCompany(c: string) {
+  return c.toLowerCase().replace(COMPANY_SUFFIXES, "").replace(/[^\w\s]/g, "").replace(/\s+/g, " ").trim();
+}
+
 function dedupJobs(jobs: NormalizedJob[]): NormalizedJob[] {
-  const seen = new Set<string>();
+  const seenUrls = new Set<string>();
+  const seenPairs = new Set<string>();
+
   return jobs.filter((j) => {
-    const key = `${j.title}|${j.company}`.toLowerCase().replace(/\s+/g, " ").trim();
-    if (seen.has(key)) return false;
-    seen.add(key);
+    // URL-based dedup first (most reliable — same URL = same job)
+    try {
+      const u = new URL(j.url);
+      const urlKey = `${u.hostname}${u.pathname}`;
+      if (seenUrls.has(urlKey)) return false;
+      seenUrls.add(urlKey);
+    } catch {}
+
+    // Fuzzy title + company dedup
+    const pairKey = `${normTitle(j.title)}|${normCompany(j.company)}`;
+    if (seenPairs.has(pairKey)) return false;
+    seenPairs.add(pairKey);
     return true;
   });
 }
@@ -559,8 +582,10 @@ export async function POST(request: Request) {
           content: `Extract the following from this CV. Respond with JSON only — no markdown, no explanation.
 
 {
-  "jobTitles": ["primary job title", "1-2 alternatives"],
-  "skills": ["top 5 technical skills"],
+  "jobTitles": ["primary job title", "1-2 close alternatives"],
+  "skills": ["up to 10 skills — include technical skills, tools, domain knowledge, and certifications"],
+  "industry": "primary industry or sector (e.g. Healthcare, Finance, Technology, Construction)",
+  "yearsExperience": "estimated total years of work experience as a string e.g. '3 years', '10+ years'",
   "location": "city or region if mentioned, otherwise empty string",
   "experienceLevel": "junior|mid|senior|executive"
 }
@@ -589,6 +614,8 @@ ${cvText.slice(0, 6000)}`,
           .map((s: string) => sanitiseString(s, 50))
           .filter(Boolean)
           .slice(0, 10),
+        industry: sanitiseString(raw.industry, 100),
+        yearsExperience: sanitiseString(raw.yearsExperience, 50),
         location: sanitiseString(raw.location, 100),
         experienceLevel: validLevels.has(raw.experienceLevel) ? raw.experienceLevel : "mid",
       };
@@ -597,9 +624,34 @@ ${cvText.slice(0, 6000)}`,
       profile = {
         jobTitles: ["professional"],
         skills: [],
+        industry: "",
+        yearsExperience: "",
         location: "",
         experienceLevel: "mid",
       };
+    }
+
+    // Step 1b: expand job titles with synonyms
+    async function expandTitles(titles: string[]): Promise<string[]> {
+      if (titles.length === 0) return titles;
+      try {
+        const res = await client.messages.create({
+          model: "claude-haiku-4-5",
+          max_tokens: 150,
+          messages: [{
+            role: "user",
+            content: `List 3 common alternative job titles for "${titles[0]}" that employers actually use in job postings. Return a JSON array of strings only. e.g. ["Software Developer","Backend Engineer","Programmer"]`,
+          }],
+        });
+        const block = res.content[0];
+        const raw = block.type === "text" ? block.text : "[]";
+        const synonyms: unknown[] = JSON.parse(stripCodeFence(raw));
+        if (!Array.isArray(synonyms)) return titles;
+        const all = [...titles, ...synonyms.filter((s): s is string => typeof s === "string").map(s => sanitiseString(s, 100))];
+        return [...new Set(all.filter(Boolean))].slice(0, 5);
+      } catch {
+        return titles;
+      }
     }
 
     // Step 2: query all job sources in parallel
@@ -608,11 +660,13 @@ ${cvText.slice(0, 6000)}`,
       ? [...profile.skills, ...extraKeywords.split(/\s+/).filter(Boolean)].slice(0, 15)
       : profile.skills;
 
+    const expandedTitles = await expandTitles(profile.jobTitles);
+
     const [adzunaJobs, joobleJobs, braveJobs, remotiveJobs] = await Promise.all([
-      fetchAdzuna(profile.jobTitles, augmentedSkills, country, where),
-      fetchJooble(profile.jobTitles, augmentedSkills, country, where),
-      fetchBrave(profile.jobTitles, augmentedSkills, country),
-      fetchRemotive(profile.jobTitles, augmentedSkills, country),
+      fetchAdzuna(expandedTitles, augmentedSkills, country, where),
+      fetchJooble(expandedTitles, augmentedSkills, country, where),
+      fetchBrave(expandedTitles, augmentedSkills, country),
+      fetchRemotive(expandedTitles, augmentedSkills, country),
     ]);
 
     // Merge and dedup — Adzuna first (structured), then Jooble, Brave, Remotive
@@ -622,49 +676,70 @@ ${cvText.slice(0, 6000)}`,
       return Response.json({ jobs: [], profile });
     }
 
-    // Step 3: rank with Claude Haiku
+    // Step 3: rank with Claude Haiku using explicit rubric + match scores
     const snippets = allJobs.slice(0, 50).map((j, i) => ({
       i,
       title: j.title,
       company: j.company,
       location: j.location,
-      desc: j.description?.slice(0, 120),
+      desc: j.description?.slice(0, 250),
     }));
 
     const rankResponse = await client.messages.create({
       model: "claude-haiku-4-5",
-      max_tokens: 256,
+      max_tokens: 1500,
       messages: [
         {
           role: "user",
-          content: `Candidate: ${JSON.stringify(profile)}
+          content: `You are a job matching expert. Score each job for this candidate using the rubric below.
 
-Jobs: ${JSON.stringify(snippets)}
+Candidate:
+- Titles sought: ${profile.jobTitles.join(", ")}
+- Industry: ${profile.industry || "not specified"}
+- Experience: ${profile.yearsExperience || "unspecified"}, ${profile.experienceLevel} level
+- Skills: ${profile.skills.join(", ")}
 
-Return a JSON array of the indices of the 15 best-matching jobs, best first. e.g. [2,0,5,3,1,7,4,6,8,9,10,11,12,13,14]. JSON only.`,
+Scoring rubric (total 100 points):
+- Title alignment (30pts): how closely does the job title match what they're looking for?
+- Skills overlap (30pts): how many of their skills are relevant to this role?
+- Seniority fit (20pts): does the role suit their experience level?
+- Overall relevance (20pts): general fit considering industry and context
+
+Jobs:
+${JSON.stringify(snippets)}
+
+Return a JSON array of the top 15 matches only, sorted best first. Each entry must have:
+- "i": the job index number
+- "score": integer 0-100
+- "reason": one short sentence explaining the match (e.g. "Exact title match with 4/5 skills aligned")
+
+Example: [{"i":3,"score":94,"reason":"Exact title match, React and Node.js skills align well"},{"i":7,"score":81,"reason":"Similar role, 3 of 5 skills relevant"}]
+
+JSON only, no markdown.`,
         },
       ],
     });
 
     const rankBlock = rankResponse.content[0];
-    const rankRaw = rankBlock.type === "text" ? rankBlock.text : "";
+    const rankRaw = rankBlock.type === "text" ? rankBlock.text : "[]";
 
-    const defaultIndices = allJobs.slice(0, 15).map((_, i) => i);
-    let indices: number[];
+    interface RankEntry { i: number; score: number; reason: string; }
+    const defaultEntries: RankEntry[] = allJobs.slice(0, 15).map((_, i) => ({ i, score: 50, reason: "" }));
+    let rankEntries: RankEntry[];
     try {
       const parsed = JSON.parse(stripCodeFence(rankRaw));
-      indices = Array.isArray(parsed) ? parsed : defaultIndices;
+      rankEntries = Array.isArray(parsed) ? parsed : defaultEntries;
     } catch {
-      indices = defaultIndices;
+      rankEntries = defaultEntries;
     }
 
-    const validIndices = indices.filter(
-      (i) => typeof i === "number" && i >= 0 && i < Math.min(allJobs.length, 50)
-    );
-    const finalIndices = validIndices.length > 0 ? validIndices.slice(0, 15) : defaultIndices;
+    const validEntries = rankEntries
+      .filter((e) => typeof e.i === "number" && e.i >= 0 && e.i < Math.min(allJobs.length, 50))
+      .slice(0, 15);
+    const finalEntries = validEntries.length > 0 ? validEntries : defaultEntries;
 
-    const jobs = finalIndices
-      .map((i) => {
+    const jobs = finalEntries
+      .map(({ i, score, reason }) => {
         const j = allJobs[i];
         if (!isValidUrl(j.url)) return null;
         return {
@@ -677,6 +752,8 @@ Return a JSON array of the indices of the 15 best-matching jobs, best first. e.g
           description: sanitiseString(j.description, 300),
           url: j.url,
           created: j.created,
+          matchScore: typeof score === "number" ? Math.min(100, Math.max(0, score)) : undefined,
+          matchReason: sanitiseString(reason, 200) || undefined,
         };
       })
       .filter(Boolean);

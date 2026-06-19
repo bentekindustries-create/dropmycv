@@ -8,11 +8,15 @@ export interface JobMatch {
   description: string;
   url: string;
   created: string;
+  matchScore?: number;
+  matchReason?: string;
 }
 
 export interface CvProfile {
   jobTitles: string[];
   skills: string[];
+  industry: string;
+  yearsExperience: string;
   location: string;
   experienceLevel: string;
 }
