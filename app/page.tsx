@@ -663,6 +663,8 @@ export default function Home() {
         <a href="/terms" className="hover:text-slate-500 transition-colors">Terms</a>
         <span className="mx-2">·</span>
         <a href="mailto:hello@dropmycv.app" className="hover:text-slate-500 transition-colors">Contact us</a>
+        <span className="mx-2">·</span>
+        <a href="https://ko-fi.com/benjones42104" target="_blank" rel="noopener noreferrer" className="hover:text-slate-500 transition-colors">☕ Support this project</a>
       </footer>
     </div>
   );
