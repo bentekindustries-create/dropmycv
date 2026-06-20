@@ -67,6 +67,33 @@ const MATCHING_STEPS = [
   "Ranking your matches…",
 ];
 
+const FAQS = [
+  {
+    q: "Is it really free?",
+    a: "Yes — matching your CV to live jobs is completely free, with no account and no limit. The only paid extra is an optional AI review of your CV for a one-off A$9.",
+  },
+  {
+    q: "Is my CV safe? Do you store it?",
+    a: "Your CV is read inside your browser, and your name, email, phone number and links are stripped out before any text is sent for matching. Nothing is stored on our servers — every search is stateless. No account, no profile, no tracking.",
+  },
+  {
+    q: "How is this different from Indeed or Seek?",
+    a: "Instead of one board and 900 results to wade through, we search six live job sources at once and use AI to rank them against your actual skills — so you get a short, relevant shortlist with a match score and reason for each. And we never make you create an account or keep your data.",
+  },
+  {
+    q: "Do I need to sign up or create an account?",
+    a: "No. There's no sign-up, login, or password — ever. Drop your CV and you get matches in seconds.",
+  },
+  {
+    q: "What do I get for the A$9 CV review?",
+    a: "An instant expert review checked against the live roles you just matched to: an overall score, your strengths, the exact keywords those jobs want that your CV is missing, stronger rewrites of weak lines, and a prioritised action list. It's something a generic chatbot can't give you, because only we know which live jobs you're competing for.",
+  },
+  {
+    q: "Which countries does it work in?",
+    a: "Australia, the United Kingdom, the United States, Canada, New Zealand, Germany, France, the Netherlands and Singapore.",
+  },
+];
+
 const STORAGE_KEY = "dropmycv_last_session";
 const PENDING_REVIEW_KEY = "dropmycv_pending_review";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
@@ -431,11 +458,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Beta banner */}
-      <div className="bg-teal text-navy text-xs font-medium text-center py-1.5 tracking-wide">
-        🚧 Beta — we&apos;re still ironing out the kinks, go easy on us! 😄
-      </div>
-
       {/* Header */}
       <header className="bg-navy px-6 py-4">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
@@ -469,12 +491,13 @@ export default function Home() {
             {/* Hero */}
             <div className="text-center space-y-3">
               <h1 className="text-4xl font-serif font-bold text-navy tracking-tight leading-tight">
-                Finding your next job shouldn&apos;t feel like<br />
-                <span className="text-teal">a full-time job.</span>
+                Get matched to live jobs in seconds —<br />
+                <span className="text-teal">without handing over your data.</span>
               </h1>
-              <p className="text-slate-500 text-base max-w-lg mx-auto">
-                Drop your CV and get matched to thousands of live roles instantly.
-                No sign-up. No data stored.
+              <p className="text-slate-500 text-base max-w-xl mx-auto">
+                Drop your CV and our AI ranks thousands of live roles from Seek, LinkedIn, Indeed
+                &amp; more against your actual skills. No sign-up, no spam — and your name, email
+                &amp; phone never leave your browser.
               </p>
             </div>
 
@@ -578,6 +601,49 @@ export default function Home() {
                 </div>
               ))}
             </div>
+
+            {/* Proof strip — real, claimable sources */}
+            <div className="text-center pt-2">
+              <p className="text-xs uppercase tracking-widest text-slate-400 mb-3">
+                Six live job sources, one ranked shortlist
+              </p>
+              <div className="flex items-center justify-center gap-x-4 gap-y-2 flex-wrap text-sm font-medium text-slate-500">
+                {["Seek", "LinkedIn", "Indeed", "Greenhouse", "Lever", "Jora", "Careerjet"].map((s) => (
+                  <span key={s}>{s}</span>
+                ))}
+              </div>
+            </div>
+
+            {/* FAQ */}
+            <div className="pt-4 border-t border-slate-100">
+              <h2 className="text-lg font-serif font-bold text-navy text-center mb-5">
+                Common questions
+              </h2>
+              <div className="space-y-4 max-w-2xl mx-auto">
+                {FAQS.map((f) => (
+                  <div key={f.q}>
+                    <p className="text-sm font-semibold text-slate-700">{f.q}</p>
+                    <p className="text-sm text-slate-500 mt-1 leading-relaxed">{f.a}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* FAQ structured data for SEO */}
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "FAQPage",
+                  mainEntity: FAQS.map((f) => ({
+                    "@type": "Question",
+                    name: f.q,
+                    acceptedAnswer: { "@type": "Answer", text: f.a },
+                  })),
+                }),
+              }}
+            />
           </div>
         )}
 
@@ -1004,13 +1070,15 @@ export default function Home() {
         <span className="mx-3">·</span>
         dropmycv · No data stored · No account needed
         <span className="mx-3">·</span>
+        <a href="/cv-review" className="hover:text-white/80 transition-colors">AI CV review</a>
+        <span className="mx-2">·</span>
+        <a href="/private-job-search" className="hover:text-white/80 transition-colors">Private job search</a>
+        <span className="mx-2">·</span>
         <a href="/privacy" className="hover:text-white/80 transition-colors">Privacy</a>
         <span className="mx-2">·</span>
         <a href="/terms" className="hover:text-white/80 transition-colors">Terms</a>
         <span className="mx-2">·</span>
         <a href="mailto:info@dropmycv.app" className="hover:text-white/80 transition-colors">Contact us</a>
-        <span className="mx-2">·</span>
-        <a href="https://ko-fi.com/benjones42104" target="_blank" rel="noopener noreferrer" className="hover:text-white/80 transition-colors">☕ Support this project</a>
       </footer>
     </div>
   );
