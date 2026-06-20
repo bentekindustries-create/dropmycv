@@ -77,6 +77,20 @@ export function JobCard({ job, currency, onHideJob, onHideCompany }: JobCardProp
         <p className="text-xs text-slate-400 italic leading-snug">{job.matchReason}</p>
       )}
 
+      {job.matchedSkills && job.matchedSkills.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {job.matchedSkills.map((skill) => (
+            <span
+              key={skill}
+              className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full"
+            >
+              <span className="text-emerald-500">✓</span>
+              {skill}
+            </span>
+          ))}
+        </div>
+      )}
+
       <div className="flex flex-wrap items-center gap-2">
         <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${fresh.cls}`}>
           {fresh.label}

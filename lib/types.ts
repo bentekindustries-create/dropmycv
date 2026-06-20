@@ -10,6 +10,7 @@ export interface JobMatch {
   created: string;
   matchScore?: number;
   matchReason?: string;
+  matchedSkills?: string[];
 }
 
 export interface CvProfile {

@@ -339,30 +339,32 @@ interface BraveWebResult {
   page_age?: string;
 }
 
-async function fetchBrave(
+// Company ATS / careers platforms — jobs posted directly by employers, not boards
+const BRAVE_ATS_SITES =
+  "(site:boards.greenhouse.io OR site:job-boards.greenhouse.io OR site:jobs.lever.co OR site:jobs.ashbyhq.com OR site:apply.workable.com OR site:jobs.smartrecruiters.com OR site:myworkdayjobs.com)";
+
+async function braveSearch(
   jobTitles: string[],
   skills: string[],
   country: string,
+  siteClause: string,
+  idPrefix: string,
 ): Promise<NormalizedJob[]> {
-  if (!process.env.BRAVE_API_KEY) return [];
-
   const braveCountry = BRAVE_COUNTRY[country] ?? "AU";
-  const jobSites = BRAVE_JOB_SITES[country] ?? "";
-  // OR together up to 3 titles in a single query — Brave's free tier is rate
-  // limited to ~1 req/sec, so one broad query beats several parallel ones.
+  // OR together up to 3 titles in a single query.
   const titleClause = jobTitles
     .slice(0, 3)
     .filter(Boolean)
     .map((t) => `"${t}"`)
     .join(" OR ");
   const skillsHint = skills.slice(0, 2).join(" ");
-  const q = `(${titleClause}) ${skillsHint} jobs ${jobSites}`.trim();
+  const q = `(${titleClause}) ${skillsHint} jobs ${siteClause}`.trim();
 
   const params = new URLSearchParams({
     q,
     country: braveCountry,
     count: "20",
-    freshness: "pw",
+    freshness: "pm",
     extra_snippets: "true",
   });
 
@@ -386,23 +388,40 @@ async function fetchBrave(
       .map((r, i) => {
         const { title, company, location } = parseBraveTitle(r.title);
         return {
-          id: `brave-${i}`,
+          id: `${idPrefix}-${i}`,
           title,
           company,
           location,
           description: [r.description, ...(r.extra_snippets ?? [])].join(" ").slice(0, 600),
           url: r.url,
-          // Brave gives a real page age for many results; fall back to now
           created: r.page_age ?? new Date().toISOString(),
           source: "brave",
         };
       })
-      // Drop anything that still parsed to an empty/board-only/too-short title
       .filter((j) => j.title.length >= 4 && !BOARD_NAMES.test(j.title))
       .slice(0, 20);
   } catch {
     return [];
   }
+}
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function fetchBrave(
+  jobTitles: string[],
+  skills: string[],
+  country: string,
+): Promise<NormalizedJob[]> {
+  if (!process.env.BRAVE_API_KEY) return [];
+
+  // Query 1: job boards (Seek/LinkedIn/Indeed/etc, country-targeted)
+  const boards = await braveSearch(jobTitles, skills, country, BRAVE_JOB_SITES[country] ?? "", "brave");
+  // Respect the free tier's ~1 req/sec limit before the second query
+  await sleep(1100);
+  // Query 2: company ATS platforms — roles posted directly by employers
+  const ats = await braveSearch(jobTitles, skills, country, BRAVE_ATS_SITES, "brave-ats");
+
+  return [...boards, ...ats];
 }
 
 // ─── Remotive fetcher (free, no auth, remote roles) ─────────────────────────
@@ -644,6 +663,30 @@ function dedupJobs(jobs: NormalizedJob[]): NormalizedJob[] {
     seenPairs.add(pairKey);
     return true;
   });
+}
+
+// ─── Which of the candidate's skills actually appear in a job listing ────────
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function matchedSkills(job: NormalizedJob, skills: string[]): string[] {
+  const hay = `${job.title} ${job.description}`.toLowerCase();
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const skill of skills) {
+    const s = skill.trim();
+    if (s.length < 2) continue; // skip ambiguous single-char skills
+    const key = s.toLowerCase();
+    if (seen.has(key)) continue;
+    const re = new RegExp(`(^|[^a-z0-9])${escapeRegex(key)}([^a-z0-9]|$)`, "i");
+    if (re.test(hay)) {
+      seen.add(key);
+      out.push(s);
+    }
+    if (out.length >= 6) break;
+  }
+  return out;
 }
 
 // ─── Post-rank freshness decay ────────────────────────────────────────────────
@@ -1028,6 +1071,7 @@ JSON only, no markdown.`,
           created: j.created,
           matchScore: typeof score === "number" ? Math.min(100, Math.max(0, score)) : undefined,
           matchReason: sanitiseString(reason, 200) || undefined,
+          matchedSkills: matchedSkills(j, profile.skills).map((s) => sanitiseString(s, 50)),
         };
       })
       .filter(Boolean);
