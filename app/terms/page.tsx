@@ -37,9 +37,11 @@ export default function TermsOfService() {
           <section>
             <h2 className="text-lg font-semibold text-slate-800 mb-3">2. Description of service</h2>
             <p>
-              dropmycv is a free job matching tool. You upload a CV, the Service extracts your
-              skills and experience profile using AI, searches for relevant live job listings via
-              third-party APIs, and returns a ranked shortlist. The Service is provided for
+              dropmycv&apos;s core job-matching service is free. You upload a CV, the Service
+              extracts your skills and experience profile using AI, searches for relevant live job
+              listings via third-party APIs, and returns a ranked shortlist. We also offer an
+              optional paid add-on — an AI-generated review of your CV — described in{" "}
+              <strong>Payments and refunds</strong> below. The Service is provided for
               informational purposes only.
             </p>
             <p className="mt-3">
@@ -146,7 +148,35 @@ export default function TermsOfService() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-slate-800 mb-3">11. Third-party links</h2>
+            <h2 className="text-lg font-semibold text-slate-800 mb-3">11. Payments and refunds</h2>
+            <p>
+              The core job-matching service is free. We also offer an optional paid add-on: an
+              AI-generated review of your CV, for a one-off fee shown at checkout (currently A$9).
+            </p>
+            <p className="mt-3">
+              Payments are processed by <strong>Stripe</strong>. We never receive or store your
+              card details. The AI CV review is a digital service delivered to you immediately after
+              successful payment.
+            </p>
+            <p className="mt-3">
+              Because the review is generated and delivered instantly, we do not offer
+              change-of-mind refunds once it has been produced. This does not limit your rights
+              under the Australian Consumer Law: if the service is not delivered, or is not of
+              acceptable quality, you may be entitled to a remedy, which can include a refund. To
+              request a refund or report a problem, contact{" "}
+              <a href="mailto:info@dropmycv.app" className="text-teal hover:underline">
+                info@dropmycv.app
+              </a>
+              .
+            </p>
+            <p className="mt-3">
+              The AI CV review is informational guidance only. It does not guarantee interviews,
+              job offers, or any employment outcome.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-slate-800 mb-3">12. Third-party links</h2>
             <p>
               Job listings link to third-party websites. dropmycv has no control over, and
               accepts no responsibility for, the content, privacy practices, or terms of those
@@ -155,7 +185,7 @@ export default function TermsOfService() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-slate-800 mb-3">12. Changes to the Service</h2>
+            <h2 className="text-lg font-semibold text-slate-800 mb-3">13. Changes to the Service</h2>
             <p>
               dropmycv reserves the right to modify, suspend, or discontinue the Service at any
               time without notice. We may also update these Terms from time to time. The
@@ -166,7 +196,7 @@ export default function TermsOfService() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-slate-800 mb-3">13. Governing law</h2>
+            <h2 className="text-lg font-semibold text-slate-800 mb-3">14. Governing law</h2>
             <p>
               These Terms are governed by the laws of Queensland, Australia. Any disputes
               arising from these Terms or your use of dropmycv will be subject to the exclusive
@@ -175,11 +205,11 @@ export default function TermsOfService() {
           </section>
 
           <section>
-            <h2 className="text-lg font-semibold text-slate-800 mb-3">14. Contact</h2>
+            <h2 className="text-lg font-semibold text-slate-800 mb-3">15. Contact</h2>
             <p>
               For questions about these Terms, contact us at{" "}
-              <a href="mailto:legal@dropmycv.app" className="text-teal hover:underline">
-                legal@dropmycv.app
+              <a href="mailto:info@dropmycv.app" className="text-teal hover:underline">
+                info@dropmycv.app
               </a>
             </p>
           </section>

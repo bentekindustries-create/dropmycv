@@ -101,8 +101,9 @@ export default function PrivacyPolicy() {
               <div className="bg-slate-50 rounded-lg p-4">
                 <p className="font-medium text-slate-700">Anthropic (United States)</p>
                 <p className="text-sm mt-1">
-                  Your CV text is sent to Anthropic&apos;s API to extract your skills profile and
-                  rank job results. Under Anthropic&apos;s API terms, inputs submitted via the API
+                  Your CV text is sent to Anthropic&apos;s API to extract your skills profile, rank
+                  job results, and — if you purchase an AI CV review — generate that review. Under
+                  Anthropic&apos;s API terms, inputs submitted via the API
                   are not used to train its models, and Anthropic offers data-processing terms for
                   international transfers. These are Anthropic&apos;s terms rather than commitments
                   dropmycv can guarantee on Anthropic&apos;s behalf; please refer to Anthropic&apos;s
@@ -151,6 +152,18 @@ export default function PrivacyPolicy() {
                   anonymous visitor counts. See{" "}
                   <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">
                     Vercel&apos;s Privacy Policy
+                  </a>.
+                </p>
+              </div>
+              <div className="bg-slate-50 rounded-lg p-4">
+                <p className="font-medium text-slate-700">Stripe (United States / Ireland)</p>
+                <p className="text-sm mt-1">
+                  If you purchase the optional AI CV review, your payment is processed by Stripe on
+                  Stripe&apos;s own checkout page. <strong>dropmycv never receives or stores your
+                  card details</strong> — they are handled entirely by Stripe. We only learn whether
+                  a payment succeeded. See{" "}
+                  <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">
+                    Stripe&apos;s Privacy Policy
                   </a>.
                 </p>
               </div>
