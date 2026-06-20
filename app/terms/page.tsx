@@ -8,10 +8,10 @@ export const metadata: Metadata = {
 export default function TermsOfService() {
   return (
     <div className="min-h-screen bg-white">
-      <header className="border-b border-slate-100 px-6 py-4">
+      <header className="bg-navy px-6 py-4">
         <div className="max-w-3xl mx-auto">
           <Link href="/" className="text-2xl font-extrabold tracking-tight transition-colors group">
-            <span className="text-indigo-600">drop</span><span className="text-slate-800 group-hover:text-indigo-600">mycv</span><span className="text-indigo-600">.app</span>
+            <span className="text-teal">drop</span><span className="text-white group-hover:text-teal">mycv</span><span className="text-teal">.app</span>
           </Link>
         </div>
       </header>
@@ -90,7 +90,7 @@ export default function TermsOfService() {
             <h2 className="text-lg font-semibold text-slate-800 mb-3">6. Privacy</h2>
             <p>
               Our handling of your information is described in our{" "}
-              <Link href="/privacy" className="text-indigo-600 hover:underline">
+              <Link href="/privacy" className="text-teal hover:underline">
                 Privacy Policy
               </Link>
               . In short, we do not store the information you submit. Your CV is read locally
@@ -178,7 +178,7 @@ export default function TermsOfService() {
             <h2 className="text-lg font-semibold text-slate-800 mb-3">14. Contact</h2>
             <p>
               For questions about these Terms, contact us at{" "}
-              <a href="mailto:legal@dropmycv.app" className="text-indigo-600 hover:underline">
+              <a href="mailto:legal@dropmycv.app" className="text-teal hover:underline">
                 legal@dropmycv.app
               </a>
             </p>
@@ -187,10 +187,10 @@ export default function TermsOfService() {
         </div>
       </main>
 
-      <footer className="border-t border-slate-100 py-5 text-center text-xs text-slate-300 mt-12">
-        <Link href="/" className="hover:text-slate-500 transition-colors">← Back to dropmycv</Link>
+      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-12">
+        <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
-        <Link href="/privacy" className="hover:text-slate-500 transition-colors">Privacy Policy</Link>
+        <Link href="/privacy" className="hover:text-white/80 transition-colors">Privacy Policy</Link>
       </footer>
     </div>
   );
