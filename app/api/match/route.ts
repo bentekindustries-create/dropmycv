@@ -87,14 +87,14 @@ const BRAVE_COUNTRY: Record<string, string> = {
 // ─── Country → targeted job board sites for Brave ────────────────────────────
 const BRAVE_JOB_SITES: Record<string, string> = {
   au: "(site:seek.com.au OR site:linkedin.com/jobs OR site:indeed.com.au OR site:au.jora.com)",
-  gb: "(site:reed.co.uk OR site:totaljobs.com OR site:linkedin.com/jobs OR site:indeed.co.uk)",
-  us: "(site:linkedin.com/jobs OR site:indeed.com OR site:glassdoor.com OR site:wellfound.com)",
-  ca: "(site:linkedin.com/jobs OR site:indeed.ca OR site:workopolis.com)",
-  nz: "(site:trademe.co.nz/jobs OR site:linkedin.com/jobs OR site:seek.co.nz)",
+  gb: "(site:reed.co.uk OR site:totaljobs.com OR site:linkedin.com/jobs OR site:indeed.co.uk OR site:uk.jora.com)",
+  us: "(site:linkedin.com/jobs OR site:indeed.com OR site:glassdoor.com OR site:wellfound.com OR site:jora.com)",
+  ca: "(site:linkedin.com/jobs OR site:indeed.ca OR site:workopolis.com OR site:ca.jora.com)",
+  nz: "(site:trademe.co.nz/jobs OR site:linkedin.com/jobs OR site:seek.co.nz OR site:nz.jora.com)",
   de: "(site:linkedin.com/jobs OR site:xing.com OR site:stepstone.de)",
   fr: "(site:linkedin.com/jobs OR site:indeed.fr OR site:pole-emploi.fr)",
   nl: "(site:linkedin.com/jobs OR site:indeed.nl OR site:nationale-vacaturebank.nl)",
-  sg: "(site:linkedin.com/jobs OR site:jobstreet.com.sg OR site:indeed.com.sg)",
+  sg: "(site:linkedin.com/jobs OR site:jobstreet.com.sg OR site:indeed.com.sg OR site:sg.jora.com)",
 };
 
 // ─── Country → Jooble location suffix ────────────────────────────────────────
