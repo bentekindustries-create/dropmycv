@@ -174,6 +174,15 @@ export default function Home() {
     return !hiddenJobs.includes(job.id) && !(job.company && hiddenCompanies.map((c) => c.toLowerCase()).includes(job.company.toLowerCase()));
   }).length;
 
+  // Company-direct (ATS) roles, hide-list filtered — shown in their own section
+  const visibleDirectJobs = useMemo(() => {
+    const hiddenJobSet = new Set(hiddenJobs);
+    const hiddenCompanySet = new Set(hiddenCompanies.map((c) => c.toLowerCase()));
+    return (result?.directJobs ?? []).filter(
+      (job) => !hiddenJobSet.has(job.id) && !(job.company && hiddenCompanySet.has(job.company.toLowerCase()))
+    );
+  }, [result?.directJobs, hiddenJobs, hiddenCompanies]);
+
   function hideJob(id: string) {
     setHiddenJobs((prev) => {
       const next = prev.includes(id) ? prev : [...prev, id];
@@ -780,6 +789,24 @@ export default function Home() {
                     </div>
                   );
                 })}
+              </div>
+            )}
+
+            {/* Straight from the employer — company-direct ATS roles */}
+            {visibleDirectJobs.length > 0 && (
+              <div className="pt-4 border-t border-slate-100">
+                <div className="flex items-center gap-2 mb-1">
+                  <span>🏢</span>
+                  <h3 className="text-sm font-semibold text-navy">Straight from the employer</h3>
+                </div>
+                <p className="text-xs text-slate-400 mb-4">
+                  Posted directly on company career pages — often the freshest, most genuine listings.
+                </p>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {visibleDirectJobs.map((job, i) => (
+                    <JobCard key={job.id || i} job={job} currency={currency} onHideJob={hideJob} onHideCompany={hideCompany} />
+                  ))}
+                </div>
               </div>
             )}
 

@@ -24,5 +24,6 @@ export interface CvProfile {
 
 export interface MatchResult {
   jobs: JobMatch[];
+  directJobs?: JobMatch[];
   profile: CvProfile;
 }

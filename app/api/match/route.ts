@@ -1079,7 +1079,30 @@ JSON only, no markdown.`,
       })
       .filter(Boolean);
 
-    return Response.json({ jobs, profile, ...(debug ? { _debug: sourceCounts } : {}) });
+    // "Straight from the employer" — a few company-direct (ATS) roles with real
+    // skill overlap, deduped against the main ranked list. These rarely out-rank
+    // clean local listings, so we surface them separately.
+    const mainUrls = new Set(finalEntries.map((e) => allJobs[e.i]?.url).filter(Boolean));
+    const directJobs = allJobs
+      .filter((j) => j.id.startsWith("brave-ats") && isValidUrl(j.url) && !mainUrls.has(j.url))
+      .map((j) => ({ j, ms: matchedSkills(j, profile.skills) }))
+      .filter((x) => x.ms.length >= 1 && x.j.title.length >= 4)
+      .sort((a, b) => b.ms.length - a.ms.length)
+      .slice(0, 3)
+      .map(({ j, ms }) => ({
+        id: j.id,
+        title: sanitiseString(j.title, 200),
+        company: sanitiseString(j.company, 200),
+        location: sanitiseString(j.location, 200),
+        salaryMin: j.salaryMin,
+        salaryMax: j.salaryMax,
+        description: sanitiseString(j.description, 400),
+        url: j.url,
+        created: j.created,
+        matchedSkills: ms.map((s) => sanitiseString(s, 50)),
+      }));
+
+    return Response.json({ jobs, directJobs, profile, ...(debug ? { _debug: sourceCounts } : {}) });
   } catch (err) {
     console.error("[match] error:", err);
     return Response.json(
