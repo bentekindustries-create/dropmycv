@@ -349,6 +349,7 @@ async function braveSearch(
   country: string,
   siteClause: string,
   idPrefix: string,
+  locHint: string = "",
 ): Promise<NormalizedJob[]> {
   const braveCountry = BRAVE_COUNTRY[country] ?? "AU";
   // OR together up to 3 titles in a single query.
@@ -358,7 +359,7 @@ async function braveSearch(
     .map((t) => `"${t}"`)
     .join(" OR ");
   const skillsHint = skills.slice(0, 2).join(" ");
-  const q = `(${titleClause}) ${skillsHint} jobs ${siteClause}`.trim();
+  const q = `(${titleClause}) ${skillsHint} jobs ${locHint} ${siteClause}`.replace(/\s+/g, " ").trim();
 
   const params = new URLSearchParams({
     q,
@@ -414,12 +415,14 @@ async function fetchBrave(
 ): Promise<NormalizedJob[]> {
   if (!process.env.BRAVE_API_KEY) return [];
 
-  // Query 1: job boards (Seek/LinkedIn/Indeed/etc, country-targeted)
+  // Query 1: job boards (Seek/LinkedIn/Indeed/etc) — already country-targeted via site:
   const boards = await braveSearch(jobTitles, skills, country, BRAVE_JOB_SITES[country] ?? "", "brave");
   // Respect the free tier's ~1 req/sec limit before the second query
   await sleep(1100);
-  // Query 2: company ATS platforms — roles posted directly by employers
-  const ats = await braveSearch(jobTitles, skills, country, BRAVE_ATS_SITES, "brave-ats");
+  // Query 2: company ATS platforms (global) — bias toward the user's country by
+  // adding the country name, so we surface local company-direct roles, not US-only ones
+  const locHint = JOOBLE_LOCATION_SUFFIX[country] ?? "";
+  const ats = await braveSearch(jobTitles, skills, country, BRAVE_ATS_SITES, "brave-ats", locHint);
 
   return [...boards, ...ats];
 }
