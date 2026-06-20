@@ -68,6 +68,7 @@ const MATCHING_STEPS = [
 ];
 
 const STORAGE_KEY = "dropmycv_last_session";
+const PENDING_REVIEW_KEY = "dropmycv_pending_review";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
 function saveSession(result: MatchResult, fileName: string, country: string, location: string) {
@@ -155,6 +156,7 @@ export default function Home() {
   const [reviewStage, setReviewStage] = useState<"idle" | "loading" | "done" | "error">("idle");
   const [review, setReview] = useState<CvReview | null>(null);
   const [reviewError, setReviewError] = useState("");
+  const [paidSessionId, setPaidSessionId] = useState("");
 
   const currency = getCurrency(country);
 
@@ -209,13 +211,56 @@ export default function Home() {
     saveHidden([], []);
   }
 
-  // Check for a saved session + hidden list on mount
+  // On mount: load hidden list, handle a returning Stripe checkout, or flag a saved session
   useEffect(() => {
-    const saved = loadSession();
-    if (saved) setHasSavedSession(true);
     const hidden = loadHidden();
     setHiddenJobs(hidden.jobs);
     setHiddenCompanies(hidden.companies);
+
+    const params = new URLSearchParams(window.location.search);
+    const cvReview = params.get("cv_review");
+
+    function restoreResults() {
+      const saved = loadSession();
+      if (saved) {
+        setResult(saved.result);
+        setFileName(saved.fileName);
+        setCountry(saved.country);
+        setLocation(saved.location);
+        setStage("results");
+      }
+      return saved;
+    }
+
+    if (cvReview === "success") {
+      const sessionId = params.get("session_id") || "";
+      restoreResults();
+      let pending: { cvText: string; targetRole: string } | null = null;
+      try {
+        const raw = sessionStorage.getItem(PENDING_REVIEW_KEY);
+        if (raw) pending = JSON.parse(raw);
+      } catch {}
+      sessionStorage.removeItem(PENDING_REVIEW_KEY);
+      window.history.replaceState({}, "", "/");
+      if (pending?.cvText && sessionId) {
+        setLastCvText(pending.cvText);
+        setPaidSessionId(sessionId);
+        runPaidReview(pending.cvText, pending.targetRole, sessionId);
+      } else {
+        setReviewError("We couldn't find your CV to review. Please re-upload and try again.");
+        setReviewStage("error");
+      }
+      return;
+    }
+
+    if (cvReview === "cancel") {
+      window.history.replaceState({}, "", "/");
+      restoreResults();
+      return;
+    }
+
+    const saved = loadSession();
+    if (saved) setHasSavedSession(true);
   }, []);
 
   // Cycle through progress steps during matching
@@ -288,15 +333,41 @@ export default function Home() {
     runMatch(lastCvText, location || undefined, keywords || undefined);
   }
 
-  async function getReview() {
+  async function startCheckout() {
     if (!lastCvText || reviewStage === "loading") return;
+    try {
+      // Stash the CV in the browser so it survives the Stripe redirect (nothing server-side)
+      sessionStorage.setItem(
+        PENDING_REVIEW_KEY,
+        JSON.stringify({ cvText: lastCvText, targetRole: result?.profile.jobTitles[0] ?? "" })
+      );
+      const res = await fetch("/api/checkout", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || "Could not start checkout.");
+      window.location.href = data.url;
+    } catch (err) {
+      setReviewError(err instanceof Error ? err.message : "Could not start checkout.");
+      setReviewStage("error");
+    }
+  }
+
+  function retryReview() {
+    // If payment already succeeded, re-run generation (no new charge); otherwise start checkout
+    if (paidSessionId) {
+      runPaidReview(lastCvText, result?.profile.jobTitles[0] ?? "", paidSessionId);
+    } else {
+      startCheckout();
+    }
+  }
+
+  async function runPaidReview(cvText: string, targetRole: string, sessionId: string) {
     setReviewStage("loading");
     setReviewError("");
     try {
       const res = await fetch("/api/cv-review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cvText: lastCvText, targetRole: result?.profile.jobTitles[0] }),
+        body: JSON.stringify({ cvText, targetRole, sessionId }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Could not generate a review.");
@@ -337,6 +408,7 @@ export default function Home() {
     setReviewStage("idle");
     setReview(null);
     setReviewError("");
+    setPaidSessionId("");
   }
 
   return (
@@ -632,13 +704,13 @@ export default function Home() {
                   <div className="flex items-center justify-between gap-3 rounded-xl border border-[#c8ecea] bg-teal-light/40 px-4 py-3 flex-wrap">
                     <p className="text-sm text-navy">
                       <span className="font-semibold">✨ Want to land more of these?</span> Get an
-                      instant AI review of your CV — strengths, gaps & rewrites.
+                      instant AI review of your CV — strengths, gaps, ATS keywords &amp; rewrites.
                     </p>
                     <button
-                      onClick={getReview}
+                      onClick={startCheckout}
                       className="text-sm px-4 py-2 rounded-lg bg-navy text-white font-semibold hover:bg-navy-dark transition-colors shrink-0"
                     >
-                      Review my CV
+                      Review my CV — A$9
                     </button>
                   </div>
                 )}
@@ -651,7 +723,7 @@ export default function Home() {
                 {reviewStage === "error" && (
                   <div className="flex items-center justify-between gap-3 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3">
                     <p className="text-sm text-rose-700">{reviewError}</p>
-                    <button onClick={getReview} className="text-sm font-semibold text-rose-700 underline">
+                    <button onClick={retryReview} className="text-sm font-semibold text-rose-700 underline">
                       Try again
                     </button>
                   </div>

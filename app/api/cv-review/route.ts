@@ -1,6 +1,19 @@
 import Anthropic from "@anthropic-ai/sdk";
+import Stripe from "stripe";
 
 export const runtime = "nodejs";
+
+// Verify the Stripe Checkout session was actually paid before generating.
+async function isPaid(sessionId: string): Promise<boolean> {
+  if (!process.env.STRIPE_SECRET_KEY) return false;
+  try {
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    return session.payment_status === "paid" && session.amount_total === 900;
+  } catch {
+    return false;
+  }
+}
 
 // ─── Rate limiting (tighter than matching — this calls Opus) ─────────────────
 const WINDOW_MS = 60_000;
@@ -71,15 +84,23 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { cvText, targetRole: rawRole } = body as { cvText?: string; targetRole?: string };
+    const { cvText, targetRole: rawRole, sessionId: rawSessionId } = body as {
+      cvText?: string;
+      targetRole?: string;
+      sessionId?: string;
+    };
     const targetRole = sanitiseString(rawRole, 100);
+    const sessionId = sanitiseString(rawSessionId, 120);
 
     if (!cvText || typeof cvText !== "string" || cvText.trim().length < 50) {
       return Response.json({ error: "CV text too short or missing." }, { status: 400 });
     }
 
-    // NOTE: payment gating (Stripe) will wrap this once keys are configured.
+    // Payment gate: require a paid Stripe Checkout session.
     // The CV text is already PII-stripped client-side; nothing is stored.
+    if (!sessionId || !(await isPaid(sessionId))) {
+      return Response.json({ error: "Payment required." }, { status: 402 });
+    }
 
     if (!process.env.ANTHROPIC_API_KEY) {
       return Response.json({ error: "Server is missing API credentials." }, { status: 500 });
