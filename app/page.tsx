@@ -1074,6 +1074,8 @@ export default function Home() {
         <span className="mx-2">·</span>
         <a href="/private-job-search" className="hover:text-white/80 transition-colors">Private job search</a>
         <span className="mx-2">·</span>
+        <a href="/compare/dropmycv-vs-job-boards" className="hover:text-white/80 transition-colors">vs job boards</a>
+        <span className="mx-2">·</span>
         <a href="/privacy" className="hover:text-white/80 transition-colors">Privacy</a>
         <span className="mx-2">·</span>
         <a href="/terms" className="hover:text-white/80 transition-colors">Terms</a>

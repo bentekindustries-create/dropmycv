@@ -1,5 +1,5 @@
-// Curated roles × cities for the SEO landing-page seed set.
-// The page itself parses any slug, so this list just drives pre-render + sitemap.
+// Curated roles × locations for the SEO landing-page seed set.
+// The page parses any slug, so this list drives the sitemap (and optional pre-render).
 
 export const LANDING_ROLES = [
   "Software Engineer",
@@ -14,16 +14,51 @@ export const LANDING_ROLES = [
   "Customer Service",
   "Business Development Manager",
   "Graphic Designer",
+  "Mechanical Engineer",
+  "Financial Analyst",
+  "Human Resources Manager",
+  "Operations Manager",
+  "Plumber",
+  "Teacher",
 ];
 
-export const LANDING_CITIES = [
-  "Sydney",
-  "Melbourne",
-  "Brisbane",
-  "Perth",
-  "Adelaide",
-  "Canberra",
+export interface LandingLocation {
+  city: string;
+  country: string; // Adzuna country code
+  currency: string; // display symbol
+}
+
+export const LANDING_LOCATIONS: LandingLocation[] = [
+  // Australia
+  { city: "Sydney", country: "au", currency: "$" },
+  { city: "Melbourne", country: "au", currency: "$" },
+  { city: "Brisbane", country: "au", currency: "$" },
+  { city: "Perth", country: "au", currency: "$" },
+  { city: "Adelaide", country: "au", currency: "$" },
+  { city: "Canberra", country: "au", currency: "$" },
+  { city: "Gold Coast", country: "au", currency: "$" },
+  { city: "Newcastle", country: "au", currency: "$" },
+  // United Kingdom
+  { city: "London", country: "gb", currency: "£" },
+  { city: "Manchester", country: "gb", currency: "£" },
+  { city: "Birmingham", country: "gb", currency: "£" },
+  { city: "Edinburgh", country: "gb", currency: "£" },
+  { city: "Glasgow", country: "gb", currency: "£" },
+  // New Zealand
+  { city: "Auckland", country: "nz", currency: "$" },
+  { city: "Wellington", country: "nz", currency: "$" },
+  { city: "Christchurch", country: "nz", currency: "$" },
+  // Canada
+  { city: "Toronto", country: "ca", currency: "$" },
+  { city: "Vancouver", country: "ca", currency: "$" },
 ];
+
+const LOC_BY_CITY = new Map(LANDING_LOCATIONS.map((l) => [l.city.toLowerCase(), l]));
+
+export function locForCity(city: string): { country: string; currency: string } {
+  const hit = LOC_BY_CITY.get(city.toLowerCase());
+  return hit ? { country: hit.country, currency: hit.currency } : { country: "au", currency: "$" };
+}
 
 export function slugify(s: string): string {
   return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
@@ -54,8 +89,8 @@ export function landingSlug(role: string, city: string): string {
 export function allLandingSlugs(): string[] {
   const out: string[] = [];
   for (const role of LANDING_ROLES) {
-    for (const city of LANDING_CITIES) {
-      out.push(landingSlug(role, city));
+    for (const loc of LANDING_LOCATIONS) {
+      out.push(landingSlug(role, loc.city));
     }
   }
   return out;

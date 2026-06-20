@@ -5,7 +5,7 @@ const SITE_URL = "https://www.dropmycv.app";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  const staticRoutes = ["", "/cv-review", "/private-job-search", "/privacy", "/terms"].map((path) => ({
+  const staticRoutes = ["", "/cv-review", "/private-job-search", "/compare/dropmycv-vs-job-boards", "/privacy", "/terms"].map((path) => ({
     url: `${SITE_URL}${path}`,
     lastModified: now,
     changeFrequency: (path === "" ? "daily" : "monthly") as "daily" | "monthly",

@@ -1,13 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { parseSlug, allLandingSlugs } from "@/lib/landing-data";
+import { parseSlug, locForCity } from "@/lib/landing-data";
 import { searchLandingJobs } from "@/lib/landing-jobs";
 
 export const revalidate = 86400; // refresh live job data daily
 
+// Generate on-demand on first request and cache (ISR). Keeps builds fast and
+// avoids hammering the job API at build time; the sitemap lists all slugs so
+// crawlers still discover and trigger them.
+export const dynamicParams = true;
 export function generateStaticParams() {
-  return allLandingSlugs().map((slug) => ({ slug }));
+  return [];
 }
 
 export async function generateMetadata({
@@ -26,9 +30,9 @@ export async function generateMetadata({
   };
 }
 
-function fmtSalary(min?: number, max?: number): string {
+function fmtSalary(cur: string, min?: number, max?: number): string {
   if (!min && !max) return "";
-  const f = (n: number) => (n >= 1000 ? `$${Math.round(n / 1000)}k` : `$${n}`);
+  const f = (n: number) => (n >= 1000 ? `${cur}${Math.round(n / 1000)}k` : `${cur}${n}`);
   if (min && max) return `${f(min)} – ${f(max)}`;
   if (min) return `${f(min)}+`;
   return `Up to ${f(max!)}`;
@@ -43,8 +47,9 @@ export default async function JobsLanding({
   const parsed = parseSlug(slug);
   if (!parsed) notFound();
   const { role, city } = parsed;
+  const { country, currency } = locForCity(city);
 
-  const { jobs, total } = await searchLandingJobs(role, city);
+  const { jobs, total } = await searchLandingJobs(role, city, country);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -91,7 +96,7 @@ export default async function JobsLanding({
             </h2>
             <div className="space-y-3">
               {jobs.map((j) => {
-                const salary = fmtSalary(j.salaryMin, j.salaryMax);
+                const salary = fmtSalary(currency, j.salaryMin, j.salaryMax);
                 return (
                   <a
                     key={j.id}
