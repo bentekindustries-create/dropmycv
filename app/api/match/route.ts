@@ -273,6 +273,8 @@ function isBraveListingPage(title: string, url: string): boolean {
   if (/^\s*[$£€]/.test(title)) return true;             // "$106k-$157k … Jobs (salary listing)
   if (/\(\s*now hiring\s*\)/i.test(title)) return true; // aggregator "(NOW HIRING)" pages
   if (/^\s*all jobs\b/i.test(title)) return true;       // "All jobs from Hacker News…"
+  // Advice / template / guide articles, not actual job postings
+  if (/\b(job description|description template|salary guide|how to become|what does|what is a|career path|interview questions|resume example|cover letter)\b/i.test(title)) return true;
   if (/\bjobs?\s+in\b/i.test(title) && !/\b(at|hiring|looking for|@|\-|–|\|)\b/.test(title)) return true;
   if (/\bjobs?\s*$/i.test(title) && !/\b(at|hiring|looking for|@)\b/.test(title)) return true; // "Full Stack Developer Jobs"
   if (/[?&](q|k|where|search)=/i.test(url)) return true;
@@ -342,6 +344,17 @@ interface BraveWebResult {
 // Company ATS / careers platforms — jobs posted directly by employers, not boards
 const BRAVE_ATS_SITES =
   "(site:boards.greenhouse.io OR site:job-boards.greenhouse.io OR site:jobs.lever.co OR site:jobs.ashbyhq.com OR site:apply.workable.com OR site:jobs.smartrecruiters.com OR site:myworkdayjobs.com)";
+
+const ATS_HOSTS = ["greenhouse.io", "lever.co", "ashbyhq.com", "workable.com", "smartrecruiters.com", "myworkdayjobs.com"];
+
+function isAtsUrl(url: string): boolean {
+  try {
+    const h = new URL(url).hostname;
+    return ATS_HOSTS.some((d) => h === d || h.endsWith(`.${d}`) || h.includes(d));
+  } catch {
+    return false;
+  }
+}
 
 async function braveSearch(
   jobTitles: string[],
@@ -1084,7 +1097,7 @@ JSON only, no markdown.`,
     // clean local listings, so we surface them separately.
     const mainUrls = new Set(finalEntries.map((e) => allJobs[e.i]?.url).filter(Boolean));
     const directJobs = allJobs
-      .filter((j) => j.id.startsWith("brave-ats") && isValidUrl(j.url) && !mainUrls.has(j.url))
+      .filter((j) => j.id.startsWith("brave-ats") && isValidUrl(j.url) && isAtsUrl(j.url) && !mainUrls.has(j.url))
       .map((j) => ({ j, ms: matchedSkills(j, profile.skills) }))
       .filter((x) => x.ms.length >= 1 && x.j.title.length >= 4)
       .sort((a, b) => b.ms.length - a.ms.length)
