@@ -27,3 +27,13 @@ export interface MatchResult {
   directJobs?: JobMatch[];
   profile: CvProfile;
 }
+
+export interface CvReview {
+  overallScore: number; // 0-100
+  verdict: string; // one-line summary
+  strengths: string[];
+  improvements: { issue: string; fix: string }[];
+  atsKeywords: { present: string[]; missing: string[] };
+  rewrites: { before: string; after: string }[];
+  topPriorities: string[];
+}

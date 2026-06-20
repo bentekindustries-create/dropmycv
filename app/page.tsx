@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import { CvDropzone } from "@/components/cv-dropzone";
 import { JobCard } from "@/components/job-card";
 import { SkillPicker } from "@/components/skill-picker";
+import { CvReviewCard } from "@/components/cv-review";
 import { COUNTRIES, getCurrency } from "@/lib/countries";
-import type { JobMatch, MatchResult } from "@/lib/types";
+import type { JobMatch, MatchResult, CvReview } from "@/lib/types";
 
 type Stage = "idle" | "questionnaire" | "matching" | "results" | "error";
 type SortKey = "relevance" | "salary" | "newest";
@@ -151,6 +152,9 @@ export default function Home() {
   const [onlySalary, setOnlySalary] = useState(false);
   const [hiddenJobs, setHiddenJobs] = useState<string[]>([]);
   const [hiddenCompanies, setHiddenCompanies] = useState<string[]>([]);
+  const [reviewStage, setReviewStage] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [review, setReview] = useState<CvReview | null>(null);
+  const [reviewError, setReviewError] = useState("");
 
   const currency = getCurrency(country);
 
@@ -284,6 +288,26 @@ export default function Home() {
     runMatch(lastCvText, location || undefined, keywords || undefined);
   }
 
+  async function getReview() {
+    if (!lastCvText || reviewStage === "loading") return;
+    setReviewStage("loading");
+    setReviewError("");
+    try {
+      const res = await fetch("/api/cv-review", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cvText: lastCvText, targetRole: result?.profile.jobTitles[0] }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Could not generate a review.");
+      setReview(data.review as CvReview);
+      setReviewStage("done");
+    } catch (err) {
+      setReviewError(err instanceof Error ? err.message : "Something went wrong.");
+      setReviewStage("error");
+    }
+  }
+
   function handleQNext() {
     const q = QUESTIONS[qStep];
     const answer = qAnswers[q.id] ?? "";
@@ -310,6 +334,9 @@ export default function Home() {
     setKeywords("");
     setQStep(0);
     setQAnswers({});
+    setReviewStage("idle");
+    setReview(null);
+    setReviewError("");
   }
 
   return (
@@ -597,6 +624,41 @@ export default function Home() {
                 ← Upload another CV
               </button>
             </div>
+
+            {/* AI CV review */}
+            {!fileName.includes("(no CV)") && (
+              <div>
+                {reviewStage === "idle" && (
+                  <div className="flex items-center justify-between gap-3 rounded-xl border border-[#c8ecea] bg-teal-light/40 px-4 py-3 flex-wrap">
+                    <p className="text-sm text-navy">
+                      <span className="font-semibold">✨ Want to land more of these?</span> Get an
+                      instant AI review of your CV — strengths, gaps & rewrites.
+                    </p>
+                    <button
+                      onClick={getReview}
+                      className="text-sm px-4 py-2 rounded-lg bg-navy text-white font-semibold hover:bg-navy-dark transition-colors shrink-0"
+                    >
+                      Review my CV
+                    </button>
+                  </div>
+                )}
+                {reviewStage === "loading" && (
+                  <div className="flex items-center gap-3 rounded-xl border border-[#c8ecea] bg-teal-light/40 px-4 py-4">
+                    <div className="w-5 h-5 border-2 border-slate-200 border-t-teal rounded-full animate-spin" />
+                    <p className="text-sm text-slate-600">Reviewing your CV…</p>
+                  </div>
+                )}
+                {reviewStage === "error" && (
+                  <div className="flex items-center justify-between gap-3 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3">
+                    <p className="text-sm text-rose-700">{reviewError}</p>
+                    <button onClick={getReview} className="text-sm font-semibold text-rose-700 underline">
+                      Try again
+                    </button>
+                  </div>
+                )}
+                {reviewStage === "done" && review && <CvReviewCard review={review} />}
+              </div>
+            )}
 
             {/* Refine controls */}
             <div className="flex flex-col gap-2 p-4 bg-slate-50 rounded-xl border border-slate-100">
