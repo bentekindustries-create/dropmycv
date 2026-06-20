@@ -654,6 +654,24 @@ export default function Home() {
               </div>
             )}
 
+            {/* Straight from the employer — company-direct ATS roles, featured up top */}
+            {visibleDirectJobs.length > 0 && (
+              <div className="rounded-xl border border-[#c8ecea] bg-teal-light/40 p-4">
+                <div className="flex items-center gap-2 mb-1">
+                  <span>🏢</span>
+                  <h3 className="text-sm font-semibold text-navy">Straight from the employer</h3>
+                </div>
+                <p className="text-xs text-slate-500 mb-4">
+                  Posted directly on company career pages — often the freshest, most genuine listings.
+                </p>
+                <div className="grid sm:grid-cols-2 gap-4">
+                  {visibleDirectJobs.map((job, i) => (
+                    <JobCard key={job.id || i} job={job} currency={currency} onHideJob={hideJob} onHideCompany={hideCompany} />
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Sort + filter controls */}
             <div className="flex flex-col gap-3">
               {/* Sort */}
@@ -789,24 +807,6 @@ export default function Home() {
                     </div>
                   );
                 })}
-              </div>
-            )}
-
-            {/* Straight from the employer — company-direct ATS roles */}
-            {visibleDirectJobs.length > 0 && (
-              <div className="pt-4 border-t border-slate-100">
-                <div className="flex items-center gap-2 mb-1">
-                  <span>🏢</span>
-                  <h3 className="text-sm font-semibold text-navy">Straight from the employer</h3>
-                </div>
-                <p className="text-xs text-slate-400 mb-4">
-                  Posted directly on company career pages — often the freshest, most genuine listings.
-                </p>
-                <div className="grid sm:grid-cols-2 gap-4">
-                  {visibleDirectJobs.map((job, i) => (
-                    <JobCard key={job.id || i} job={job} currency={currency} onHideJob={hideJob} onHideCompany={hideCompany} />
-                  ))}
-                </div>
               </div>
             )}
 

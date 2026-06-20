@@ -1100,7 +1100,13 @@ JSON only, no markdown.`,
       .filter((j) => j.id.startsWith("brave-ats") && isValidUrl(j.url) && isAtsUrl(j.url) && !mainUrls.has(j.url))
       .map((j) => ({ j, ms: matchedSkills(j, profile.skills) }))
       .filter((x) => x.ms.length >= 1 && x.j.title.length >= 4)
-      .sort((a, b) => b.ms.length - a.ms.length)
+      // Prefer well-parsed listings (real company) then strongest skill overlap
+      .sort((a, b) => {
+        const ca = a.j.company ? 1 : 0;
+        const cb = b.j.company ? 1 : 0;
+        if (ca !== cb) return cb - ca;
+        return b.ms.length - a.ms.length;
+      })
       .slice(0, 3)
       .map(({ j, ms }) => ({
         id: j.id,
