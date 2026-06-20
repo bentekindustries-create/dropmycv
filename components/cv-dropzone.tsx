@@ -102,8 +102,8 @@ export function CvDropzone({ onExtracted, onError, disabled }: CvDropzoneProps) 
           </div>
           <div>
             <p className="text-slate-700 font-semibold text-lg">
-              Drop your CV here or{" "}
-              <span className="text-teal underline underline-offset-2">click to browse</span>
+              Drop your CV file here or{" "}
+              <span className="text-teal underline underline-offset-2">click to choose a file</span>
             </p>
             <p className="text-slate-400 text-sm mt-1.5">
               PDF, Word (.docx), or plain text · Your email, phone &amp; links are removed

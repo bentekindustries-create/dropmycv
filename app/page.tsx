@@ -235,7 +235,7 @@ export default function Home() {
     if (cvReview === "success") {
       const sessionId = params.get("session_id") || "";
       restoreResults();
-      let pending: { cvText: string; targetRole: string } | null = null;
+      let pending: { cvText: string; targetRole: string; jobs?: { title: string; description: string }[] } | null = null;
       try {
         const raw = sessionStorage.getItem(PENDING_REVIEW_KEY);
         if (raw) pending = JSON.parse(raw);
@@ -245,7 +245,7 @@ export default function Home() {
       if (pending?.cvText && sessionId) {
         setLastCvText(pending.cvText);
         setPaidSessionId(sessionId);
-        runPaidReview(pending.cvText, pending.targetRole, sessionId);
+        runPaidReview(pending.cvText, pending.targetRole, sessionId, pending.jobs ?? []);
       } else {
         setReviewError("We couldn't find your CV to review. Please re-upload and try again.");
         setReviewStage("error");
@@ -336,10 +336,15 @@ export default function Home() {
   async function startCheckout() {
     if (!lastCvText || reviewStage === "loading") return;
     try {
-      // Stash the CV in the browser so it survives the Stripe redirect (nothing server-side)
+      // Stash the CV + matched jobs in the browser so they survive the Stripe redirect
+      // (nothing server-side). The jobs let the review check against live demand.
       sessionStorage.setItem(
         PENDING_REVIEW_KEY,
-        JSON.stringify({ cvText: lastCvText, targetRole: result?.profile.jobTitles[0] ?? "" })
+        JSON.stringify({
+          cvText: lastCvText,
+          targetRole: result?.profile.jobTitles[0] ?? "",
+          jobs: (result?.jobs ?? []).slice(0, 6).map((j) => ({ title: j.title, description: j.description })),
+        })
       );
       const res = await fetch("/api/checkout", { method: "POST" });
       const data = await res.json();
@@ -354,20 +359,26 @@ export default function Home() {
   function retryReview() {
     // If payment already succeeded, re-run generation (no new charge); otherwise start checkout
     if (paidSessionId) {
-      runPaidReview(lastCvText, result?.profile.jobTitles[0] ?? "", paidSessionId);
+      const jobs = (result?.jobs ?? []).slice(0, 6).map((j) => ({ title: j.title, description: j.description }));
+      runPaidReview(lastCvText, result?.profile.jobTitles[0] ?? "", paidSessionId, jobs);
     } else {
       startCheckout();
     }
   }
 
-  async function runPaidReview(cvText: string, targetRole: string, sessionId: string) {
+  async function runPaidReview(
+    cvText: string,
+    targetRole: string,
+    sessionId: string,
+    jobs: { title: string; description: string }[]
+  ) {
     setReviewStage("loading");
     setReviewError("");
     try {
       const res = await fetch("/api/cv-review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ cvText, targetRole, sessionId }),
+        body: JSON.stringify({ cvText, targetRole, sessionId, jobs }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Could not generate a review.");
@@ -412,7 +423,7 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-white">
+    <div className="min-h-screen flex flex-col">
       {/* Mock mode banner */}
       {process.env.NEXT_PUBLIC_MOCK_MODE === "true" && (
         <div className="bg-amber-400 text-amber-900 text-xs font-semibold text-center py-1.5 tracking-wide">
@@ -514,13 +525,15 @@ export default function Home() {
             </div>
 
             {/* Drop zone */}
-            <CvDropzone
-              onExtracted={handleExtracted}
-              onError={(msg) => {
-                setError(msg);
-                setStage("error");
-              }}
-            />
+            <div id="upload" className="scroll-mt-6">
+              <CvDropzone
+                onExtracted={handleExtracted}
+                onError={(msg) => {
+                  setError(msg);
+                  setStage("error");
+                }}
+              />
+            </div>
 
             {/* No CV option */}
             <div className="text-center">
@@ -530,6 +543,23 @@ export default function Home() {
               >
                 No CV? Answer a few questions instead →
               </button>
+            </div>
+
+            {/* AI CV review — paid add-on, pitched on the landing page (#2) */}
+            <div className="rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-5 sm:p-6 text-center space-y-2">
+              <p className="text-xs font-semibold text-teal uppercase tracking-widest">Optional add-on · A$9</p>
+              <h3 className="text-lg font-serif font-bold text-navy">Get an expert AI review of your CV</h3>
+              <p className="text-sm text-slate-500 max-w-md mx-auto">
+                Not generic feedback — we check your CV against the{" "}
+                <span className="font-medium text-navy">live roles you actually match</span>, so you
+                fix the exact gaps employers are hiring for right now.
+              </p>
+              <a
+                href="#upload"
+                className="inline-block mt-1 text-sm px-5 py-2 rounded-lg bg-navy text-white font-semibold hover:bg-navy-dark transition-colors"
+              >
+                Drop your CV to start →
+              </a>
             </div>
 
             {/* How it works */}
@@ -703,8 +733,9 @@ export default function Home() {
                 {reviewStage === "idle" && (
                   <div className="flex items-center justify-between gap-3 rounded-xl border border-[#c8ecea] bg-teal-light/40 px-4 py-3 flex-wrap">
                     <p className="text-sm text-navy">
-                      <span className="font-semibold">✨ Want to land more of these?</span> Get an
-                      instant AI review of your CV — strengths, gaps, ATS keywords &amp; rewrites.
+                      <span className="font-semibold">✨ Want to land more of these?</span> Get an AI
+                      review of your CV — checked against the live roles you just matched, so you fix
+                      the exact gaps employers want.
                     </p>
                     <button
                       onClick={startCheckout}
