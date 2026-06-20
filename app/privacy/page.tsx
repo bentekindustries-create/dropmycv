@@ -71,7 +71,8 @@ export default function PrivacyPolicy() {
               We do not retain your name, and contact identifiers such as your email address and
               phone number are stripped client-side before transmission on a best-effort basis.
               Your name is preserved in the CV text used for matching but is not stored or logged
-              by us. We do not use cookies or tracking technologies.
+              by us. We do not use cookies. We use privacy-preserving, cookieless analytics to
+              count anonymous page views — see <em>Analytics</em> below.
             </p>
           </section>
 
@@ -145,6 +146,21 @@ export default function PrivacyPolicy() {
               employer&apos;s or job board&apos;s website. dropmycv may receive a referral fee from
               the job board if you apply. This does not affect the ranking of results, which is
               determined solely by AI-assessed relevance to your CV.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-lg font-semibold text-slate-800 mb-3">Analytics</h2>
+            <p>
+              We use Vercel Web Analytics to understand how many people visit dropmycv and which
+              pages they view. It is privacy-preserving by design: it sets{" "}
+              <strong>no cookies</strong>, stores <strong>no personal information</strong>, and
+              does not use cross-site tracking or device fingerprinting. Visitor counts are
+              derived from a hashed, non-identifying signal that rotates daily, so it cannot be
+              used to identify you or follow you across sessions or websites. See{" "}
+              <a href="https://vercel.com/docs/analytics/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">
+                Vercel&apos;s analytics privacy documentation
+              </a>.
             </p>
           </section>
 

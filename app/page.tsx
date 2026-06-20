@@ -362,7 +362,7 @@ export default function Home() {
             {/* Trust bar */}
             <div className="flex items-center justify-center gap-6 flex-wrap">
               {[
-                { icon: "🔒", label: "No cookies or tracking" },
+                { icon: "🔒", label: "No cookies · anonymous stats only" },
                 { icon: "🗑️", label: "CV never stored" },
                 { icon: "⚡", label: "Results in seconds" },
               ].map(({ icon, label }) => (
