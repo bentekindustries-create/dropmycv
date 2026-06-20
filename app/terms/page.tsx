@@ -27,7 +27,7 @@ export default function TermsOfService() {
             <p>
               By using dropmycv (&ldquo;the Service&rdquo;), you agree to these Terms of Service.
               If you do not agree, do not use the Service. dropmycv is operated by an Australian
-              individual (ABN to be added) and is governed by the laws of Queensland, Australia.
+              individual and is governed by the laws of Queensland, Australia.
             </p>
             <p className="mt-3">
               You must be at least 18 years old to use dropmycv.

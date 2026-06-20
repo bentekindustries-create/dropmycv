@@ -25,7 +25,7 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-lg font-semibold text-slate-800 mb-3">About dropmycv</h2>
             <p>
-              dropmycv is operated by an Australian individual (ABN holder) and is subject to the
+              dropmycv is operated by an Australian individual and is subject to the
               Australian Privacy Act 1988 (Cth) and the Australian Privacy Principles (APPs).
               dropmycv is intended for use in Australia. We do not target or actively market the
               service to individuals outside Australia. Where individuals outside Australia choose
@@ -206,8 +206,8 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-lg font-semibold text-slate-800 mb-3">Children</h2>
             <p>
-              dropmycv is not directed at children under 15, and we do not knowingly process
-              their personal information.
+              dropmycv is intended for adults. It is not directed at anyone under 18, and we do
+              not knowingly process the personal information of minors.
             </p>
           </section>
 
