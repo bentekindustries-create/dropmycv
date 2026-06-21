@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { PrivacyFlow } from "@/components/privacy-flow";
+import { StripDemo } from "@/components/strip-demo";
 
 export const metadata: Metadata = {
   title: "Private job search — find jobs without giving up your CV data",
@@ -76,6 +77,7 @@ export default function PrivateJobSearch() {
 
           <h2 className="text-xl font-semibold text-navy pt-2">How your CV flows through dropmycv</h2>
           <PrivacyFlow />
+          <StripDemo />
 
           <div className="not-prose rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-6 text-center my-8">
             <h2 className="text-lg font-serif font-bold text-navy mb-1">Try a private job search</h2>

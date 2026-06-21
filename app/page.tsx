@@ -6,6 +6,8 @@ import { JobCard } from "@/components/job-card";
 import { SkillPicker } from "@/components/skill-picker";
 import { CvReviewCard } from "@/components/cv-review";
 import { PrivacyFlow } from "@/components/privacy-flow";
+import { StripDemo } from "@/components/strip-demo";
+import { Testimonials } from "@/components/testimonials";
 import { COUNTRIES, getCurrency } from "@/lib/countries";
 import type { JobMatch, MatchResult, CvReview } from "@/lib/types";
 
@@ -706,6 +708,9 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Testimonials (renders only when real ones exist) */}
+            <Testimonials />
+
             {/* Private by design — visual flow */}
             <div className="pt-4 border-t border-slate-100">
               <h2 className="text-lg font-serif font-bold text-navy text-center mb-1">Private by design, not by promise</h2>
@@ -713,6 +718,9 @@ export default function Home() {
                 Your CV file never leaves your device. Here&apos;s exactly what happens when you drop it in.
               </p>
               <PrivacyFlow />
+              <div className="text-center mt-5">
+                <StripDemo />
+              </div>
             </div>
 
             {/* FAQ */}
