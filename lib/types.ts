@@ -28,6 +28,16 @@ export interface MatchResult {
   profile: CvProfile;
 }
 
+export interface ApplicationPack {
+  role: { title: string; company: string };
+  fitSummary: string; // positioning angle — why this candidate fits THIS role
+  cvTweaks: { after: string; note?: string }[]; // tailored bullet rewrites for this role
+  coverLetter: string; // full draft; paragraphs separated by blank lines
+  atsKeywords: string[]; // keywords to weave in for this specific role
+  interviewQuestions: { question: string; angle: string }[];
+  applicationTips: string[];
+}
+
 export interface CvReview {
   overallScore: number; // 0-100
   verdict: string; // one-line summary

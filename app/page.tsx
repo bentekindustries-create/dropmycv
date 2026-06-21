@@ -8,8 +8,9 @@ import { CvReviewCard } from "@/components/cv-review";
 import { PrivacyFlow } from "@/components/privacy-flow";
 import { StripDemo } from "@/components/strip-demo";
 import { Testimonials } from "@/components/testimonials";
+import { ApplicationPackResult } from "@/components/application-pack";
 import { COUNTRIES, getCurrency } from "@/lib/countries";
-import type { JobMatch, MatchResult, CvReview } from "@/lib/types";
+import type { JobMatch, MatchResult, CvReview, ApplicationPack } from "@/lib/types";
 
 type Stage = "idle" | "questionnaire" | "matching" | "results" | "error";
 type SortKey = "relevance" | "salary" | "newest";
@@ -99,6 +100,7 @@ const FAQS = [
 
 const STORAGE_KEY = "dropmycv_last_session";
 const PENDING_REVIEW_KEY = "dropmycv_pending_review";
+const PENDING_PACK_KEY = "dropmycv_pending_pack";
 const CHECKER_CV_KEY = "dropmycv_checker_cv";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -217,6 +219,13 @@ export default function Home() {
   const [review, setReview] = useState<CvReview | null>(null);
   const [reviewError, setReviewError] = useState("");
   const [paidSessionId, setPaidSessionId] = useState("");
+  // Application Pack (A$19 tier) — tailored to one chosen role
+  const [packStage, setPackStage] = useState<"idle" | "loading" | "done" | "error">("idle");
+  const [pack, setPack] = useState<ApplicationPack | null>(null);
+  const [packError, setPackError] = useState("");
+  const [packSessionId, setPackSessionId] = useState("");
+  const [selectedPackJob, setSelectedPackJob] = useState("");
+  const [packJob, setPackJob] = useState<{ title: string; company: string; description: string } | null>(null);
 
   const currency = getCurrency(country);
 
@@ -345,6 +354,33 @@ export default function Home() {
     }
 
     if (cvReview === "cancel") {
+      window.history.replaceState({}, "", "/");
+      restoreResults();
+      return;
+    }
+
+    const appPack = params.get("app_pack");
+    if (appPack === "success") {
+      const sessionId = params.get("session_id") || "";
+      restoreResults();
+      let pendingPack: { cvText: string; job: { title: string; company: string; description: string } } | null = null;
+      try {
+        const raw = sessionStorage.getItem(PENDING_PACK_KEY);
+        if (raw) pendingPack = JSON.parse(raw);
+      } catch {}
+      sessionStorage.removeItem(PENDING_PACK_KEY);
+      window.history.replaceState({}, "", "/");
+      if (pendingPack?.cvText && pendingPack.job?.title && sessionId) {
+        setLastCvText(pendingPack.cvText);
+        setPackSessionId(sessionId);
+        runPack(pendingPack.cvText, pendingPack.job, sessionId);
+      } else {
+        setPackError("We couldn't find the role to build your pack for. Please pick it again.");
+        setPackStage("error");
+      }
+      return;
+    }
+    if (appPack === "cancel") {
       window.history.replaceState({}, "", "/");
       restoreResults();
       return;
@@ -481,6 +517,71 @@ export default function Home() {
     }
   }
 
+  // ─── Application Pack (A$19) ───────────────────────────────────────────────
+  async function startPackCheckout() {
+    if (!lastCvText || packStage === "loading") return;
+    const job = (result?.jobs ?? []).find((j) => j.id === selectedPackJob);
+    if (!job) {
+      setPackError("Please choose a role first.");
+      setPackStage("error");
+      return;
+    }
+    try {
+      // Stash CV + the chosen role so they survive the Stripe redirect (nothing server-side)
+      sessionStorage.setItem(
+        PENDING_PACK_KEY,
+        JSON.stringify({
+          cvText: lastCvText,
+          job: { title: job.title, company: job.company, description: job.description },
+        })
+      );
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ product: "application-pack" }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || "Could not start checkout.");
+      window.location.href = data.url;
+    } catch (err) {
+      setPackError(err instanceof Error ? err.message : "Could not start checkout.");
+      setPackStage("error");
+    }
+  }
+
+  function retryPack() {
+    // Payment already succeeded → just re-run generation (no new charge)
+    if (packSessionId && packJob) {
+      runPack(lastCvText, packJob, packSessionId);
+    } else {
+      startPackCheckout();
+    }
+  }
+
+  async function runPack(
+    cvText: string,
+    job: { title: string; company: string; description: string },
+    sessionId: string
+  ) {
+    setPackJob(job);
+    setPackStage("loading");
+    setPackError("");
+    try {
+      const res = await fetch("/api/application-pack", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cvText, job, sessionId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Could not build your pack.");
+      setPack(data.pack as ApplicationPack);
+      setPackStage("done");
+    } catch (err) {
+      setPackError(err instanceof Error ? err.message : "Something went wrong.");
+      setPackStage("error");
+    }
+  }
+
   function handleQNext() {
     const q = QUESTIONS[qStep];
     const answer = qAnswers[q.id] ?? "";
@@ -516,6 +617,12 @@ export default function Home() {
     setReview(null);
     setReviewError("");
     setPaidSessionId("");
+    setPackStage("idle");
+    setPack(null);
+    setPackError("");
+    setPackSessionId("");
+    setSelectedPackJob("");
+    setPackJob(null);
   }
 
   return (
@@ -1012,6 +1119,61 @@ export default function Home() {
                   </div>
                 )}
                 {reviewStage === "done" && review && <CvReviewCard review={review} />}
+              </div>
+            )}
+
+            {/* Application Pack (A$19) — tailored to one chosen role */}
+            {!fileName.includes("(no CV)") && result.jobs.length > 0 && (
+              <div>
+                {packStage === "idle" && (
+                  <div className="rounded-xl border border-slate-200 bg-white px-4 py-4 flex flex-col gap-3">
+                    <div>
+                      <p className="text-sm font-semibold text-navy">📄 Going for a specific role?</p>
+                      <p className="text-sm text-slate-500 mt-0.5">
+                        Build an <span className="font-medium text-slate-600">Application Pack</span> tailored to one job —
+                        a cover-letter draft, CV bullet tweaks, the keywords to include &amp; likely interview questions.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <select
+                        value={selectedPackJob}
+                        onChange={(e) => setSelectedPackJob(e.target.value)}
+                        className="flex-1 min-w-[220px] text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white text-slate-600 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
+                      >
+                        <option value="">Choose a role from your matches…</option>
+                        {result.jobs.slice(0, 25).map((j) => (
+                          <option key={j.id} value={j.id}>
+                            {j.title}{j.company ? ` — ${j.company}` : ""}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={startPackCheckout}
+                        disabled={!selectedPackJob}
+                        className="text-sm px-4 py-2 rounded-lg bg-navy text-white font-semibold hover:bg-navy-dark transition-colors shrink-0 disabled:opacity-40 disabled:cursor-not-allowed"
+                      >
+                        Build pack — A$19
+                      </button>
+                    </div>
+                  </div>
+                )}
+                {packStage === "loading" && (
+                  <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white px-4 py-4">
+                    <div className="w-5 h-5 border-2 border-slate-200 border-t-teal rounded-full animate-spin" />
+                    <p className="text-sm text-slate-600">Building your tailored Application Pack…</p>
+                  </div>
+                )}
+                {packStage === "error" && (
+                  <div className="flex items-center justify-between gap-3 rounded-xl border border-rose-100 bg-rose-50 px-4 py-3">
+                    <p className="text-sm text-rose-700">{packError}</p>
+                    <button onClick={retryPack} className="text-sm font-semibold text-rose-700 underline shrink-0">
+                      Try again
+                    </button>
+                  </div>
+                )}
+                {packStage === "done" && pack && (
+                  <ApplicationPackResult pack={pack} sessionId={packSessionId} />
+                )}
               </div>
             )}
 

@@ -2,8 +2,31 @@ import Stripe from "stripe";
 
 export const runtime = "nodejs";
 
-const PRICE_CENTS = 900; // A$9.00
 const CURRENCY = "aud";
+
+// Products available for one-off checkout. Amounts are verified again server-side
+// before any AI generation runs (see each generation route's isPaid check).
+const PRODUCTS = {
+  "cv-review": {
+    cents: 900, // A$9.00
+    name: "AI CV Review",
+    description: "Instant AI review of your CV — strengths, gaps, ATS keywords & rewrites.",
+    successParam: "cv_review=success",
+  },
+  "application-pack": {
+    cents: 1900, // A$19.00
+    name: "Application Pack",
+    description:
+      "Tailored to one role: cover letter, CV tweaks, ATS keywords & interview prep.",
+    successParam: "app_pack=success",
+  },
+} as const;
+
+type ProductKey = keyof typeof PRODUCTS;
+
+function resolveProduct(value: unknown): ProductKey {
+  return value === "application-pack" ? "application-pack" : "cv-review";
+}
 
 // ─── Rate limiting ───────────────────────────────────────────────────────────
 const WINDOW_MS = 60_000;
@@ -62,6 +85,16 @@ export async function POST(request: Request) {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const origin = safeOrigin(request);
 
+    // Old callers POST no body (defaults to the A$9 CV review).
+    let productKey: ProductKey = "cv-review";
+    try {
+      const body = await request.json();
+      productKey = resolveProduct(body?.product);
+    } catch {
+      /* no/empty body → default product */
+    }
+    const product = PRODUCTS[productKey];
+
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       allow_promotion_codes: true,
@@ -69,17 +102,17 @@ export async function POST(request: Request) {
         {
           price_data: {
             currency: CURRENCY,
-            unit_amount: PRICE_CENTS,
+            unit_amount: product.cents,
             product_data: {
-              name: "AI CV Review",
-              description: "Instant AI review of your CV — strengths, gaps, ATS keywords & rewrites.",
+              name: product.name,
+              description: product.description,
             },
           },
           quantity: 1,
         },
       ],
-      success_url: `${origin}/?cv_review=success&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/?cv_review=cancel`,
+      success_url: `${origin}/?${product.successParam}&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/?${productKey === "application-pack" ? "app_pack" : "cv_review"}=cancel`,
     });
 
     if (!session.url) {
