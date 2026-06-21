@@ -152,9 +152,9 @@ export async function POST(request: Request) {
 }
 
 Rules: 3-5 improvements. 2-3 rewrites using real lines from the CV (if no clear bullet exists, rewrite the summary). Up to 8 keywords per list. Don't invent achievements — only sharpen what's there.
-
+${cvText.length > 15000 ? "Note: this CV text was shortened to fit — ignore any abrupt ending; never treat a mid-sentence cut-off as a flaw." : ""}
 CV:
-${cvText.slice(0, 8000)}`,
+${cvText.slice(0, 15000)}`,
         },
       ],
     });

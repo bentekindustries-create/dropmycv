@@ -82,9 +82,9 @@ export async function POST(request: Request) {
   "issues": ["<exactly 2 specific weaknesses — name the problem only, NOT the fix>"],
   "gapCount": <integer 0-15: how many important keywords/skills a strong CV for this person's target roles would include that are missing here>
 }
-
+${cvText.length > 15000 ? "\nNote: this CV text was shortened to fit — ignore any abrupt ending; never treat a mid-sentence cut-off as a flaw.\n" : ""}
 CV:
-${cvText.slice(0, 6000)}`,
+${cvText.slice(0, 15000)}`,
         },
       ],
     });

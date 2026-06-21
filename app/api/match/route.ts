@@ -899,7 +899,7 @@ export async function POST(request: Request) {
 }
 
 CV:
-${cvText.slice(0, 6000)}`,
+${cvText.slice(0, 12000)}`,
         },
       ],
     });
