@@ -35,10 +35,10 @@ export default function PrivateJobSearch() {
           <p>
             Usually, not as safe as you&apos;d think. To use most job boards and &ldquo;AI job
             match&rdquo; tools you have to create an account and upload your CV, which is then{" "}
-            <strong>stored on their servers indefinitely</strong>. Your name, email, phone number,
-            work history and salary expectations become a record they hold — and many platforms make
-            money by giving recruiters paid access to that database, or by marketing to you. Once
-            your CV is in, you rarely control where it goes.
+            <strong>stored on their servers</strong>. Your name, email, phone number, work history
+            and salary expectations become a record they hold — and many platforms monetise through
+            recruiter products, promoted listings, advertising, data-driven services or related
+            employer tools. Once your CV is in, you rarely control where it goes.
           </p>
 
           <h2 className="text-xl font-semibold text-navy pt-2">A more private way to find a job</h2>

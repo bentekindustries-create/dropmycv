@@ -32,9 +32,9 @@ export default function About() {
           <h2 className="text-xl font-semibold text-navy pt-2">Why it exists</h2>
           <p>
             Finding a job usually means handing your CV to sites that make you create an account,
-            store your details indefinitely, and earn money by selling recruiters access to you.
-            dropmycv was built on a simple idea: <strong>you shouldn&apos;t have to give up your
-            privacy to find work.</strong> Your CV is read in your browser, your contact details are
+            store your details, and monetise through recruiter products, advertising and data-driven
+            services. dropmycv was built on a simple idea: <strong>you shouldn&apos;t have to give up
+            your privacy to find work.</strong> Your CV is read in your browser, your contact details are
             stripped before anything is sent, and nothing is stored — there&apos;s no database to
             sell or leak.
           </p>
@@ -45,6 +45,11 @@ export default function About() {
             <strong>BenTek Industries</strong>. It&apos;s a focused, self-funded product — not a
             venture-backed platform trying to maximise data collection. That independence is exactly
             what lets it stay account-free and storage-free.
+          </p>
+          <p className="border-l-2 border-teal/40 pl-4 italic text-slate-500">
+            &ldquo;I built dropmycv because job search has become too noisy, too manual and too
+            data-hungry. The goal is simple: help people see where they fit in the live market —
+            without turning their CV into a recruiter lead.&rdquo;
           </p>
 
           <h2 className="text-xl font-semibold text-navy pt-2">What we do — and don&apos;t</h2>

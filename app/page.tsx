@@ -808,11 +808,14 @@ export default function Home() {
             {/* AI CV review — paid add-on, pitched on the landing page (#2) */}
             <div className="rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-5 sm:p-6 text-center space-y-2">
               <p className="text-xs font-semibold text-teal uppercase tracking-widest">Optional add-on · A$9</p>
-              <h3 className="text-lg font-serif font-bold text-navy">Get an expert AI review of your CV</h3>
+              <h3 className="text-lg font-serif font-bold text-navy">
+                Generic advice tells you how your CV <em className="not-italic underline decoration-teal/40">looks</em>. We show how it <em className="not-italic underline decoration-teal/40">performs</em>.
+              </h3>
               <p className="text-sm text-slate-500 max-w-md mx-auto">
-                Not generic feedback — we check your CV against the{" "}
-                <span className="font-medium text-navy">live roles you actually match</span>, so you
-                fix the exact gaps employers are hiring for right now.
+                A chatbot can give you generic CV tips — but it has no idea which jobs you&apos;re
+                applying for or what&apos;s in demand right now. We check your CV against the{" "}
+                <span className="font-medium text-navy">live roles you actually match</span>, so the
+                missing keywords, rewrites and priorities reflect what employers are hiring for today.
               </p>
               <a
                 href="#upload"
