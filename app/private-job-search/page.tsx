@@ -132,9 +132,10 @@ export default function PrivateJobSearch() {
             <strong>Do I need an account?</strong> No — there&apos;s no sign-up or login of any kind.
           </p>
           <p>
-            <strong>Is it free?</strong> Yes, matching is free. An optional AI{" "}
-            <Link href="/cv-review" className="text-teal hover:underline">CV review</Link> is
-            available for a one-off A$9, or try a{" "}
+            <strong>Is it free?</strong> Yes, matching is free. Two optional paid extras exist: a
+            one-off A$9 AI{" "}
+            <Link href="/cv-review" className="text-teal hover:underline">CV review</Link>, and a
+            A$19 Application Pack tailored to a specific role you matched to. You can also try a{" "}
             <Link href="/cv-checker" className="text-teal hover:underline">free CV check</Link> first.
           </p>
         </article>

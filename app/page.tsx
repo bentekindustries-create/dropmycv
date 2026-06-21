@@ -75,7 +75,7 @@ const MATCHING_STEPS = [
 const FAQS = [
   {
     q: "Is it really free?",
-    a: "Yes — matching your CV to live jobs is completely free, with no account and no limit. The only paid extra is an optional AI review of your CV for a one-off A$9.",
+    a: "Yes — matching your CV to live jobs is completely free, with no account and no limit. There are two optional paid extras if you want them: a one-off A$9 AI review of your CV, and a A$19 Application Pack tailored to a specific job you matched to. You never have to buy anything to get your matches.",
   },
   {
     q: "Is my CV safe? Do you store it?",
@@ -92,6 +92,10 @@ const FAQS = [
   {
     q: "What do I get for the A$9 CV review?",
     a: "An instant expert review checked against the live roles you just matched to: an overall score, your strengths, the exact keywords those jobs want that your CV is missing, stronger rewrites of weak lines, and a prioritised action list. It's something a generic chatbot can't give you, because only we know which live jobs you're competing for.",
+  },
+  {
+    q: "What's the A$19 Application Pack?",
+    a: "After you've matched, pick one role from your results and we build a tailored application kit for that exact job: a ready-to-send cover-letter draft, reworded CV bullet points, the keywords to include for that listing, and the interview questions you're likely to face with how to answer each. You download it instantly to print or save as PDF, and can optionally have a copy emailed to you. The A$9 review sharpens your CV overall; the A$19 pack gets you ready to apply for one specific job.",
   },
   {
     q: "Which countries does it work in?",

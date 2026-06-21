@@ -14,8 +14,8 @@ const ROWS: { feature: string; us: string; them: string }[] = [
   { feature: "Sources searched", us: "Multiple providers + company career pages at once (Seek, LinkedIn, Indeed, Greenhouse, Lever, Jora & more)", them: "Usually one" },
   { feature: "Ranked to your actual skills", us: "Yes — AI match score + reason per role", them: "Keyword search; you do the filtering" },
   { feature: "Cookies / cross-site tracking", us: "None", them: "Commonly yes" },
-  { feature: "Cost to you", us: "Free (optional A$9 CV review)", them: "Free" },
-  { feature: "How they make money", us: "The optional A$9 CV review", them: "Often recruiter products, promoted listings, advertising or related employer services" },
+  { feature: "Cost to you", us: "Free (optional A$9 CV review or A$19 Application Pack)", them: "Free" },
+  { feature: "How they make money", us: "Optional paid extras — an A$9 CV review and a A$19 Application Pack", them: "Often recruiter products, promoted listings, advertising or related employer services" },
 ];
 
 export default function Compare() {

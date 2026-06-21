@@ -50,7 +50,7 @@ export default function About() {
           <h2 className="text-xl font-semibold text-navy pt-2">What we do — and don&apos;t</h2>
           <ul className="list-disc pl-5 space-y-2">
             <li><strong>We do</strong> match your CV to live roles across many job sources and rank them with AI, for free.</li>
-            <li><strong>We do</strong> offer an optional AI CV review for a one-off A$9, checked against the live jobs you match.</li>
+            <li><strong>We do</strong> offer two optional paid extras — a one-off A$9 AI CV review, and a A$19 Application Pack tailored to a specific role — both checked against the live jobs you match. They&apos;re how we cover costs; you never have to buy either to get your matches.</li>
             <li><strong>We don&apos;t</strong> require an account, store your CV, build a recruiter-searchable profile, use cookies, or sell your data.</li>
           </ul>
 
