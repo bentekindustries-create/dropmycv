@@ -9,6 +9,7 @@ import { PrivacyFlow } from "@/components/privacy-flow";
 import { StripDemo } from "@/components/strip-demo";
 import { Testimonials } from "@/components/testimonials";
 import { ApplicationPackResult } from "@/components/application-pack";
+import { ProofCounters } from "@/components/proof-counters";
 import { COUNTRIES, getCurrency } from "@/lib/countries";
 import { trackEvent, bucketCount } from "@/lib/analytics";
 import type { JobMatch, MatchResult, CvReview, ApplicationPack } from "@/lib/types";
@@ -714,6 +715,9 @@ export default function Home() {
                 </div>
               ))}
             </div>
+
+            {/* Anonymous usage proof — renders only once numbers are credible */}
+            <ProofCounters />
 
             {/* Sample match — show the output before they commit */}
             <div>

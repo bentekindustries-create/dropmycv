@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { bump } from "@/lib/counters";
 
 export const runtime = "nodejs";
 
@@ -990,6 +991,7 @@ ${cvText.slice(0, 12000)}`,
     };
 
     if (allJobs.length === 0) {
+      await bump("searches");
       return Response.json({ jobs: [], profile, ...(debug ? { _debug: sourceCounts } : {}) });
     }
 
@@ -1120,6 +1122,10 @@ JSON only, no markdown.`,
         created: j.created,
         matchedSkills: ms.map((s) => sanitiseString(s, 50)),
       }));
+
+    // Anonymous global tallies (counts only — nothing about this CV or user)
+    await bump("searches");
+    await bump("matches", jobs.length + directJobs.length);
 
     return Response.json({ jobs, directJobs, profile, ...(debug ? { _debug: sourceCounts } : {}) });
   } catch (err) {

@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { bump } from "@/lib/counters";
 
 export const runtime = "nodejs";
 
@@ -107,6 +108,8 @@ ${cvText.slice(0, 15000)}`,
         .map((s) => sanitiseString(s, 200))
         .filter(Boolean)
         .slice(0, 2);
+
+    await bump("checks"); // anonymous global tally — a count only, nothing about this CV
 
     return Response.json({
       check: {

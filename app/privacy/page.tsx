@@ -209,6 +209,13 @@ export default function PrivacyPolicy() {
                 Vercel&apos;s analytics privacy documentation
               </a>.
             </p>
+            <p className="mt-3">
+              We also keep a few <strong>anonymous running totals</strong> — how many searches and
+              CV checks have been run across everyone, and how many job matches have been surfaced —
+              which we sometimes display on the site. These are <strong>plain global counts only</strong>:
+              they hold nothing about you, your CV, or any individual search, and cannot be tied back
+              to a person. They are not your data — just a tally.
+            </p>
           </section>
 
           <section>
