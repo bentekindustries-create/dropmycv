@@ -48,9 +48,11 @@ interface JobCardProps {
   currency: string;
   onHideJob?: (id: string) => void;
   onHideCompany?: (company: string) => void;
+  onLike?: (id: string) => void;
+  liked?: boolean;
 }
 
-export function JobCard({ job, currency, onHideJob, onHideCompany }: JobCardProps) {
+export function JobCard({ job, currency, onHideJob, onHideCompany, onLike, liked }: JobCardProps) {
   const salary = formatSalary(currency, job.salaryMin, job.salaryMax);
   const days = ageDays(job.created);
   const fresh = freshness(days);
@@ -126,25 +128,43 @@ export function JobCard({ job, currency, onHideJob, onHideCompany }: JobCardProp
         Apply Now →
       </a>
 
-      {(onHideJob || onHideCompany) && (
-        <div className="flex items-center justify-center gap-3 text-[11px] text-slate-300">
+      {(onLike || onHideJob) && (
+        <div className="flex items-center justify-center gap-2 pt-1 border-t border-slate-100">
+          {onLike && (
+            <button
+              onClick={() => onLike(job.id)}
+              aria-pressed={liked}
+              title="Show me more like this"
+              className={[
+                "inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full transition-colors",
+                liked
+                  ? "bg-teal-light text-teal"
+                  : "bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600",
+              ].join(" ")}
+            >
+              👍 More like this
+            </button>
+          )}
           {onHideJob && (
             <button
               onClick={() => onHideJob(job.id)}
-              className="hover:text-slate-500 transition-colors"
+              title="Hide this and show fewer like it"
+              className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
             >
-              Not interested
+              👎 Not for me
             </button>
           )}
-          {onHideJob && onHideCompany && job.company && <span>·</span>}
-          {onHideCompany && job.company && (
-            <button
-              onClick={() => onHideCompany(job.company)}
-              className="hover:text-slate-500 transition-colors"
-            >
-              Hide {job.company}
-            </button>
-          )}
+        </div>
+      )}
+
+      {onHideCompany && job.company && (
+        <div className="flex items-center justify-center text-[11px] text-slate-300">
+          <button
+            onClick={() => onHideCompany(job.company)}
+            className="hover:text-slate-500 transition-colors"
+          >
+            Hide all {job.company} jobs
+          </button>
         </div>
       )}
     </div>

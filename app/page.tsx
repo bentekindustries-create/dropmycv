@@ -144,6 +144,32 @@ function hasSalary(job: JobMatch): boolean {
   return Boolean(job.salaryMin || job.salaryMax);
 }
 
+type EmploymentFilter = "any" | "fulltime" | "parttime" | "contract";
+
+function jobEmploymentType(job: JobMatch): "fulltime" | "parttime" | "contract" {
+  const hay = `${job.title} ${job.description}`.toLowerCase();
+  if (/\b(contract|fixed.term|fixed term|temp|temporary|day rate|daily rate|locum|freelance)\b/.test(hay)) return "contract";
+  if (/\b(part.time|part time|casual)\b/.test(hay)) return "parttime";
+  return "fulltime";
+}
+
+function jobTopSalary(job: JobMatch): number {
+  return job.salaryMax ?? job.salaryMin ?? 0;
+}
+
+// "More like this" — score a job by overlap with the jobs the user thumbed up
+function jobSimilarity(job: JobMatch, liked: JobMatch[]): number {
+  if (liked.length === 0) return 0;
+  const jobSkills = new Set((job.matchedSkills ?? []).map((s) => s.toLowerCase()));
+  const jobWords = new Set(job.title.toLowerCase().split(/\W+/).filter((w) => w.length > 3));
+  let score = 0;
+  for (const lj of liked) {
+    for (const s of lj.matchedSkills ?? []) if (jobSkills.has(s.toLowerCase())) score += 2;
+    for (const w of lj.title.toLowerCase().split(/\W+/)) if (w.length > 3 && jobWords.has(w)) score += 1;
+  }
+  return score;
+}
+
 const HIDDEN_KEY = "dropmycv_hidden";
 
 function loadHidden(): { jobs: string[]; companies: string[] } {
@@ -181,7 +207,10 @@ export default function Home() {
   const [qStep, setQStep] = useState(0);
   const [qAnswers, setQAnswers] = useState<QAnswers>({});
   const [workFilter, setWorkFilter] = useState<WorkFilter>("any");
+  const [employmentFilter, setEmploymentFilter] = useState<EmploymentFilter>("any");
+  const [minSalary, setMinSalary] = useState(0);
   const [onlySalary, setOnlySalary] = useState(false);
+  const [likedJobs, setLikedJobs] = useState<string[]>([]);
   const [hiddenJobs, setHiddenJobs] = useState<string[]>([]);
   const [hiddenCompanies, setHiddenCompanies] = useState<string[]>([]);
   const [reviewStage, setReviewStage] = useState<"idle" | "loading" | "done" | "error">("idle");
@@ -191,7 +220,7 @@ export default function Home() {
 
   const currency = getCurrency(country);
 
-  // Apply hide list + work-type + salary filters, then sort
+  // Apply hide list + filters, sort, then apply "more like this" reordering
   const visibleJobs = useMemo(() => {
     const all = result?.jobs ?? [];
     const hiddenJobSet = new Set(hiddenJobs);
@@ -201,10 +230,21 @@ export default function Home() {
       if (job.company && hiddenCompanySet.has(job.company.toLowerCase())) return false;
       if (onlySalary && !hasSalary(job)) return false;
       if (workFilter !== "any" && jobWorkType(job) !== workFilter) return false;
+      if (employmentFilter !== "any" && jobEmploymentType(job) !== employmentFilter) return false;
+      if (minSalary > 0 && jobTopSalary(job) < minSalary) return false;
       return true;
     });
-    return sortJobs(filtered, sortKey);
-  }, [result?.jobs, sortKey, workFilter, onlySalary, hiddenJobs, hiddenCompanies]);
+    const sorted = sortJobs(filtered, sortKey);
+
+    // Thumbs-up reweighting only applies to the default relevance view
+    if (sortKey !== "relevance" || likedJobs.length === 0) return sorted;
+    const likedSet = new Set(likedJobs);
+    const liked = sorted.filter((j) => likedSet.has(j.id));
+    const rest = sorted.filter((j) => !likedSet.has(j.id));
+    const likedFull = (result?.jobs ?? []).filter((j) => likedSet.has(j.id));
+    rest.sort((a, b) => jobSimilarity(b, likedFull) - jobSimilarity(a, likedFull));
+    return [...liked, ...rest];
+  }, [result?.jobs, sortKey, workFilter, employmentFilter, minSalary, onlySalary, likedJobs, hiddenJobs, hiddenCompanies]);
 
   const sortedJobs = visibleJobs;
   const hiddenCount = (result?.jobs ?? []).length - (result?.jobs ?? []).filter((job) => {
@@ -240,6 +280,10 @@ export default function Home() {
     setHiddenJobs([]);
     setHiddenCompanies([]);
     saveHidden([], []);
+  }
+
+  function toggleLike(id: string) {
+    setLikedJobs((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   }
 
   // On mount: load hidden list, handle a returning Stripe checkout, or flag a saved session
@@ -461,6 +505,11 @@ export default function Home() {
     setSortKey("relevance");
     setLocation("");
     setKeywords("");
+    setWorkFilter("any");
+    setEmploymentFilter("any");
+    setMinSalary(0);
+    setOnlySalary(false);
+    setLikedJobs([]);
     setQStep(0);
     setQAnswers({});
     setReviewStage("idle");
@@ -1034,7 +1083,7 @@ export default function Home() {
                 </p>
                 <div className="grid sm:grid-cols-2 gap-4">
                   {visibleDirectJobs.map((job, i) => (
-                    <JobCard key={job.id || i} job={job} currency={currency} onHideJob={hideJob} onHideCompany={hideCompany} />
+                    <JobCard key={job.id || i} job={job} currency={currency} onHideJob={hideJob} onHideCompany={hideCompany} onLike={toggleLike} liked={likedJobs.includes(job.id)} />
                   ))}
                 </div>
               </div>
@@ -1085,6 +1134,47 @@ export default function Home() {
                 ))}
               </div>
 
+              {/* Employment type */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs text-slate-400 w-16">Type:</span>
+                {([
+                  { key: "any", label: "Any" },
+                  { key: "fulltime", label: "Full-time" },
+                  { key: "parttime", label: "Part-time" },
+                  { key: "contract", label: "Contract" },
+                ] as { key: EmploymentFilter; label: string }[]).map(({ key, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => setEmploymentFilter(key)}
+                    className={[
+                      "text-xs px-3 py-1.5 rounded-full font-medium transition-colors",
+                      employmentFilter === key
+                        ? "bg-navy text-white"
+                        : "bg-slate-100 text-slate-500 hover:bg-slate-200",
+                    ].join(" ")}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Minimum pay */}
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="text-xs text-slate-400 w-16">Min pay:</span>
+                <select
+                  value={minSalary}
+                  onChange={(e) => setMinSalary(Number(e.target.value))}
+                  className="text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 bg-white text-slate-600 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
+                >
+                  <option value={0}>Any</option>
+                  <option value={50000}>{currency}50k+</option>
+                  <option value={75000}>{currency}75k+</option>
+                  <option value={100000}>{currency}100k+</option>
+                  <option value={150000}>{currency}150k+</option>
+                </select>
+                <span className="text-[11px] text-slate-300">(where listed)</span>
+              </div>
+
               {/* Salary toggle */}
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="text-xs text-slate-400 w-16">Salary:</span>
@@ -1124,7 +1214,7 @@ export default function Home() {
                   <p className="font-medium text-slate-600">No jobs match your filters.</p>
                   <p className="text-sm mt-1">Try widening the work type or salary filter.</p>
                   <button
-                    onClick={() => { setWorkFilter("any"); setOnlySalary(false); clearHidden(); }}
+                    onClick={() => { setWorkFilter("any"); setEmploymentFilter("any"); setMinSalary(0); setOnlySalary(false); clearHidden(); }}
                     className="mt-5 inline-flex items-center px-5 py-2 bg-navy text-white rounded-lg text-sm font-semibold hover:bg-navy-dark transition-colors"
                   >
                     Clear filters
@@ -1147,7 +1237,7 @@ export default function Home() {
               /* Flat grid when sorted */
               <div className="grid sm:grid-cols-2 gap-4">
                 {sortedJobs.map((job, i) => (
-                  <JobCard key={job.id || i} job={job} currency={currency} onHideJob={hideJob} onHideCompany={hideCompany} />
+                  <JobCard key={job.id || i} job={job} currency={currency} onHideJob={hideJob} onHideCompany={hideCompany} onLike={toggleLike} liked={likedJobs.includes(job.id)} />
                 ))}
               </div>
             ) : (
@@ -1169,7 +1259,7 @@ export default function Home() {
                       </div>
                       <div className="grid sm:grid-cols-2 gap-4">
                         {tier.map((job, i) => (
-                          <JobCard key={job.id || i} job={job} currency={currency} onHideJob={hideJob} onHideCompany={hideCompany} />
+                          <JobCard key={job.id || i} job={job} currency={currency} onHideJob={hideJob} onHideCompany={hideCompany} onLike={toggleLike} liked={likedJobs.includes(job.id)} />
                         ))}
                       </div>
                     </div>
