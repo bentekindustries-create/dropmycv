@@ -96,6 +96,7 @@ const FAQS = [
 
 const STORAGE_KEY = "dropmycv_last_session";
 const PENDING_REVIEW_KEY = "dropmycv_pending_review";
+const CHECKER_CV_KEY = "dropmycv_checker_cv";
 const SESSION_TTL_MS = 24 * 60 * 60 * 1000;
 
 function saveSession(result: MatchResult, fileName: string, country: string, location: string) {
@@ -243,6 +244,22 @@ export default function Home() {
     const hidden = loadHidden();
     setHiddenJobs(hidden.jobs);
     setHiddenCompanies(hidden.companies);
+
+    // Handoff from the free /cv-checker: run a full match with the same CV so the
+    // paid review is grounded in live jobs (Option A).
+    try {
+      const handoff = sessionStorage.getItem(CHECKER_CV_KEY);
+      if (handoff) {
+        sessionStorage.removeItem(CHECKER_CV_KEY);
+        const { cvText } = JSON.parse(handoff);
+        if (cvText && typeof cvText === "string" && cvText.trim().length > 40) {
+          setFileName("Your CV");
+          setLastCvText(cvText);
+          runMatch(cvText);
+          return;
+        }
+      }
+    } catch {}
 
     const params = new URLSearchParams(window.location.search);
     const cvReview = params.get("cv_review");
@@ -1070,6 +1087,8 @@ export default function Home() {
         <span className="mx-3">·</span>
         dropmycv · No data stored · No account needed
         <span className="mx-3">·</span>
+        <a href="/cv-checker" className="hover:text-white/80 transition-colors">Free CV checker</a>
+        <span className="mx-2">·</span>
         <a href="/cv-review" className="hover:text-white/80 transition-colors">AI CV review</a>
         <span className="mx-2">·</span>
         <a href="/private-job-search" className="hover:text-white/80 transition-colors">Private job search</a>
