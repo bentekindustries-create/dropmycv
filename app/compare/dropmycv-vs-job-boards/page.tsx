@@ -15,7 +15,7 @@ const ROWS: { feature: string; us: string; them: string }[] = [
   { feature: "Ranked to your actual skills", us: "Yes — AI match score + reason per role", them: "Keyword search; you do the filtering" },
   { feature: "Cookies / cross-site tracking", us: "None", them: "Commonly yes" },
   { feature: "Cost to you", us: "Free (optional A$9 CV review)", them: "Free" },
-  { feature: "How they make money", us: "The optional CV review", them: "Selling recruiter access to candidates, and ads" },
+  { feature: "How they make money", us: "The optional A$9 CV review", them: "Often recruiter products, promoted listings, advertising or related employer services" },
 ];
 
 export default function Compare() {

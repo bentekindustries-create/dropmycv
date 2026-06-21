@@ -5,6 +5,7 @@ import { CvDropzone } from "@/components/cv-dropzone";
 import { JobCard } from "@/components/job-card";
 import { SkillPicker } from "@/components/skill-picker";
 import { CvReviewCard } from "@/components/cv-review";
+import { PrivacyFlow } from "@/components/privacy-flow";
 import { COUNTRIES, getCurrency } from "@/lib/countries";
 import type { JobMatch, MatchResult, CvReview } from "@/lib/types";
 
@@ -524,6 +525,7 @@ export default function Home() {
                 { icon: "🔒", label: "No cookies · anonymous stats only" },
                 { icon: "🗑️", label: "CV never stored" },
                 { icon: "⚡", label: "Results in seconds" },
+                { icon: "🇦🇺", label: "Built in Australia" },
               ].map(({ icon, label }) => (
                 <div key={label} className="flex items-center gap-1.5 text-xs text-slate-400">
                   <span>{icon}</span>
@@ -563,8 +565,9 @@ export default function Home() {
                   <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">💰 $140k – $170k</span>
                 </div>
               </div>
-              <p className="text-center text-xs text-slate-400 mt-2">
-                Example — your real matches are ranked from your CV
+              <p className="text-center text-xs text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
+                Example — every match includes a score, the reason it fits, your matching skills,
+                salary where available, and a link to the original listing.
               </p>
             </div>
 
@@ -694,13 +697,22 @@ export default function Home() {
             {/* Proof strip — real, claimable sources */}
             <div className="text-center pt-2">
               <p className="text-xs uppercase tracking-widest text-slate-400 mb-3">
-                Searching job sites &amp; company career pages — one ranked shortlist
+                We search multiple providers &amp; company career pages, surfacing roles from sources such as
               </p>
               <div className="flex items-center justify-center gap-x-4 gap-y-2 flex-wrap text-sm font-medium text-slate-500">
                 {["Seek", "LinkedIn", "Indeed", "Greenhouse", "Lever", "Jora", "Careerjet"].map((s) => (
                   <span key={s}>{s}</span>
                 ))}
               </div>
+            </div>
+
+            {/* Private by design — visual flow */}
+            <div className="pt-4 border-t border-slate-100">
+              <h2 className="text-lg font-serif font-bold text-navy text-center mb-1">Private by design, not by promise</h2>
+              <p className="text-sm text-slate-500 text-center mb-5 max-w-lg mx-auto">
+                Your CV file never leaves your device. Here&apos;s exactly what happens when you drop it in.
+              </p>
+              <PrivacyFlow />
             </div>
 
             {/* FAQ */}

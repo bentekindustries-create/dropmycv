@@ -49,6 +49,40 @@ export default function AiJobMatcher() {
           the paid review) reflect what employers are actually hiring for right now.
         </p>
 
+        <h2 className="text-xl font-semibold text-navy pt-2">AI job matcher vs job board vs chatbot</h2>
+        <div className="not-prose overflow-x-auto">
+          <table className="w-full text-sm border border-slate-200 rounded-lg overflow-hidden">
+            <thead>
+              <tr className="bg-slate-50 text-left">
+                <th className="p-2.5 font-medium text-slate-400"></th>
+                <th className="p-2.5 font-semibold text-navy">AI job matcher</th>
+                <th className="p-2.5 font-semibold text-slate-500">Job board</th>
+                <th className="p-2.5 font-semibold text-slate-500">Chatbot</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                { f: "Reads your whole CV", a: "Yes", b: "No — you type keywords", c: "Yes" },
+                { f: "Knows live, current jobs", a: "Yes", b: "Yes", c: "No" },
+                { f: "Ranks roles to your skills", a: "Yes, with reasons", b: "Keyword match only", c: "No" },
+                { f: "Finds adjacent roles you'd miss", a: "Yes", b: "Rarely", c: "Sometimes" },
+                { f: "Needs no account / private", a: "Yes (dropmycv)", b: "Usually no", c: "Varies" },
+              ].map((r, i) => (
+                <tr key={r.f} className={i % 2 ? "" : "bg-slate-50/40"}>
+                  <td className="p-2.5 text-slate-600 font-medium align-top">{r.f}</td>
+                  <td className="p-2.5 text-slate-700 align-top">{r.a}</td>
+                  <td className="p-2.5 text-slate-500 align-top">{r.b}</td>
+                  <td className="p-2.5 text-slate-500 align-top">{r.c}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-xs text-slate-400">
+          AI matching is a starting point — always read the original listing and use your own
+          judgement before applying.
+        </p>
+
         <p className="text-sm text-slate-500">
           Related:{" "}
           <Link href="/match-my-cv-to-jobs" className="text-teal hover:underline">match my CV to jobs</Link>{" "}

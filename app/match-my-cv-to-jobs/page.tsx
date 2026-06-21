@@ -70,6 +70,20 @@ export default function MatchMyCv() {
           <Link href="/cv-checker" className="text-teal hover:underline">free CV check</Link>.
         </p>
 
+        <h2 className="text-xl font-semibold text-navy pt-2">Who it helps</h2>
+        <ul className="list-disc pl-5 space-y-2">
+          <li><strong>Career changers</strong> — see which roles your transferable skills already qualify you for.</li>
+          <li><strong>Senior professionals</strong> — find matched roles without recruiters harvesting your CV.</li>
+          <li><strong>Graduates &amp; early-career</strong> — discover entry roles that fit your degree and any experience.</li>
+          <li><strong>Returning to work</strong> — match your prior experience to current openings without trawling boards.</li>
+        </ul>
+
+        <h2 className="text-xl font-semibold text-navy pt-2">FAQ</h2>
+        <p><strong className="text-slate-700">Do I need an account?</strong><br />No — no sign-up or login. Drop your CV and you get matches in seconds.</p>
+        <p><strong className="text-slate-700">Is my CV stored?</strong><br />No. It&apos;s read in your browser, your email/phone/links are stripped first, and the text is used only to find matches, then discarded.</p>
+        <p><strong className="text-slate-700">Which countries?</strong><br />Australia, the UK, US, Canada, NZ, Singapore, Germany, France and the Netherlands — see <Link href="/jobs-in/australia" className="text-teal hover:underline">country pages</Link>.</p>
+        <p><strong className="text-slate-700">Is it really free?</strong><br />Yes. The optional <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link> is A$9; everything else is free.</p>
+
         <CtaBlock label="Match my CV now — free →" sub="Drop your CV and see your matches in seconds." />
       </article>
     </MarketingShell>

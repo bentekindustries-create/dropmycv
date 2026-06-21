@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { PrivacyFlow } from "@/components/privacy-flow";
 
 export const metadata: Metadata = {
   title: "Private job search — find jobs without giving up your CV data",
@@ -72,6 +73,9 @@ export default function PrivateJobSearch() {
             AI to rank them against your actual skills, so you get a short, relevant shortlist with a
             match score and reason for each role, instead of hundreds of listings to wade through.
           </p>
+
+          <h2 className="text-xl font-semibold text-navy pt-2">How your CV flows through dropmycv</h2>
+          <PrivacyFlow />
 
           <div className="not-prose rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-6 text-center my-8">
             <h2 className="text-lg font-serif font-bold text-navy mb-1">Try a private job search</h2>

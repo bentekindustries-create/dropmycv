@@ -32,6 +32,28 @@ export default function WhatJobs() {
           what you could move into right now.
         </p>
 
+        <h2 className="text-xl font-semibold text-navy pt-2">Roles your CV might reveal</h2>
+        <p>
+          The same experience often opens more doors than you&apos;d expect. A few examples of the
+          adjacent roles a CV can surface:
+        </p>
+        <div className="space-y-3">
+          {[
+            { type: "Project Manager", roles: "Project Manager · Delivery Lead · Program Coordinator · Implementation Manager · Customer Success Manager" },
+            { type: "Registered Nurse", roles: "Registered Nurse · Clinical Nurse · Aged Care Coordinator · Practice Nurse · Case Manager" },
+            { type: "Marketing Coordinator", roles: "Marketing Coordinator · Digital Marketing Specialist · Content Manager · Campaign Manager · Brand Coordinator" },
+            { type: "Accountant", roles: "Accountant · Financial Analyst · Management Accountant · Finance Business Partner · Bookkeeper" },
+          ].map((ex) => (
+            <div key={ex.type} className="bg-white rounded-xl border border-slate-100 p-4 text-sm">
+              <p className="font-semibold text-navy">A {ex.type} CV might surface:</p>
+              <p className="text-slate-500 mt-0.5">{ex.roles}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-xs text-slate-400">
+          Illustrative — your actual matches depend on your CV and live demand.
+        </p>
+
         <h2 className="text-xl font-semibold text-navy pt-2">Especially useful if you&apos;re…</h2>
         <ul className="list-disc pl-5 space-y-2">
           <li><strong>Changing careers</strong> — see which roles your transferable skills already qualify you for.</li>

@@ -47,6 +47,44 @@ const SAMPLE: CvReview = {
   ],
 };
 
+// A non-tech sample so the page doesn't read as tech-only
+const SAMPLE_NONTECH: CvReview = {
+  overallScore: 71,
+  verdict:
+    "A capable marketing CV with clear campaign experience — but it under-sells results and misses some keywords the roles you matched are asking for.",
+  strengths: [
+    "Clear progression from coordinator to manager over 6 years",
+    "Hands-on across the channels employers want — SEO, content, social and email",
+    "One genuinely strong, quantified result (a 38% lift in qualified leads)",
+  ],
+  improvements: [
+    { issue: "Most achievements aren't quantified", fix: "Add numbers — budget managed, % growth, leads, ROI — to every campaign bullet" },
+    { issue: "No mention of analytics tooling", fix: "Name the platforms you use (GA4, HubSpot, Meta Ads) — recruiters and ATS scan for them" },
+    { issue: "Summary is generic", fix: "Lead with your strongest result and the kind of role you want" },
+  ],
+  atsKeywords: {
+    present: ["SEO", "Content Marketing", "Social Media", "Email Marketing", "Brand"],
+    missing: ["Google Analytics (GA4)", "HubSpot", "Marketing Automation", "Paid Media / SEM", "Conversion Rate Optimisation"],
+  },
+  rewrites: [
+    {
+      before: "Managed social media accounts.",
+      after:
+        "Grew the brand's organic social audience 45% in 12 months and drove a 22% increase in referral traffic across LinkedIn and Instagram.",
+    },
+    {
+      before: "Helped with email campaigns.",
+      after:
+        "Owned a 20k-subscriber email program, lifting open rates from 18% to 31% through segmentation and A/B testing.",
+    },
+  ],
+  topPriorities: [
+    "Quantify every campaign with a number or %",
+    "Add the analytics & automation tools your matched roles list",
+    "Rewrite the summary to lead with your best result",
+  ],
+};
+
 export default function CvReviewLanding() {
   return (
     <div className="min-h-screen flex flex-col">
@@ -121,17 +159,21 @@ export default function CvReviewLanding() {
           <h2 className="text-lg font-serif font-bold text-navy text-center mb-1">
             Here&apos;s what a review looks like
           </h2>
-          <p className="text-xs text-slate-400 text-center mb-5">Sample — yours is tailored to your CV and your live matches</p>
+          <p className="text-xs text-slate-400 text-center mb-5">Samples — yours is tailored to your CV and your live matches</p>
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Sample 1 — a software engineer CV</p>
           <CvReviewCard review={SAMPLE} />
+          <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2 mt-8">Sample 2 — a marketing CV</p>
+          <CvReviewCard review={SAMPLE_NONTECH} />
         </section>
 
         {/* Guarantee + CTA */}
         <section className="text-center space-y-3">
           <p className="text-sm text-slate-500 max-w-lg mx-auto">
             <span className="font-medium text-navy">One-off A$9. No subscription. Nothing stored.</span>{" "}
-            Paid securely via Stripe — we never see your card details. Not happy? Under Australian
-            Consumer Law you&apos;re covered — just email{" "}
-            <a href="mailto:info@dropmycv.app" className="text-teal hover:underline">info@dropmycv.app</a>.
+            Paid securely via Stripe — we never see your card details. If a review isn&apos;t delivered
+            or there&apos;s a genuine issue, email{" "}
+            <a href="mailto:info@dropmycv.app" className="text-teal hover:underline">info@dropmycv.app</a>{" "}
+            and we&apos;ll make it right in line with Australian Consumer Law.
           </p>
           <Link
             href="/#upload"
