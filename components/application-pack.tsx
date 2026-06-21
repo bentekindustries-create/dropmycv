@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { trackEvent } from "@/lib/analytics";
 import type { ApplicationPack } from "@/lib/types";
 
 function esc(s: string): string {
@@ -92,6 +93,7 @@ export function ApplicationPackResult({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Couldn't send.");
       setEmailState("sent");
+      trackEvent("pack_emailed");
     } catch (err) {
       setEmailState("error");
       setEmailMsg(err instanceof Error ? err.message : "Couldn't send.");

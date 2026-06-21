@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { CvDropzone } from "@/components/cv-dropzone";
+import { trackEvent } from "@/lib/analytics";
 
 interface Check {
   score: number;
@@ -40,6 +41,7 @@ export default function CvChecker() {
       if (!res.ok) throw new Error(data.error || "Could not check your CV.");
       setCheck(data.check as Check);
       setStage("done");
+      trackEvent("free_check_completed");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
       setStage("error");

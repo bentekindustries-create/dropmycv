@@ -10,6 +10,7 @@ import { StripDemo } from "@/components/strip-demo";
 import { Testimonials } from "@/components/testimonials";
 import { ApplicationPackResult } from "@/components/application-pack";
 import { COUNTRIES, getCurrency } from "@/lib/countries";
+import { trackEvent, bucketCount } from "@/lib/analytics";
 import type { JobMatch, MatchResult, CvReview, ApplicationPack } from "@/lib/types";
 
 type Stage = "idle" | "questionnaire" | "matching" | "results" | "error";
@@ -414,6 +415,7 @@ export default function Home() {
     setStage("matching");
     setError("");
     setSortKey("relevance");
+    trackEvent("match_started", { country, has_cv: cvText.trim().length > 40 });
 
     try {
       const res = await fetch("/api/match", {
@@ -437,11 +439,18 @@ export default function Home() {
       setResult(matchResult);
       setStage("results");
       saveSession(matchResult, fileName, country, location);
+      trackEvent("match_completed", {
+        country,
+        has_cv: cvText.trim().length > 40,
+        job_count: bucketCount(matchResult.jobs?.length ?? 0),
+        experience_level: matchResult.profile?.experienceLevel || "unknown",
+      });
 
       if (!locationOverride && matchResult.profile.location) {
         setLocation(matchResult.profile.location);
       }
     } catch (err) {
+      trackEvent("match_failed", { country });
       setError(
         err instanceof Error ? err.message : "Something went wrong. Please try again."
       );
@@ -452,11 +461,17 @@ export default function Home() {
   async function handleExtracted(cvText: string, name: string) {
     setFileName(name);
     setLastCvText(cvText);
+    trackEvent("cv_uploaded", { country });
     runMatch(cvText, location || undefined, keywords || undefined);
   }
 
   function handleRefine() {
     if (!lastCvText) return;
+    trackEvent("match_refined", {
+      country,
+      has_location: location.trim().length > 0,
+      has_keywords: keywords.trim().length > 0,
+    });
     runMatch(lastCvText, location || undefined, keywords || undefined);
   }
 
@@ -476,6 +491,7 @@ export default function Home() {
       const res = await fetch("/api/checkout", { method: "POST" });
       const data = await res.json();
       if (!res.ok || !data.url) throw new Error(data.error || "Could not start checkout.");
+      trackEvent("review_checkout_started");
       window.location.href = data.url;
     } catch (err) {
       setReviewError(err instanceof Error ? err.message : "Could not start checkout.");
@@ -511,6 +527,7 @@ export default function Home() {
       if (!res.ok) throw new Error(data.error || "Could not generate a review.");
       setReview(data.review as CvReview);
       setReviewStage("done");
+      trackEvent("review_completed");
     } catch (err) {
       setReviewError(err instanceof Error ? err.message : "Something went wrong.");
       setReviewStage("error");
@@ -542,6 +559,7 @@ export default function Home() {
       });
       const data = await res.json();
       if (!res.ok || !data.url) throw new Error(data.error || "Could not start checkout.");
+      trackEvent("pack_checkout_started");
       window.location.href = data.url;
     } catch (err) {
       setPackError(err instanceof Error ? err.message : "Could not start checkout.");
@@ -576,6 +594,7 @@ export default function Home() {
       if (!res.ok) throw new Error(data.error || "Could not build your pack.");
       setPack(data.pack as ApplicationPack);
       setPackStage("done");
+      trackEvent("pack_completed");
     } catch (err) {
       setPackError(err instanceof Error ? err.message : "Something went wrong.");
       setPackStage("error");

@@ -195,8 +195,12 @@ export default function PrivacyPolicy() {
           <section>
             <h2 className="text-lg font-semibold text-slate-800 mb-3">Analytics</h2>
             <p>
-              We use Vercel Web Analytics to understand how many people visit dropmycv and which
-              pages they view. It is privacy-preserving by design: it sets{" "}
+              We use Vercel Web Analytics to understand how many people visit dropmycv, which
+              pages they view, and — in aggregate — which features get used (for example, that a
+              match was run or a CV review was purchased). These feature events are{" "}
+              <strong>anonymous and contain no personal data</strong>: never your CV, name, email,
+              the location you typed, or any job content — only non-identifying signals such as a
+              country code and coarse counts. It is privacy-preserving by design: it sets{" "}
               <strong>no cookies</strong>, stores <strong>no personal information</strong>, and
               does not use cross-site tracking or device fingerprinting. Visitor counts are
               derived from a hashed, non-identifying signal that rotates daily, so it cannot be
