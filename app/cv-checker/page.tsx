@@ -73,14 +73,57 @@ export default function CvChecker() {
             Is your CV holding you back?
           </h1>
           <p className="text-slate-500 max-w-xl mx-auto">
-            Drop your CV for an instant, free check — an honest score and the top things helping and
-            hurting it. No sign-up, and your CV is read in your browser and never stored.
+            Get a quick read on your CV before you apply — an honest score and the top things helping
+            and hurting it. No sign-up, and your CV is read in your browser and never stored.
           </p>
         </section>
 
         {stage === "idle" && (
           <>
             <CvDropzone onExtracted={(t) => handleExtracted(t)} onError={(m) => { setError(m); setStage("error"); }} />
+
+            {/* Sample result — show the output before they commit */}
+            <section>
+              <p className="text-xs uppercase tracking-widest text-slate-400 text-center mb-3">
+                Here&apos;s what your free check looks like
+              </p>
+              <div className="rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-6 space-y-5 max-w-xl mx-auto">
+                <div className="flex items-start gap-4">
+                  <div className="shrink-0 text-center">
+                    <div className="text-4xl font-serif font-bold text-amber-600">68</div>
+                    <div className="text-[10px] uppercase tracking-widest text-slate-400">/ 100</div>
+                  </div>
+                  <div>
+                    <h2 className="text-sm font-semibold text-navy uppercase tracking-widest mb-1">Example CV check</h2>
+                    <p className="text-slate-700 leading-snug text-sm">
+                      A solid mid-level project-manager CV that undersells its impact — strong
+                      experience, but achievements read as duties and it&apos;s missing keywords these
+                      roles screen for.
+                    </p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-emerald-700 uppercase tracking-widest mb-2">✓ Working for you</p>
+                  <ul className="space-y-1 text-sm text-slate-600">
+                    <li className="flex gap-2"><span className="text-emerald-500">•</span><span>Clear progression across 7 years of project delivery</span></li>
+                    <li className="flex gap-2"><span className="text-emerald-500">•</span><span>Relevant certifications (PRINCE2, Agile) called out up front</span></li>
+                  </ul>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-amber-700 uppercase tracking-widest mb-2">⚡ Holding you back</p>
+                  <ul className="space-y-1 text-sm text-slate-600">
+                    <li className="flex gap-2"><span className="text-amber-500">•</span><span>Bullets describe duties (&ldquo;managed stakeholders&rdquo;) rather than quantified outcomes</span></li>
+                    <li className="flex gap-2"><span className="text-amber-500">•</span><span>No budget or timeline figures to evidence the scale you&apos;ve worked at</span></li>
+                  </ul>
+                </div>
+                <p className="text-sm text-slate-500 border-t border-[#c8ecea] pt-3">
+                  Plus <span className="font-semibold text-navy">6 keywords</span> these roles ask for that the CV is missing.
+                </p>
+              </div>
+              <p className="text-center text-xs text-slate-400 mt-2">
+                Example output — your real check is based on your own CV.
+              </p>
+            </section>
 
             <section className="pt-12 space-y-10 text-slate-600 leading-relaxed">
               <div>
@@ -250,9 +293,17 @@ export default function CvChecker() {
                 onClick={unlockFullReview}
                 className="inline-block text-sm px-6 py-3 rounded-lg bg-navy text-white font-semibold hover:bg-navy-dark transition-colors"
               >
-                Unlock the full review — A$9 →
+                Match my CV &amp; unlock the full review — A$9 →
               </button>
               <p className="text-xs text-slate-400">Free job matches first · review is the optional A$9 add-on</p>
+              <div className="pt-1">
+                <button
+                  onClick={unlockFullReview}
+                  className="text-sm text-teal hover:text-navy font-medium underline underline-offset-2"
+                >
+                  Or just match this CV to live jobs — free →
+                </button>
+              </div>
             </div>
           </div>
         )}
