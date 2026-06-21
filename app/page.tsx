@@ -718,6 +718,34 @@ export default function Home() {
               </div>
             </div>
 
+            {/* Explore — internal links for SEO + navigation */}
+            <div className="pt-4 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4 text-sm">
+              <div>
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Find jobs</p>
+                <ul className="space-y-1.5">
+                  <li><a href="/match-my-cv-to-jobs" className="text-slate-500 hover:text-teal transition-colors">Match my CV to jobs</a></li>
+                  <li><a href="/what-jobs-can-i-get-with-my-cv" className="text-slate-500 hover:text-teal transition-colors">What jobs can I get?</a></li>
+                  <li><a href="/ai-job-matcher" className="text-slate-500 hover:text-teal transition-colors">AI job matcher</a></li>
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Your CV</p>
+                <ul className="space-y-1.5">
+                  <li><a href="/cv-checker" className="text-slate-500 hover:text-teal transition-colors">Free CV checker</a></li>
+                  <li><a href="/cv-review" className="text-slate-500 hover:text-teal transition-colors">AI CV review</a></li>
+                  <li><a href="/private-job-search" className="text-slate-500 hover:text-teal transition-colors">Private job search</a></li>
+                </ul>
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">By country</p>
+                <ul className="space-y-1.5">
+                  <li><a href="/jobs-in/australia" className="text-slate-500 hover:text-teal transition-colors">Jobs in Australia</a></li>
+                  <li><a href="/jobs-in/united-kingdom" className="text-slate-500 hover:text-teal transition-colors">Jobs in the UK</a></li>
+                  <li><a href="/jobs-in/united-states" className="text-slate-500 hover:text-teal transition-colors">Jobs in the US</a></li>
+                </ul>
+              </div>
+            </div>
+
             {/* FAQ structured data for SEO */}
             <script
               type="application/ld+json"

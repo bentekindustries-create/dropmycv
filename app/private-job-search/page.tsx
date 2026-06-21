@@ -84,6 +84,34 @@ export default function PrivateJobSearch() {
             </Link>
           </div>
 
+          <h2 className="text-xl font-semibold text-navy pt-2">What &ldquo;nothing stored&rdquo; actually means</h2>
+          <p>
+            It&apos;s worth being precise, because trust depends on it. When you use dropmycv:
+          </p>
+          <ul className="list-disc pl-5 space-y-2">
+            <li>The CV <strong>file</strong> never leaves your device — it&apos;s parsed in your browser.</li>
+            <li>Your <strong>email, phone number and web links</strong> are removed from the text before anything is sent.</li>
+            <li>The remaining text (which still includes your name and experience) is sent over an encrypted connection <strong>only to generate your matches</strong>, then discarded. It isn&apos;t saved to a database, logged, or used to build a profile.</li>
+            <li>There are <strong>no accounts and no cookies</strong>, so there&apos;s nothing tying one search to another or to you.</li>
+          </ul>
+          <p>
+            In other words: we designed the service so there&apos;s nothing for us to sell, leak, or
+            be compelled to hand over. The full detail is in our{" "}
+            <Link href="/privacy" className="text-teal hover:underline">Privacy Policy</Link>.
+          </p>
+
+          <h2 className="text-xl font-semibold text-navy pt-2">Who private job search is for</h2>
+          <p>
+            It matters most if you&apos;re <strong>job-searching while employed</strong> and
+            don&apos;t want your current employer or their recruiters stumbling across your CV in a
+            database; if you&apos;re <strong>senior</strong> and tired of being harvested by agencies;
+            or if you simply <strong>don&apos;t want your data sold</strong>. You still get the upside
+            — see{" "}
+            <Link href="/what-jobs-can-i-get-with-my-cv" className="text-teal hover:underline">what jobs you can get with your CV</Link>{" "}
+            or jump straight to{" "}
+            <Link href="/match-my-cv-to-jobs" className="text-teal hover:underline">matching your CV to jobs</Link>.
+          </p>
+
           <h2 className="text-xl font-semibold text-navy pt-2">Frequently asked</h2>
           <p>
             <strong>Do you store my CV?</strong> No. It&apos;s read in your browser and the stripped
@@ -91,12 +119,17 @@ export default function PrivateJobSearch() {
             <Link href="/privacy" className="text-teal hover:underline">Privacy Policy</Link>.
           </p>
           <p>
+            <strong>Do recruiters see my CV?</strong> No. There&apos;s no candidate database — we
+            don&apos;t store your CV, so there&apos;s nothing for a recruiter to search.
+          </p>
+          <p>
             <strong>Do I need an account?</strong> No — there&apos;s no sign-up or login of any kind.
           </p>
           <p>
             <strong>Is it free?</strong> Yes, matching is free. An optional AI{" "}
             <Link href="/cv-review" className="text-teal hover:underline">CV review</Link> is
-            available for a one-off A$9.
+            available for a one-off A$9, or try a{" "}
+            <Link href="/cv-checker" className="text-teal hover:underline">free CV check</Link> first.
           </p>
         </article>
       </main>
