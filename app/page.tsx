@@ -532,6 +532,42 @@ export default function Home() {
               ))}
             </div>
 
+            {/* Sample match — show the output before they commit */}
+            <div>
+              <p className="text-xs uppercase tracking-widest text-slate-400 text-center mb-3">
+                Here&apos;s what a match looks like
+              </p>
+              <div className="bg-white rounded-xl border border-slate-200 p-5 max-w-md mx-auto shadow-sm">
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-slate-800 leading-snug">Senior Project Manager</h3>
+                    <p className="text-sm text-slate-500 mt-0.5">Aurecon · Brisbane, QLD</p>
+                  </div>
+                  <span className="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-light text-teal">
+                    86% match
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 italic leading-snug mt-2">
+                  Strong fit — program governance, stakeholder management &amp; transport-sector
+                  delivery line up with this role.
+                </p>
+                <div className="flex flex-wrap gap-1.5 mt-3">
+                  {["Stakeholder Management", "Program Governance", "Transport"].map((s) => (
+                    <span key={s} className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                      <span className="text-emerald-500">✓</span>{s}
+                    </span>
+                  ))}
+                </div>
+                <div className="flex flex-wrap items-center gap-2 mt-3">
+                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">🟢 Posted 2d ago</span>
+                  <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">💰 $140k – $170k</span>
+                </div>
+              </div>
+              <p className="text-center text-xs text-slate-400 mt-2">
+                Example — your real matches are ranked from your CV
+              </p>
+            </div>
+
             {/* Country + location */}
             <div className="flex flex-col items-center gap-3">
               <div className="flex items-center gap-2 flex-wrap justify-center">
@@ -617,6 +653,42 @@ export default function Home() {
                   <div className="text-slate-400 text-xs mt-1 leading-relaxed">{item.desc}</div>
                 </div>
               ))}
+            </div>
+
+            {/* What's free vs A$9 — clarity table */}
+            <div className="pt-4 border-t border-slate-100">
+              <h2 className="text-lg font-serif font-bold text-navy text-center mb-4">
+                What&apos;s free, what&apos;s A$9
+              </h2>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm max-w-xl mx-auto">
+                  <thead>
+                    <tr className="text-left">
+                      <th className="p-2 font-medium text-slate-400"></th>
+                      <th className="p-2 font-semibold text-slate-600 text-center">Free CV check</th>
+                      <th className="p-2 font-semibold text-slate-600 text-center">Free job match</th>
+                      <th className="p-2 font-semibold text-navy text-center">A$9 review</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {[
+                      { f: "CV score", a: "✓", b: "—", c: "✓" },
+                      { f: "Live job matches", a: "—", b: "✓", c: "Uses your matches" },
+                      { f: "Keyword gaps", a: "Count only", b: "—", c: "Full list" },
+                      { f: "Bullet rewrites", a: "—", b: "—", c: "✓" },
+                      { f: "Action plan", a: "—", b: "—", c: "✓" },
+                      { f: "Account / CV stored", a: "No", b: "No", c: "No" },
+                    ].map((r, i) => (
+                      <tr key={r.f} className={i % 2 ? "" : "bg-slate-50/50"}>
+                        <td className="p-2 text-slate-600 font-medium">{r.f}</td>
+                        <td className="p-2 text-slate-500 text-center">{r.a}</td>
+                        <td className="p-2 text-slate-500 text-center">{r.b}</td>
+                        <td className="p-2 text-slate-700 text-center">{r.c}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             {/* Proof strip — real, claimable sources */}
@@ -1083,7 +1155,7 @@ export default function Home() {
       </main>
 
       <footer className="bg-navy py-5 text-center text-xs text-white/40">
-        A <span className="font-medium text-white/60">BenTek Industries</span> product
+        A <a href="/about" className="font-medium text-white/60 hover:text-white/80 transition-colors">BenTek Industries</a> product
         <span className="mx-3">·</span>
         dropmycv · No data stored · No account needed
         <span className="mx-3">·</span>
