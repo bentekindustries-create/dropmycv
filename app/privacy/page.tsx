@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { PrivacyFlow } from "@/components/privacy-flow";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — dropmycv",
@@ -38,6 +39,11 @@ export default function PrivacyPolicy() {
                 privacy@dropmycv.app
               </a>
             </p>
+          </section>
+
+          <section className="not-prose">
+            <h2 className="text-lg font-semibold text-slate-800 mb-4">How your CV flows through dropmycv</h2>
+            <PrivacyFlow />
           </section>
 
           <section>

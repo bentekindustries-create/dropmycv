@@ -797,6 +797,13 @@ export default function Home() {
                   setStage("error");
                 }}
               />
+              {/* Privacy reassurance right at the upload decision point */}
+              <p className="text-center text-xs text-slate-400 leading-relaxed max-w-xl mx-auto mt-3">
+                <span className="text-slate-500 font-medium">🔒 How your CV is handled:</span>{" "}
+                parsed on your device → email, phone &amp; links stripped → encrypted text matched →
+                results returned → text discarded.{" "}
+                <a href="/private-job-search" className="text-teal hover:underline">See exactly how</a>
+              </p>
             </div>
 
             {/* No CV option */}
