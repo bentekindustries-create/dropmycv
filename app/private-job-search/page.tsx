@@ -50,8 +50,9 @@ export default function PrivateJobSearch() {
               your own device — the file itself is never uploaded.
             </li>
             <li>
-              <strong>Personal details stripped first.</strong> Your name, email, phone number and
-              links are removed before any text is sent for matching.
+              <strong>Contact details stripped first.</strong> Your email, phone number and web
+              links are removed before any text is sent. Your name stays in the CV text used to
+              find matches, but it&apos;s never stored.
             </li>
             <li>
               <strong>Nothing stored.</strong> Each search is stateless. There&apos;s no profile, no
@@ -66,10 +67,10 @@ export default function PrivateJobSearch() {
           <h2 className="text-xl font-semibold text-navy pt-2">You still get better results</h2>
           <p>
             Privacy doesn&apos;t mean worse matches. dropmycv searches{" "}
-            <strong>six live job sources at once</strong> — Seek, LinkedIn, Indeed, Greenhouse,
-            Lever, Jora and more — and uses AI to rank them against your actual skills, so you get a
-            short, relevant shortlist with a match score and reason for each role, instead of
-            hundreds of listings to wade through.
+            <strong>across multiple job-search providers and company career pages at once</strong> —
+            surfacing roles from Seek, LinkedIn, Indeed, Greenhouse, Lever, Jora and more — and uses
+            AI to rank them against your actual skills, so you get a short, relevant shortlist with a
+            match score and reason for each role, instead of hundreds of listings to wade through.
           </p>
 
           <div className="not-prose rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-6 text-center my-8">

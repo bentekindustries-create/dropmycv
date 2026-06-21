@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const ROWS: { feature: string; us: string; them: string }[] = [
   { feature: "Account / sign-up required", us: "No — drop your CV and go", them: "Usually yes" },
   { feature: "Your CV stored on their servers", us: "No — read in your browser, nothing stored", them: "Typically yes, indefinitely" },
-  { feature: "Sources searched", us: "Six at once (Seek, LinkedIn, Indeed, Greenhouse, Lever & more)", them: "Usually one" },
+  { feature: "Sources searched", us: "Multiple providers + company career pages at once (Seek, LinkedIn, Indeed, Greenhouse, Lever, Jora & more)", them: "Usually one" },
   { feature: "Ranked to your actual skills", us: "Yes — AI match score + reason per role", them: "Keyword search; you do the filtering" },
   { feature: "Cookies / cross-site tracking", us: "None", them: "Commonly yes" },
   { feature: "Cost to you", us: "Free (optional A$9 CV review)", them: "Free" },

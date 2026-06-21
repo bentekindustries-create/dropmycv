@@ -62,7 +62,7 @@ const TIERS = [
 ];
 
 const MATCHING_STEPS = [
-  "Reading & anonymising your CV…",
+  "Reading your CV…",
   "Searching live jobs…",
   "Ranking your matches…",
 ];
@@ -74,11 +74,11 @@ const FAQS = [
   },
   {
     q: "Is my CV safe? Do you store it?",
-    a: "Your CV is read inside your browser, and your name, email, phone number and links are stripped out before any text is sent for matching. Nothing is stored on our servers — every search is stateless. No account, no profile, no tracking.",
+    a: "Your CV is read inside your browser, and your email, phone number and web links are stripped out before any text is sent. Your name and CV content are sent over an encrypted connection only to find matches, then discarded — nothing is stored on our servers. Every search is stateless: no account, no profile, no tracking.",
   },
   {
     q: "How is this different from Indeed or Seek?",
-    a: "Instead of one board and 900 results to wade through, we search six live job sources at once and use AI to rank them against your actual skills — so you get a short, relevant shortlist with a match score and reason for each. And we never make you create an account or keep your data.",
+    a: "Instead of one board and 900 results to wade through, we search across multiple job-search providers and company career pages at once and use AI to rank the results against your actual skills — so you get a short, relevant shortlist with a match score and reason for each. And we never make you create an account or keep your data.",
   },
   {
     q: "Do I need to sign up or create an account?",
@@ -513,8 +513,8 @@ export default function Home() {
               </h1>
               <p className="text-slate-500 text-base max-w-xl mx-auto">
                 Drop your CV and our AI ranks thousands of live roles from Seek, LinkedIn, Indeed
-                &amp; more against your actual skills. No sign-up, no spam — and your name, email
-                &amp; phone never leave your browser.
+                &amp; more against your actual skills. No sign-up, no spam — and your email, phone
+                &amp; links are stripped in your browser before anything is sent.
               </p>
             </div>
 
@@ -605,7 +605,7 @@ export default function Home() {
             {/* How it works */}
             <div className="grid grid-cols-3 gap-6 pt-2 border-t border-slate-100">
               {[
-                { step: "1", title: "Drop it in", desc: "Scanned right in your browser — your name, number & email never leave your device" },
+                { step: "1", title: "Drop it in", desc: "Scanned right in your browser — your email, phone & links are stripped before anything leaves your device" },
                 { step: "2", title: "We read the whole market", desc: "Thousands of live roles scanned in seconds, so you don't have to" },
                 { step: "3", title: "Skip the scrolling", desc: "A ranked shortlist you can actually apply to — not 900 tabs to sift through" },
               ].map((item) => (
@@ -622,7 +622,7 @@ export default function Home() {
             {/* Proof strip — real, claimable sources */}
             <div className="text-center pt-2">
               <p className="text-xs uppercase tracking-widest text-slate-400 mb-3">
-                Six live job sources, one ranked shortlist
+                Searching job sites &amp; company career pages — one ranked shortlist
               </p>
               <div className="flex items-center justify-center gap-x-4 gap-y-2 flex-wrap text-sm font-medium text-slate-500">
                 {["Seek", "LinkedIn", "Indeed", "Greenhouse", "Lever", "Jora", "Careerjet"].map((s) => (
@@ -766,7 +766,7 @@ export default function Home() {
                 {MATCHING_STEPS[matchingStep]}
               </p>
               <p className="text-slate-400 mt-1 text-sm">
-                {matchingStep === 0 && <>{fileName.includes("(no CV)") ? <>Building your profile…</> : <>Stripping out your email, phone &amp; personal details</>}</>}
+                {matchingStep === 0 && <>{fileName.includes("(no CV)") ? <>Building your profile…</> : <>Removing your email, phone &amp; links</>}</>}
                 {matchingStep === 1 && <>Checking Adzuna, Seek, LinkedIn &amp; more</>}
                 {matchingStep === 2 && <>Almost there — finding your best matches</>}
               </p>
@@ -783,7 +783,7 @@ export default function Home() {
             {/* Persistent privacy reassurance */}
             <p className="flex items-center gap-1.5 text-xs text-slate-400 mt-2">
               <span>🔒</span>
-              <span>Your personal details are removed in your browser — they never reach our servers.</span>
+              <span>Your email, phone &amp; links are stripped in your browser, and your CV is never stored.</span>
             </p>
           </div>
         )}
