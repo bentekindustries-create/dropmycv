@@ -687,6 +687,12 @@ function escapeRegex(s: string): string {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+const SKILL_STOPWORDS = new Set(["and", "the", "of", "for", "with", "a", "an", "to", "in", "on", "or"]);
+
+function wordInHay(word: string, hay: string): boolean {
+  return new RegExp(`(^|[^a-z0-9])${escapeRegex(word)}([^a-z0-9]|$)`, "i").test(hay);
+}
+
 function matchedSkills(job: NormalizedJob, skills: string[]): string[] {
   const hay = `${job.title} ${job.description}`.toLowerCase();
   const seen = new Set<string>();
@@ -696,14 +702,32 @@ function matchedSkills(job: NormalizedJob, skills: string[]): string[] {
     if (s.length < 2) continue; // skip ambiguous single-char skills
     const key = s.toLowerCase();
     if (seen.has(key)) continue;
-    const re = new RegExp(`(^|[^a-z0-9])${escapeRegex(key)}([^a-z0-9]|$)`, "i");
-    if (re.test(hay)) {
+
+    let hit = wordInHay(key, hay); // exact phrase match (best)
+    if (!hit) {
+      // Multi-word skills (e.g. "patient care", "clinical assessment", "fault finding")
+      // often appear with words split or reordered in a listing — count it a match when
+      // all the meaningful words are present individually.
+      const words = key.split(/[^a-z0-9]+/).filter((w) => w.length >= 3 && !SKILL_STOPWORDS.has(w));
+      if (words.length >= 2 && words.every((w) => wordInHay(w, hay))) hit = true;
+    }
+
+    if (hit) {
       seen.add(key);
       out.push(s);
     }
     if (out.length >= 6) break;
   }
   return out;
+}
+
+// Drop obviously-broken salary values from feeds (min 0, max below min, etc.) so
+// the UI never shows "$0 – $176k" or "$69k – $6".
+function cleanSalary(min?: number, max?: number): { salaryMin?: number; salaryMax?: number } {
+  let lo = typeof min === "number" && min > 0 ? min : undefined;
+  let hi = typeof max === "number" && max > 0 ? max : undefined;
+  if (lo !== undefined && hi !== undefined && hi < lo) hi = undefined; // max can't be below min
+  return { salaryMin: lo, salaryMax: hi };
 }
 
 // ─── Post-rank freshness decay ────────────────────────────────────────────────
@@ -891,6 +915,7 @@ export async function POST(request: Request) {
 
 {
   "jobTitles": ["primary job title", "1-2 close alternatives the candidate has actually held"],
+  "targetTitles": ["if the CV explicitly states roles the candidate WANTS TO MOVE INTO or is transitioning toward (e.g. 'looking to move into project coordination'), list 1-3 such target roles; otherwise an empty array"],
   "titleSynonyms": ["3 alternative titles employers commonly use in job postings for this role — different phrasing, not just seniority variants"],
   "skills": ["up to 10 skills — technical skills, tools, domain knowledge, certifications"],
   "industry": "primary industry or sector (e.g. Healthcare, Finance, Technology, Construction, Trades)",
@@ -910,6 +935,7 @@ ${cvText.slice(0, 12000)}`,
 
     let profile: CvProfile;
     let expandedTitles: string[];
+    let targetTitles: string[] = []; // roles the candidate wants to move INTO (career change)
     try {
       const raw = JSON.parse(stripCodeFence(profileRaw));
       const validLevels = new Set(["junior", "mid", "senior", "executive"]);
@@ -931,12 +957,21 @@ ${cvText.slice(0, 12000)}`,
       };
       if (profile.jobTitles.length === 0) profile.jobTitles = ["professional"];
 
-      // Merge original titles + synonyms, deduplicated
+      // Roles the candidate explicitly wants to move into (career change)
+      targetTitles = (Array.isArray(raw.targetTitles) ? raw.targetTitles : [])
+        .filter((t: unknown) => typeof t === "string")
+        .map((t: string) => sanitiseString(t, 100))
+        .filter(Boolean)
+        .slice(0, 3);
+
+      // Merge held titles + stated targets + synonyms, deduplicated. Target titles
+      // go near the front so career-changers actually get searched for the roles
+      // they want, not only the ones they're leaving.
       const synonyms = (Array.isArray(raw.titleSynonyms) ? raw.titleSynonyms : [])
         .filter((s: unknown) => typeof s === "string")
         .map((s: string) => sanitiseString(s, 100))
         .filter(Boolean);
-      expandedTitles = [...new Set([...profile.jobTitles, ...synonyms])].slice(0, 5);
+      expandedTitles = [...new Set([...profile.jobTitles, ...targetTitles, ...synonyms])].slice(0, 6);
     } catch {
       profile = {
         jobTitles: ["professional"],
@@ -1018,17 +1053,21 @@ ${cvText.slice(0, 12000)}`,
           content: `You are a job matching expert. Score each job for this candidate using the rubric below.
 
 Candidate:
-- Titles sought: ${profile.jobTitles.join(", ")}
-- Also considers: ${expandedTitles.slice(profile.jobTitles.length).join(", ") || "n/a"}
+- Titles held: ${profile.jobTitles.join(", ")}${
+            targetTitles.length > 0
+              ? `\n- WANTS TO MOVE INTO (career change — value these target roles highly even if the title differs from past roles, where their transferable skills fit): ${targetTitles.join(", ")}`
+              : ""
+          }
+- Also considers: ${expandedTitles.slice(profile.jobTitles.length).filter((t) => !targetTitles.includes(t)).join(", ") || "n/a"}
 - Industry: ${profile.industry || "not specified"}
 - Experience: ${profile.yearsExperience || "unspecified"}, ${profile.experienceLevel} level
 - Skills: ${profile.skills.join(", ")}
 - Location: ${candidateLocation}${preferenceNote}
 
 Scoring rubric (total 100 points):
-- Title alignment (30pts): how closely does the job title match what they're looking for or would consider?
+- Title alignment (30pts): how closely does the job title match a title they've held OR a role they want to move into? ${targetTitles.length > 0 ? "Give strong credit to roles matching their stated target direction when their transferable skills support it." : ""}
 - Skills overlap (25pts): how many of their skills appear relevant to this role?
-- Seniority fit (20pts): does the role suit their experience level — neither too junior nor too senior?
+- Seniority fit (20pts): a role AT the candidate's level should score higher than one a level above or below, all else equal. Apply a real penalty to roles clearly more than one level above them (e.g. Staff/Principal/Head/Director for a mid-level candidate) — those are stretch roles, not the best match, so an exact-level role must not be out-ranked by a more-senior one on title alone.
 - Location fit (15pts): is the role in or near their location, or remote? Penalise heavily if clearly wrong country/region.
 - Overall relevance (10pts): industry fit, preferences, and any other context
 
@@ -1073,7 +1112,7 @@ JSON only, no markdown.`,
     const aboveThreshold = withFreshness.filter((e) => e.score >= 40);
     const finalEntries = aboveThreshold.length >= 5 ? aboveThreshold : withFreshness.slice(0, 5);
 
-    const jobs = finalEntries
+    const mappedJobs = finalEntries
       .map(({ i, score, reason }) => {
         const j = allJobs[i];
         if (!isValidUrl(j.url)) return null;
@@ -1082,8 +1121,7 @@ JSON only, no markdown.`,
           title: sanitiseString(j.title, 200),
           company: sanitiseString(j.company, 200),
           location: sanitiseString(j.location, 200),
-          salaryMin: j.salaryMin,
-          salaryMax: j.salaryMax,
+          ...cleanSalary(j.salaryMin, j.salaryMax),
           description: sanitiseString(j.description, 400),
           url: j.url,
           created: j.created,
@@ -1092,31 +1130,51 @@ JSON only, no markdown.`,
           matchedSkills: matchedSkills(j, profile.skills).map((s) => sanitiseString(s, 50)),
         };
       })
-      .filter(Boolean);
+      .filter((j): j is NonNullable<typeof j> => j !== null);
+
+    // Employer-diversity cap: stop one company from dominating the shortlist
+    // (e.g. six near-identical franchise listings). Keep the highest-scored 2 per
+    // company; uncredited (blank-company) listings pass through.
+    const MAX_PER_COMPANY = 2;
+    const perCompany = new Map<string, number>();
+    const jobs = [...mappedJobs]
+      .sort((a, b) => (b.matchScore ?? 0) - (a.matchScore ?? 0))
+      .filter((j) => {
+        const key = j.company.trim().toLowerCase();
+        if (!key) return true;
+        const n = perCompany.get(key) ?? 0;
+        if (n >= MAX_PER_COMPANY) return false;
+        perCompany.set(key, n + 1);
+        return true;
+      });
 
     // "Straight from the employer" — a few company-direct (ATS) roles with real
     // skill overlap, deduped against the main ranked list. These rarely out-rank
     // clean local listings, so we surface them separately.
     const mainUrls = new Set(finalEntries.map((e) => allJobs[e.i]?.url).filter(Boolean));
+    // Reject platform/aggregator names and other junk that slip through ATS parsing.
+    const JUNK_TITLE = /^(jobgether|jobs?|careers?|apply now|view job|see more|home)$/i;
     const directJobs = allJobs
       .filter((j) => j.id.startsWith("brave-ats") && isValidUrl(j.url) && isAtsUrl(j.url) && !mainUrls.has(j.url))
       .map((j) => ({ j, ms: matchedSkills(j, profile.skills) }))
-      .filter((x) => x.ms.length >= 1 && x.j.title.length >= 4)
-      // Prefer well-parsed listings (real company) then strongest skill overlap
-      .sort((a, b) => {
-        const ca = a.j.company ? 1 : 0;
-        const cb = b.j.company ? 1 : 0;
-        if (ca !== cb) return cb - ca;
-        return b.ms.length - a.ms.length;
-      })
+      // Require a real company AND location and a sensible title — drops "Jobgether @ ()"
+      .filter(
+        (x) =>
+          x.ms.length >= 1 &&
+          x.j.title.trim().length >= 4 &&
+          !JUNK_TITLE.test(x.j.title.trim()) &&
+          x.j.company.trim().length >= 2 &&
+          x.j.location.trim().length >= 2
+      )
+      // Strongest skill overlap first
+      .sort((a, b) => b.ms.length - a.ms.length)
       .slice(0, 3)
       .map(({ j, ms }) => ({
         id: j.id,
         title: sanitiseString(j.title, 200),
         company: sanitiseString(j.company, 200),
         location: sanitiseString(j.location, 200),
-        salaryMin: j.salaryMin,
-        salaryMax: j.salaryMax,
+        ...cleanSalary(j.salaryMin, j.salaryMax),
         description: sanitiseString(j.description, 400),
         url: j.url,
         created: j.created,
