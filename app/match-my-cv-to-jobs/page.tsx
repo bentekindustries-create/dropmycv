@@ -53,6 +53,15 @@ export default function MatchMyCv() {
           looks; dropmycv shows you how it <strong>performs against live roles</strong>.
         </p>
 
+        <h2 className="text-xl font-semibold text-navy pt-2">How your match score works</h2>
+        <p>
+          Each role is scored out of 100 from your <strong>title alignment, skills overlap, seniority
+          fit, location and industry relevance</strong>, with fresher listings ranked higher. Every
+          match shows a one-line reason, so it&apos;s never a black box — see the full breakdown on the{" "}
+          <Link href="/ai-job-matcher" className="text-teal hover:underline">AI job matcher</Link> page.
+          It&apos;s a strong starting point; always read the original listing before applying.
+        </p>
+
         <h2 className="text-xl font-semibold text-navy pt-2">Private by default</h2>
         <p>
           No account, no sign-up, and your CV is never stored. Your contact details are stripped in

@@ -724,34 +724,62 @@ export default function Home() {
               <p className="text-xs uppercase tracking-widest text-slate-400 text-center mb-3">
                 Here&apos;s what a match looks like
               </p>
-              <div className="bg-white rounded-xl border border-slate-200 p-5 max-w-md mx-auto shadow-sm">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="min-w-0">
-                    <h3 className="font-semibold text-slate-800 leading-snug">Senior Project Manager</h3>
-                    <p className="text-sm text-slate-500 mt-0.5">Aurecon · Brisbane, QLD</p>
-                  </div>
-                  <span className="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-light text-teal">
-                    86% match
-                  </span>
-                </div>
-                <p className="text-xs text-slate-400 italic leading-snug mt-2">
-                  Strong fit — program governance, stakeholder management &amp; transport-sector
-                  delivery line up with this role.
-                </p>
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {["Stakeholder Management", "Program Governance", "Transport"].map((s) => (
-                    <span key={s} className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
-                      <span className="text-emerald-500">✓</span>{s}
+              <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <h3 className="font-semibold text-slate-800 leading-snug">Senior Project Manager</h3>
+                      <p className="text-sm text-slate-500 mt-0.5">Aurecon · Brisbane, QLD</p>
+                    </div>
+                    <span className="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-light text-teal">
+                      86% match
                     </span>
-                  ))}
+                  </div>
+                  <p className="text-xs text-slate-400 italic leading-snug mt-2">
+                    Strong fit — program governance, stakeholder management &amp; transport-sector
+                    delivery line up with this role.
+                  </p>
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {["Stakeholder Management", "Program Governance", "Transport"].map((s) => (
+                      <span key={s} className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                        <span className="text-emerald-500">✓</span>{s}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 mt-3">
+                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">🟢 Posted 2d ago</span>
+                    <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">💰 $140k – $170k</span>
+                  </div>
                 </div>
-                <div className="flex flex-wrap items-center gap-2 mt-3">
-                  <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">🟢 Posted 2d ago</span>
-                  <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">💰 $140k – $170k</span>
+                <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <h3 className="font-semibold text-slate-800 leading-snug">Registered Nurse</h3>
+                      <p className="text-sm text-slate-500 mt-0.5">Ramsay Health · Melbourne, VIC</p>
+                    </div>
+                    <span className="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-light text-teal">
+                      81% match
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-400 italic leading-snug mt-2">
+                    Strong fit — acute care, patient assessment &amp; medication management align;
+                    aged-care experience would widen adjacent matches.
+                  </p>
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {["Patient Care", "Clinical Assessment", "AHPRA"].map((s) => (
+                      <span key={s} className="inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full">
+                        <span className="text-emerald-500">✓</span>{s}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2 mt-3">
+                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700">🟢 Posted 4d ago</span>
+                    <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full">💰 $75k – $92k</span>
+                  </div>
                 </div>
               </div>
-              <p className="text-center text-xs text-slate-400 mt-2 max-w-md mx-auto leading-relaxed">
-                Example — every match includes a score, the reason it fits, your matching skills,
+              <p className="text-center text-xs text-slate-400 mt-3 max-w-xl mx-auto leading-relaxed">
+                Examples — every match includes a score, the reason it fits, your matching skills,
                 salary where available, and a link to the original listing.
               </p>
             </div>
@@ -887,6 +915,29 @@ export default function Home() {
                   </tbody>
                 </table>
               </div>
+              <p className="text-center text-xs text-slate-400 mt-3">
+                Found the one you really want?{" "}
+                <a href="/application-pack" className="text-teal hover:underline">Get an Application Pack</a>{" "}
+                tailored to that job — A$19.
+              </p>
+            </div>
+
+            {/* When you're ready to apply — A$19 Application Pack */}
+            <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
+              <div className="flex-1">
+                <p className="text-xs font-semibold text-teal uppercase tracking-widest">When you&apos;re ready to apply · A$19</p>
+                <h3 className="text-lg font-serif font-bold text-navy mt-0.5">Get an Application Pack for one role</h3>
+                <p className="text-sm text-slate-500 mt-1">
+                  Pick a matched job and we build a tailored cover-letter draft, reworded CV bullets,
+                  the keywords to include &amp; likely interview questions — for that exact listing.
+                </p>
+              </div>
+              <a
+                href="/application-pack"
+                className="shrink-0 inline-block text-sm px-5 py-2.5 rounded-lg border border-navy/15 text-navy font-semibold hover:bg-slate-50 transition-colors text-center"
+              >
+                See what&apos;s included →
+              </a>
             </div>
 
             {/* Proof strip — real, claimable sources */}
@@ -947,6 +998,7 @@ export default function Home() {
                 <ul className="space-y-1.5">
                   <li><a href="/cv-checker" className="text-slate-500 hover:text-teal transition-colors">Free CV checker</a></li>
                   <li><a href="/cv-review" className="text-slate-500 hover:text-teal transition-colors">AI CV review</a></li>
+                  <li><a href="/application-pack" className="text-slate-500 hover:text-teal transition-colors">Application Pack</a></li>
                   <li><a href="/private-job-search" className="text-slate-500 hover:text-teal transition-colors">Private job search</a></li>
                 </ul>
               </div>
@@ -1500,6 +1552,8 @@ export default function Home() {
         <a href="/cv-checker" className="hover:text-white/80 transition-colors">Free CV checker</a>
         <span className="mx-2">·</span>
         <a href="/cv-review" className="hover:text-white/80 transition-colors">AI CV review</a>
+        <span className="mx-2">·</span>
+        <a href="/application-pack" className="hover:text-white/80 transition-colors">Application Pack</a>
         <span className="mx-2">·</span>
         <a href="/private-job-search" className="hover:text-white/80 transition-colors">Private job search</a>
         <span className="mx-2">·</span>

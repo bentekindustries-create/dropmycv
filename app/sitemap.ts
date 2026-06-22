@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "",
     "/cv-checker",
     "/cv-review",
+    "/application-pack",
     "/match-my-cv-to-jobs",
     "/what-jobs-can-i-get-with-my-cv",
     "/ai-job-matcher",

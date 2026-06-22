@@ -41,6 +41,24 @@ export default function AiJobMatcher() {
           <li><strong>Free.</strong> Matching costs nothing; an optional <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link> is A$9.</li>
         </ul>
 
+        <h2 className="text-xl font-semibold text-navy pt-2">How your match score works</h2>
+        <p>
+          Each role is scored out of 100 so the strongest fits rise to the top. There&apos;s no black
+          box — the score weighs six things:
+        </p>
+        <ul className="list-disc pl-5 space-y-1.5">
+          <li><strong>Title alignment</strong> — how closely the role matches what you do or would consider</li>
+          <li><strong>Skills overlap</strong> — how many of your skills the role actually calls for</li>
+          <li><strong>Seniority fit</strong> — whether the level suits your experience, neither too junior nor too senior</li>
+          <li><strong>Location fit</strong> — whether it&apos;s in or near your location, or remote</li>
+          <li><strong>Industry &amp; relevance</strong> — sector fit and other context from your CV</li>
+          <li><strong>Recency</strong> — fresher listings rank higher, since stale ones are likelier already filled</li>
+        </ul>
+        <p>
+          Every match shows a one-line reason, so you see <em>why</em> it scored as it did before you
+          click. Treat it as a strong starting point — always read the original listing before applying.
+        </p>
+
         <h2 className="text-xl font-semibold text-navy pt-2">AI matcher vs a chatbot</h2>
         <p>
           You could paste your CV into a general chatbot and ask for job ideas — but it has no access
