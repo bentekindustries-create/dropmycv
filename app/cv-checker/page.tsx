@@ -200,7 +200,7 @@ export default function CvChecker() {
                 <div className="space-y-4 text-sm">
                   <p><strong className="text-slate-700">Is it really free?</strong><br />Yes — the CV check is free with no account. The full review is an optional A$9.</p>
                   <p><strong className="text-slate-700">Do you store my CV?</strong><br />No. It&apos;s read in your browser and the stripped text is checked only to produce your score, then discarded.</p>
-                  <p><strong className="text-slate-700">How is this different from the A$9 review?</strong><br />The free check is a quick triage. The full <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link> matches your CV to live jobs first, then shows the exact missing keywords, rewrites and a prioritised plan.</p>
+                  <p><strong className="text-slate-700">How is this different from the A$9 review?</strong><br />The free check is a quick triage. The full <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link>{" "}matches your CV to live jobs first, then shows the exact missing keywords, rewrites and a prioritised plan.</p>
                   <p><strong className="text-slate-700">How long does it take?</strong><br />A few seconds.</p>
                 </div>
                 <p className="text-sm text-slate-500 mt-4">

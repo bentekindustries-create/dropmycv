@@ -124,7 +124,7 @@ export default async function JobsLanding({
               ? `Browsing live ${role} roles in ${city}. `
               : `Looking for ${role} roles in ${city}? `}
             Instead of scrolling endlessly, drop your CV and we&apos;ll rank the best matches for{" "}
-            <em>your</em> skills in seconds — across Seek, LinkedIn, Indeed and more. No account,
+            <em>your</em>{" "}skills in seconds — across Seek, LinkedIn, Indeed and more. No account,
             nothing stored.
           </p>
         </div>

@@ -103,7 +103,7 @@ export default async function CountryHub({
 
         <div className="pt-6 border-t border-slate-100 text-sm text-slate-500 space-y-2">
           <p>
-            <strong className="text-slate-700">Why dropmycv for {c.name}?</strong> Most job boards make
+            <strong className="text-slate-700">Why dropmycv for {c.name}?</strong>{" "}Most job boards make
             you create an account and store your CV. We don&apos;t — your CV is read in your browser,
             your contact details are stripped before anything is sent, and nothing is kept.
           </p>

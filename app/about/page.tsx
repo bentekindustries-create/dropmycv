@@ -34,7 +34,7 @@ export default function About() {
             Finding a job usually means handing your CV to sites that make you create an account,
             store your details, and monetise through recruiter products, advertising and data-driven
             services. dropmycv was built on a simple idea: <strong>you shouldn&apos;t have to give up
-            your privacy to find work.</strong> Your CV is read in your browser, your contact details are
+            your privacy to find work.</strong>{" "}Your CV is read in your browser, your contact details are
             stripped before anything is sent, and nothing is stored — there&apos;s no database to
             sell or leak.
           </p>
@@ -54,9 +54,9 @@ export default function About() {
 
           <h2 className="text-xl font-semibold text-navy pt-2">What we do — and don&apos;t</h2>
           <ul className="list-disc pl-5 space-y-2">
-            <li><strong>We do</strong> match your CV to live roles across many job sources and rank them with AI, for free.</li>
-            <li><strong>We do</strong> offer two optional paid extras — a one-off A$9 AI CV review, and a A$19 Application Pack tailored to a specific role — both checked against the live jobs you match. They&apos;re how we cover costs; you never have to buy either to get your matches.</li>
-            <li><strong>We don&apos;t</strong> require an account, store your CV, build a recruiter-searchable profile, use cookies, or sell your data.</li>
+            <li><strong>We do</strong>{" "}match your CV to live roles across many job sources and rank them with AI, for free.</li>
+            <li><strong>We do</strong>{" "}offer two optional paid extras — a one-off A$9 AI CV review, and a A$19 Application Pack tailored to a specific role — both checked against the live jobs you match. They&apos;re how we cover costs; you never have to buy either to get your matches.</li>
+            <li><strong>We don&apos;t</strong>{" "}require an account, store your CV, build a recruiter-searchable profile, use cookies, or sell your data.</li>
           </ul>
 
           <h2 className="text-xl font-semibold text-navy pt-2">Honest status</h2>
@@ -70,7 +70,7 @@ export default function About() {
             Email <a href="mailto:info@dropmycv.app" className="text-teal hover:underline">info@dropmycv.app</a> —
             a real person reads every message. For refunds on a CV review, just ask: under Australian
             Consumer Law you&apos;re covered. See our{" "}
-            <Link href="/privacy" className="text-teal hover:underline">Privacy Policy</Link> and{" "}
+            <Link href="/privacy" className="text-teal hover:underline">Privacy Policy</Link>{" "}and{" "}
             <Link href="/terms" className="text-teal hover:underline">Terms</Link>.
           </p>
 

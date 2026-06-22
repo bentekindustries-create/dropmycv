@@ -36,7 +36,7 @@ export default function Compare() {
           </h1>
           <p className="text-slate-500">
             <strong className="text-navy">dropmycv doesn&apos;t replace job boards — it makes them
-            easier to use.</strong> Boards like Indeed, Seek and LinkedIn have huge inventory and are
+            easier to use.</strong>{" "}Boards like Indeed, Seek and LinkedIn have huge inventory and are
             great for browsing, but they make you create an account, keep your data, and leave you to
             wade through hundreds of results one source at a time. dropmycv is for when you want the
             market filtered and ranked against your actual CV — account-free, private, and AI-ranked

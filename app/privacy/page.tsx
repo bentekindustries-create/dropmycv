@@ -69,7 +69,7 @@ export default function PrivacyPolicy() {
                 after your results are returned.
               </li>
               <li>
-                <strong>Your selected country</strong> is sent alongside the CV text to filter
+                <strong>Your selected country</strong>{" "}is sent alongside the CV text to filter
                 job search results geographically.
               </li>
             </ul>
@@ -78,7 +78,7 @@ export default function PrivacyPolicy() {
               phone number are stripped client-side before transmission on a best-effort basis.
               Your name is preserved in the CV text used for matching but is not stored or logged
               by us. We do not use cookies. We use privacy-preserving, cookieless analytics to
-              count anonymous page views — see <em>Analytics</em> below.
+              count anonymous page views — see <em>Analytics</em>{" "}below.
             </p>
           </section>
 
@@ -153,7 +153,7 @@ export default function PrivacyPolicy() {
                 <p className="font-medium text-slate-700">Vercel (United States)</p>
                 <p className="text-sm mt-1">
                   dropmycv is hosted on Vercel and uses Vercel Web Analytics (see{" "}
-                  <em>Analytics</em> below). Vercel processes standard request data such as your
+                  <em>Analytics</em>{" "}below). Vercel processes standard request data such as your
                   IP address transiently in order to serve the site and provide cookieless,
                   anonymous visitor counts. See{" "}
                   <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">

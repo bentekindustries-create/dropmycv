@@ -26,7 +26,7 @@ export default function WhatJobs() {
         <h2 className="text-xl font-semibold text-navy pt-2">Let your experience point the way</h2>
         <p>
           Most people undersell themselves because they only search for their current job title. But
-          your CV holds skills and achievements that map to <em>many</em> roles — often ones you
+          your CV holds skills and achievements that map to <em>many</em>{" "}roles — often ones you
           wouldn&apos;t think to search for. dropmycv reads your whole CV and surfaces live roles you
           genuinely match, each with a score and a reason, so you can see the realistic range of
           what you could move into right now.
@@ -66,7 +66,7 @@ export default function WhatJobs() {
         <p>
           Every match comes with a plain-English reason — which of your skills line up, whether the
           seniority fits, and where the role is. If something&apos;s holding your CV back, a{" "}
-          <Link href="/cv-checker" className="text-teal hover:underline">free CV check</Link> gives
+          <Link href="/cv-checker" className="text-teal hover:underline">free CV check</Link>{" "}gives
           you an instant score, and the full{" "}
           <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link> (A$9)
           shows the exact keyword gaps your matched roles want.

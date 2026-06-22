@@ -34,8 +34,8 @@ export function StripDemo() {
           </div>
           <p className="sm:col-span-2 text-xs text-slate-400">
             This runs the real function we use. Your email, phone and links become{" "}
-            <code className="text-slate-500">[email]</code>, <code className="text-slate-500">[phone]</code> and{" "}
-            <code className="text-slate-500">[link]</code> before anything leaves your browser. Your name and
+            <code className="text-slate-500">[email]</code>, <code className="text-slate-500">[phone]</code>{" "}and{" "}
+            <code className="text-slate-500">[link]</code>{" "}before anything leaves your browser. Your name and
             experience stay in the text used to find matches — and even that is never stored.
           </p>
         </div>

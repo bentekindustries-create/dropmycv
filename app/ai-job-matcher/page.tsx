@@ -35,10 +35,10 @@ export default function AiJobMatcher() {
 
         <h2 className="text-xl font-semibold text-navy pt-2">What makes dropmycv&apos;s matcher different</h2>
         <ul className="list-disc pl-5 space-y-2">
-          <li><strong>Many sources, one shortlist.</strong> It searches multiple job-search providers and company career pages at once, not a single board.</li>
-          <li><strong>A match score and reason</strong> on every role — no black box.</li>
-          <li><strong>Private by design.</strong> No account, no stored CV, no recruiter database. Your contact details are stripped in your browser first.</li>
-          <li><strong>Free.</strong> Matching costs nothing; an optional <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link> is A$9.</li>
+          <li><strong>Many sources, one shortlist.</strong>{" "}It searches multiple job-search providers and company career pages at once, not a single board.</li>
+          <li><strong>A match score and reason</strong>{" "}on every role — no black box.</li>
+          <li><strong>Private by design.</strong>{" "}No account, no stored CV, no recruiter database. Your contact details are stripped in your browser first.</li>
+          <li><strong>Free.</strong>{" "}Matching costs nothing; an optional <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link>{" "}is A$9.</li>
         </ul>
 
         <h2 className="text-xl font-semibold text-navy pt-2">How your match score works</h2>
@@ -55,7 +55,7 @@ export default function AiJobMatcher() {
           <li><strong>Recency</strong> — fresher listings rank higher, since stale ones are likelier already filled</li>
         </ul>
         <p>
-          Every match shows a one-line reason, so you see <em>why</em> it scored as it did before you
+          Every match shows a one-line reason, so you see <em>why</em>{" "}it scored as it did before you
           click. Treat it as a strong starting point — always read the original listing before applying.
         </p>
 

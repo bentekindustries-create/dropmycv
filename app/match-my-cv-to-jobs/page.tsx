@@ -26,19 +26,19 @@ export default function MatchMyCv() {
         <h2 className="text-xl font-semibold text-navy pt-2">How CV-to-job matching works</h2>
         <ol className="list-decimal pl-5 space-y-2">
           <li>
-            <strong>You drop your CV.</strong> It&apos;s read in your browser, and your email, phone
+            <strong>You drop your CV.</strong>{" "}It&apos;s read in your browser, and your email, phone
             and links are stripped before anything is sent.
           </li>
           <li>
-            <strong>We read your skills and experience.</strong> An AI model extracts your roles,
+            <strong>We read your skills and experience.</strong>{" "}An AI model extracts your roles,
             skills and seniority — no forms to fill in.
           </li>
           <li>
-            <strong>We search the live market.</strong> We query multiple job-search providers and
+            <strong>We search the live market.</strong>{" "}We query multiple job-search providers and
             company career pages at once, not just one board.
           </li>
           <li>
-            <strong>We rank the results for you.</strong> Each role gets a match score and a plain
+            <strong>We rank the results for you.</strong>{" "}Each role gets a match score and a plain
             reason — &ldquo;4 of 5 skills align, right seniority, your city&rdquo; — so you spend
             time applying, not filtering.
           </li>
@@ -46,7 +46,7 @@ export default function MatchMyCv() {
 
         <h2 className="text-xl font-semibold text-navy pt-2">Why match by CV instead of keywords?</h2>
         <p>
-          Keyword search makes <em>you</em> do the work: you guess the right title, scroll hundreds
+          Keyword search makes <em>you</em>{" "}do the work: you guess the right title, scroll hundreds
           of listings, and still miss roles that use different wording for what you do. Matching by
           CV flips it — the tool reads everything you&apos;ve done and finds roles that fit, including
           adjacent titles you might not have searched for. Generic CV tools tell you how your CV
@@ -58,7 +58,7 @@ export default function MatchMyCv() {
           Each role is scored out of 100 from your <strong>title alignment, skills overlap, seniority
           fit, location and industry relevance</strong>, with fresher listings ranked higher. Every
           match shows a one-line reason, so it&apos;s never a black box — see the full breakdown on the{" "}
-          <Link href="/ai-job-matcher" className="text-teal hover:underline">AI job matcher</Link> page.
+          <Link href="/ai-job-matcher" className="text-teal hover:underline">AI job matcher</Link>{" "}page.
           It&apos;s a strong starting point; always read the original listing before applying.
         </p>
 
@@ -73,7 +73,7 @@ export default function MatchMyCv() {
         <h2 className="text-xl font-semibold text-navy pt-2">Want to know why you&apos;re not getting interviews?</h2>
         <p>
           After matching, you can unlock an{" "}
-          <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link> for a
+          <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link>{" "}for a
           one-off A$9 — checked against the live jobs you matched, showing the exact keyword gaps,
           stronger rewrites and what to fix first. Or start with a{" "}
           <Link href="/cv-checker" className="text-teal hover:underline">free CV check</Link>.
@@ -91,7 +91,7 @@ export default function MatchMyCv() {
         <p><strong className="text-slate-700">Do I need an account?</strong><br />No — no sign-up or login. Drop your CV and you get matches in seconds.</p>
         <p><strong className="text-slate-700">Is my CV stored?</strong><br />No. It&apos;s read in your browser, your email/phone/links are stripped first, and the text is used only to find matches, then discarded.</p>
         <p><strong className="text-slate-700">Which countries?</strong><br />Australia, the UK, US, Canada, NZ, Singapore, Germany, France and the Netherlands — see <Link href="/jobs-in/australia" className="text-teal hover:underline">country pages</Link>.</p>
-        <p><strong className="text-slate-700">Is it really free?</strong><br />Yes. The optional <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link> is A$9; everything else is free.</p>
+        <p><strong className="text-slate-700">Is it really free?</strong><br />Yes. The optional <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link>{" "}is A$9; everything else is free.</p>
 
         <CtaBlock label="Match my CV now — free →" sub="Drop your CV and see your matches in seconds." />
       </article>

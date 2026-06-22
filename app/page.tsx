@@ -1546,7 +1546,7 @@ export default function Home() {
       </main>
 
       <footer className="bg-navy py-5 text-center text-xs text-white/40">
-        A <a href="/about" className="font-medium text-white/60 hover:text-white/80 transition-colors">BenTek Industries</a> product
+        A <a href="/about" className="font-medium text-white/60 hover:text-white/80 transition-colors">BenTek Industries</a>{" "}product
         <span className="mx-3">·</span>
         dropmycv · No data stored · No account needed
         <span className="mx-3">·</span>

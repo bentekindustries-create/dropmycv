@@ -41,7 +41,7 @@ export default function TermsOfService() {
               extracts your skills and experience profile using AI, searches for relevant live job
               listings via third-party APIs, and returns a ranked shortlist. We also offer an
               optional paid add-on — an AI-generated review of your CV — described in{" "}
-              <strong>Payments and refunds</strong> below. The Service is provided for
+              <strong>Payments and refunds</strong>{" "}below. The Service is provided for
               informational purposes only.
             </p>
             <p className="mt-3">
