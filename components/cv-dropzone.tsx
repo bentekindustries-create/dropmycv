@@ -106,7 +106,7 @@ export function CvDropzone({ onExtracted, onError, disabled }: CvDropzoneProps) 
               <span className="text-teal underline underline-offset-2">click to choose a file</span>
             </p>
             <p className="text-slate-400 text-sm mt-1.5">
-              PDF, Word (.docx), or plain text · Your email, phone &amp; links are removed
+              PDF, Word (.docx), or plain text (.txt) · Your email, phone &amp; links are removed
               before any AI processing · Nothing is ever stored
             </p>
           </div>
