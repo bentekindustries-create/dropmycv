@@ -964,14 +964,18 @@ ${cvText.slice(0, 12000)}`,
         .filter(Boolean)
         .slice(0, 3);
 
-      // Merge held titles + stated targets + synonyms, deduplicated. Target titles
-      // go near the front so career-changers actually get searched for the roles
-      // they want, not only the ones they're leaving.
+      // Merge held titles + stated targets + synonyms, deduplicated. CRITICAL: the
+      // source fetchers only query the first 2-3 titles, so for a career-changer the
+      // targets must sit near the FRONT or they never get searched. Keep one held
+      // title first (so some current-field roles still appear), then the targets.
       const synonyms = (Array.isArray(raw.titleSynonyms) ? raw.titleSynonyms : [])
         .filter((s: unknown) => typeof s === "string")
         .map((s: string) => sanitiseString(s, 100))
         .filter(Boolean);
-      expandedTitles = [...new Set([...profile.jobTitles, ...targetTitles, ...synonyms])].slice(0, 6);
+      expandedTitles =
+        targetTitles.length > 0
+          ? [...new Set([profile.jobTitles[0], ...targetTitles, ...profile.jobTitles.slice(1), ...synonyms])].slice(0, 6)
+          : [...new Set([...profile.jobTitles, ...synonyms])].slice(0, 6);
     } catch {
       profile = {
         jobTitles: ["professional"],
@@ -1027,7 +1031,7 @@ ${cvText.slice(0, 12000)}`,
 
     if (allJobs.length === 0) {
       await bump("searches");
-      return Response.json({ jobs: [], profile, ...(debug ? { _debug: sourceCounts } : {}) });
+      return Response.json({ jobs: [], profile, ...(debug ? { _debug: { ...sourceCounts, targetTitles, expandedTitles } } : {}) });
     }
 
     // Step 3: rank with Claude Haiku using explicit rubric + match scores
@@ -1076,7 +1080,11 @@ Be strict: a score below 40 means a poor match. Do not inflate scores for thin e
 Jobs:
 ${JSON.stringify(snippets)}
 
-Return a JSON array of the top 15 matches only, sorted best first. Each entry must have:
+Return a JSON array of the top 15 matches only, sorted best first.${
+            targetTitles.length > 0
+              ? ` IMPORTANT: this candidate is changing careers toward ${targetTitles.join(", ")}. Your 15 MUST include several roles in that target direction where their transferable skills genuinely fit — do not return only roles in the field they are leaving. Score a good target-direction role on transferable-skill fit, not on whether the title matches their past jobs.`
+              : ""
+          } Each entry must have:
 - "i": the job index number
 - "score": integer 0-100
 - "reason": one specific sentence naming what matched (e.g. "Exact title, 4/6 skills matched, Sydney location")
@@ -1185,7 +1193,7 @@ JSON only, no markdown.`,
     await bump("searches");
     await bump("matches", jobs.length + directJobs.length);
 
-    return Response.json({ jobs, directJobs, profile, ...(debug ? { _debug: sourceCounts } : {}) });
+    return Response.json({ jobs, directJobs, profile, ...(debug ? { _debug: { ...sourceCounts, targetTitles, expandedTitles } } : {}) });
   } catch (err) {
     console.error("[match] error:", err);
     return Response.json(
