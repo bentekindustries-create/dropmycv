@@ -721,11 +721,14 @@ function matchedSkills(job: NormalizedJob, skills: string[]): string[] {
   return out;
 }
 
-// Drop obviously-broken salary values from feeds (min 0, max below min, etc.) so
-// the UI never shows "$0 – $176k" or "$69k – $6".
+// Drop broken/misleading salary values from feeds so the UI never shows "$0 – $176k",
+// "$69k – $6", or a contract day-rate ("$950") rendered as if it were an annual salary.
+// Nothing below ~$2k is a credible annual figure, so treat those as junk/day-rates.
+const MIN_CREDIBLE_SALARY = 2000;
 function cleanSalary(min?: number, max?: number): { salaryMin?: number; salaryMax?: number } {
-  let lo = typeof min === "number" && min > 0 ? min : undefined;
-  let hi = typeof max === "number" && max > 0 ? max : undefined;
+  const ok = (n?: number) => typeof n === "number" && n >= MIN_CREDIBLE_SALARY;
+  let lo = ok(min) ? min : undefined;
+  let hi = ok(max) ? max : undefined;
   if (lo !== undefined && hi !== undefined && hi < lo) hi = undefined; // max can't be below min
   return { salaryMin: lo, salaryMax: hi };
 }
@@ -1146,6 +1149,7 @@ JSON only, no markdown.`,
     const MAX_PER_COMPANY = 2;
     const perCompany = new Map<string, number>();
     const jobs = [...mappedJobs]
+      .filter((j) => j.company.trim().length > 0) // drop employer-less junk listings ("X @ ()")
       .sort((a, b) => (b.matchScore ?? 0) - (a.matchScore ?? 0))
       .filter((j) => {
         const key = j.company.trim().toLowerCase();
