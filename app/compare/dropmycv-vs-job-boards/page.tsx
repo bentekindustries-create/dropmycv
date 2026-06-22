@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "dropmycv vs traditional job boards — a private, AI-matched alternative",
   description:
-    "How dropmycv compares to job boards like Indeed, Seek and LinkedIn: no account, nothing stored, six sources searched at once and ranked by AI. A faster, more private way to find jobs.",
+    "How dropmycv compares to job boards like Indeed, Seek and LinkedIn: no account, nothing stored, multiple sources searched at once and ranked by AI. A faster, more private way to find jobs.",
   alternates: { canonical: "/compare/dropmycv-vs-job-boards" },
 };
 

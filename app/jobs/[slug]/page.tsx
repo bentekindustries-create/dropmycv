@@ -73,7 +73,7 @@ export default async function JobsLanding({
       q: `How many ${role} jobs are there in ${city}?`,
       a: `We show live ${role} listings in ${city} pulled from Adzuna and refreshed daily${
         total > 0 ? `, with ${total.toLocaleString()}+ currently live` : ""
-      }. Drop your CV and dropmycv searches six job sources at once and ranks the best matches for your skills.`,
+      }. Drop your CV and dropmycv searches multiple job sources at once and ranks the best matches for your skills.`,
     },
     {
       q: `What do ${role} jobs in ${city} pay?`,
@@ -173,7 +173,7 @@ export default async function JobsLanding({
               })}
             </div>
             <p className="text-xs text-slate-400 mt-3">
-              Listings via Adzuna, refreshed daily. Drop your CV above to search all six of our
+              Listings via Adzuna, refreshed daily. Drop your CV above to search all of our
               sources and get them ranked for you.
             </p>
           </div>

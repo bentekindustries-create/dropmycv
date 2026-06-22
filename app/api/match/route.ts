@@ -644,6 +644,78 @@ async function fetchCareerjet(
   }
 }
 
+// ─── USAJOBS fetcher (free, US federal government jobs) ───────────────────────
+// US-only — the caller gates this on country === "us". Adds the whole federal
+// category the commercial boards thin out on. Needs USAJOBS_API_KEY (free key
+// from developer.usajobs.gov); USAJOBS_EMAIL is the registered contact address.
+interface UsaJobsItem {
+  MatchedObjectId?: string;
+  MatchedObjectDescriptor?: {
+    PositionTitle?: string;
+    PositionURI?: string;
+    PositionLocationDisplay?: string;
+    OrganizationName?: string;
+    PositionRemuneration?: { MinimumRange?: string; MaximumRange?: string; RateIntervalCode?: string }[];
+    PublicationStartDate?: string;
+    QualificationSummary?: string;
+    UserArea?: { Details?: { JobSummary?: string } };
+  };
+}
+
+async function fetchUsaJobs(jobTitles: string[], where?: string): Promise<NormalizedJob[]> {
+  if (!process.env.USAJOBS_API_KEY) return [];
+  const titles = jobTitles.slice(0, 2).filter(Boolean);
+  if (titles.length === 0) return [];
+
+  // Host is set automatically by fetch from the URL; USAJOBS just needs the key + a UA.
+  const headers: Record<string, string> = {
+    "User-Agent": process.env.USAJOBS_EMAIL || "jobs@dropmycv.app",
+    "Authorization-Key": process.env.USAJOBS_API_KEY,
+    Accept: "application/json",
+  };
+
+  function normalise(item: UsaJobsItem): NormalizedJob | null {
+    const d = item.MatchedObjectDescriptor;
+    if (!d?.PositionTitle || !d.PositionURI) return null;
+    const rem = d.PositionRemuneration?.[0];
+    const min = rem?.MinimumRange ? Math.round(parseFloat(rem.MinimumRange)) : NaN;
+    const max = rem?.MaximumRange ? Math.round(parseFloat(rem.MaximumRange)) : NaN;
+    const desc = (d.UserArea?.Details?.JobSummary || d.QualificationSummary || "").replace(/<[^>]*>/g, "");
+    return {
+      id: `usajobs-${item.MatchedObjectId ?? d.PositionURI}`,
+      title: d.PositionTitle,
+      company: d.OrganizationName ?? "",
+      location: d.PositionLocationDisplay ?? "",
+      salaryMin: Number.isFinite(min) ? min : undefined,
+      salaryMax: Number.isFinite(max) ? max : undefined,
+      description: desc.slice(0, 600),
+      url: d.PositionURI,
+      created: d.PublicationStartDate ?? new Date().toISOString(),
+      source: "usajobs",
+    };
+  }
+
+  try {
+    const results = await Promise.all(
+      titles.map(async (title) => {
+        const params = new URLSearchParams({ Keyword: title, ResultsPerPage: "25" });
+        if (where) params.set("LocationName", where);
+        const res = await fetch(`https://data.usajobs.gov/api/search?${params}`, { headers });
+        if (!res.ok) return [] as UsaJobsItem[];
+        const data = await res.json();
+        return (data?.SearchResult?.SearchResultItems ?? []) as UsaJobsItem[];
+      })
+    );
+    return results
+      .flat()
+      .map(normalise)
+      .filter((j): j is NormalizedJob => j !== null)
+      .slice(0, 25);
+  } catch {
+    return [];
+  }
+}
+
 // ─── Industries where remote-only sources (Remotive, Jobicy) add no signal ───
 const REMOTE_SKIP_INDUSTRIES = new Set([
   "trades", "construction", "healthcare", "retail", "hospitality",
@@ -1000,19 +1072,20 @@ ${cvText.slice(0, 12000)}`,
     // Skip remote-only sources for industries where remote roles are irrelevant
     const skipRemote = REMOTE_SKIP_INDUSTRIES.has(profile.industry?.toLowerCase() ?? "");
 
-    const [adzunaJobs, joobleJobs, braveJobs, careerjetJobs, remotiveJobs, jobicyJobs] = await Promise.all([
+    const [adzunaJobs, joobleJobs, braveJobs, careerjetJobs, remotiveJobs, jobicyJobs, usajobsJobs] = await Promise.all([
       fetchAdzuna(expandedTitles, augmentedSkills, country, where),
       fetchJooble(expandedTitles, augmentedSkills, country, where),
       fetchBrave(expandedTitles, augmentedSkills, country),
       fetchCareerjet(expandedTitles, augmentedSkills, country, where, ip),
       skipRemote ? Promise.resolve([]) : fetchRemotive(expandedTitles, augmentedSkills, country),
       skipRemote ? Promise.resolve([]) : fetchJobicy(expandedTitles),
+      country === "us" ? fetchUsaJobs(expandedTitles, where) : Promise.resolve([]),
     ]);
 
     // Round-robin interleave so no single source dominates the ranking pool
     // (Adzuna can return 60+; concatenating it first would crowd out everything
     // else before the ranker's 50-job cap).
-    const sources = [adzunaJobs, joobleJobs, careerjetJobs, braveJobs, remotiveJobs, jobicyJobs];
+    const sources = [adzunaJobs, joobleJobs, careerjetJobs, braveJobs, remotiveJobs, jobicyJobs, usajobsJobs];
     const interleaved: NormalizedJob[] = [];
     const maxLen = Math.max(0, ...sources.map((s) => s.length));
     for (let i = 0; i < maxLen; i++) {
@@ -1029,6 +1102,7 @@ ${cvText.slice(0, 12000)}`,
       brave: braveJobs.length,
       remotive: remotiveJobs.length,
       jobicy: jobicyJobs.length,
+      usajobs: usajobsJobs.length,
       afterDedup: allJobs.length,
     };
 
