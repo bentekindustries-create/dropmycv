@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { allLandingSlugs, LANDING_COUNTRIES } from "@/lib/landing-data";
+import { GUIDES } from "@/lib/guides";
 
 const SITE_URL = "https://www.dropmycv.app";
 
@@ -16,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/private-job-search",
     "/compare/dropmycv-vs-job-boards",
     "/about",
+    "/guides",
     "/privacy",
     "/terms",
   ].map((path) => ({
@@ -39,5 +41,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.6,
   }));
 
-  return [...staticRoutes, ...countryRoutes, ...landingRoutes];
+  const guideRoutes = GUIDES.map((g) => ({
+    url: `${SITE_URL}/guides/${g.slug}`,
+    lastModified: new Date(g.date),
+    changeFrequency: "monthly" as const,
+    priority: 0.6,
+  }));
+
+  return [...staticRoutes, ...countryRoutes, ...landingRoutes, ...guideRoutes];
 }

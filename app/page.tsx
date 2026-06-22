@@ -991,6 +991,7 @@ export default function Home() {
                   <li><a href="/match-my-cv-to-jobs" className="text-slate-500 hover:text-teal transition-colors">Match my CV to jobs</a></li>
                   <li><a href="/what-jobs-can-i-get-with-my-cv" className="text-slate-500 hover:text-teal transition-colors">What jobs can I get?</a></li>
                   <li><a href="/ai-job-matcher" className="text-slate-500 hover:text-teal transition-colors">AI job matcher</a></li>
+                  <li><a href="/guides" className="text-slate-500 hover:text-teal transition-colors">Guides</a></li>
                 </ul>
               </div>
               <div>
@@ -1558,6 +1559,8 @@ export default function Home() {
         <a href="/private-job-search" className="hover:text-white/80 transition-colors">Private job search</a>
         <span className="mx-2">·</span>
         <a href="/compare/dropmycv-vs-job-boards" className="hover:text-white/80 transition-colors">vs job boards</a>
+        <span className="mx-2">·</span>
+        <a href="/guides" className="hover:text-white/80 transition-colors">Guides</a>
         <span className="mx-2">·</span>
         <a href="/privacy" className="hover:text-white/80 transition-colors">Privacy</a>
         <span className="mx-2">·</span>
