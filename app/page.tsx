@@ -908,7 +908,8 @@ export default function Home() {
             <div className="pt-4 border-t border-slate-100">
               <h2 className="text-lg font-serif font-bold text-navy text-center mb-1">Private by design, not by promise</h2>
               <p className="text-sm text-slate-500 text-center mb-5 max-w-lg mx-auto">
-                Your CV file never leaves your device. Here&apos;s exactly what happens when you drop it in.
+                Your CV file stays on your device — only the stripped text is sent, just to generate
+                your results, then discarded. Here&apos;s exactly what happens when you drop it in.
               </p>
               <PrivacyFlow />
               <div className="text-center mt-5">
