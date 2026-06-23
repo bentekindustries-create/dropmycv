@@ -15,7 +15,8 @@ export type FunnelEvent =
   | "pack_checkout_started" // A$19 Application Pack checkout opened
   | "pack_completed"
   | "pack_emailed"
-  | "free_check_completed"; // free /cv-checker teaser returned
+  | "free_check_completed" // free /cv-checker teaser returned
+  | "ats_check_completed"; // free /ats-resume-checker scan returned
 
 type Props = Record<string, string | number | boolean>;
 

@@ -9,6 +9,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes = [
     "",
     "/cv-checker",
+    "/ats-resume-checker",
     "/cv-review",
     "/application-pack",
     "/match-my-cv-to-jobs",
