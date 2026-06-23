@@ -3,8 +3,10 @@ import Stripe from "stripe";
 
 export const runtime = "nodejs";
 
-// Verify the Stripe Checkout session was actually paid (and at the A$19 Application
-// Pack price) before generating. The CV text is PII-stripped client-side; nothing
+// Verify the Stripe Checkout session completed for the Application Pack before
+// generating. Bound to the product via metadata (not an exact amount) so promotion
+// codes work — a 100%-off code yields amount_total 0 + "no_payment_required", still
+// a legitimately completed checkout. The CV text is PII-stripped client-side; nothing
 // is stored server-side.
 async function isPaid(sessionId: string): Promise<boolean> {
   if (!process.env.STRIPE_SECRET_KEY) return false;
@@ -12,9 +14,9 @@ async function isPaid(sessionId: string): Promise<boolean> {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     return (
-      session.payment_status === "paid" &&
-      session.amount_total === 1900 &&
-      session.currency === "aud"
+      session.status === "complete" &&
+      (session.payment_status === "paid" || session.payment_status === "no_payment_required") &&
+      session.metadata?.product === "application-pack"
     );
   } catch {
     return false;

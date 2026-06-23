@@ -3,16 +3,19 @@ import Stripe from "stripe";
 
 export const runtime = "nodejs";
 
-// Verify the Stripe Checkout session was actually paid before generating.
+// Verify the Stripe Checkout session completed for THIS product before generating.
+// We bind to the product via metadata rather than an exact amount, so promotion
+// codes work (a 100%-off code yields amount_total 0 + payment_status
+// "no_payment_required", which is still a legitimately completed checkout).
 async function isPaid(sessionId: string): Promise<boolean> {
   if (!process.env.STRIPE_SECRET_KEY) return false;
   try {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     return (
-      session.payment_status === "paid" &&
-      session.amount_total === 900 &&
-      session.currency === "aud"
+      session.status === "complete" &&
+      (session.payment_status === "paid" || session.payment_status === "no_payment_required") &&
+      session.metadata?.product === "cv-review"
     );
   } catch {
     return false;

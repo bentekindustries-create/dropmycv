@@ -11,9 +11,9 @@ async function isPaid(sessionId: string): Promise<boolean> {
     const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
     const session = await stripe.checkout.sessions.retrieve(sessionId);
     return (
-      session.payment_status === "paid" &&
-      session.amount_total === 1900 &&
-      session.currency === "aud"
+      session.status === "complete" &&
+      (session.payment_status === "paid" || session.payment_status === "no_payment_required") &&
+      session.metadata?.product === "application-pack"
     );
   } catch {
     return false;

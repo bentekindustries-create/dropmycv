@@ -113,6 +113,9 @@ export async function POST(request: Request) {
       ],
       success_url: `${origin}/?${product.successParam}&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/?${productKey === "application-pack" ? "app_pack" : "cv_review"}=cancel`,
+      // Bind the session to its product so generation routes can verify it without
+      // checking an exact amount — which lets promotion codes (incl. 100%-off) work.
+      metadata: { product: productKey },
     });
 
     if (!session.url) {
