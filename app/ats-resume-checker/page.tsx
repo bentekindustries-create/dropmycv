@@ -112,7 +112,7 @@ export default function AtsResumeChecker() {
             <div className="space-y-3">
               <CvDropzone
                 onExtracted={(t, name) => handleExtracted(t, name)}
-                onError={(m) => handleError(m)}
+                onError={(m, name) => handleError(m, name)}
               />
               <details className="rounded-xl border border-slate-200 bg-white/70 px-4 py-3 text-sm">
                 <summary className="cursor-pointer font-medium text-navy select-none">

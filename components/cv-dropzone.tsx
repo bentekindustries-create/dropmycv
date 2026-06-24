@@ -8,7 +8,7 @@ import { stripPii } from "@/lib/strip-pii";
 
 interface CvDropzoneProps {
   onExtracted: (text: string, fileName: string) => void;
-  onError: (message: string) => void;
+  onError: (message: string, fileName?: string) => void;
   disabled?: boolean;
 }
 
@@ -22,7 +22,7 @@ export function CvDropzone({ onExtracted, onError, disabled }: CvDropzoneProps) 
 
       const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
       if (file.size > MAX_FILE_SIZE) {
-        onError("File is too large (max 10 MB). Try a smaller CV.");
+        onError("File is too large (max 10 MB). Try a smaller CV.", file.name);
         return;
       }
 
@@ -44,7 +44,8 @@ export function CvDropzone({ onExtracted, onError, disabled }: CvDropzoneProps) 
 
         if (stripped.trim().length < 50) {
           onError(
-            "Could not read enough text from this file. Try a different PDF, Word document, or plain text (.txt) version of your CV."
+            "Could not read enough text from this file. Try a different PDF, Word document, or plain text (.txt) version of your CV.",
+            file.name
           );
           return;
         }
@@ -52,7 +53,7 @@ export function CvDropzone({ onExtracted, onError, disabled }: CvDropzoneProps) 
         onExtracted(stripped, file.name);
       } catch (err) {
         console.error(err);
-        onError("Failed to read your CV. Please try a different file.");
+        onError("Failed to read your CV. Please try a different file.", file.name);
       } finally {
         setParsing(false);
       }

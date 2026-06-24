@@ -1,5 +1,3 @@
-"use client";
-
 /**
  * Deterministic, client-side ATS "parse-ability" checks.
  *
