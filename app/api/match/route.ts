@@ -34,9 +34,36 @@ const ALLOWED_COUNTRIES = new Set(["au", "gb", "us", "ca", "nz", "de", "fr", "nl
 const MAX_BODY_BYTES = 100_000; // 100KB
 const MAX_LOCATION_LENGTH = 100;
 
+// Job listings arrive as HTML from the source APIs. Decode the entities they
+// leave behind (e.g. a literal "&nbsp;" or "&amp;" showing up in the text).
+const NAMED_ENTITIES: Record<string, string> = {
+  nbsp: " ", amp: "&", lt: "<", gt: ">", quot: '"', apos: "'",
+  hellip: "…", ndash: "–", mdash: "—", rsquo: "’", lsquo: "‘",
+  ldquo: "“", rdquo: "”", bull: "•", middot: "·", deg: "°",
+  pound: "£", euro: "€", cent: "¢", copy: "©", reg: "®", trade: "™",
+};
+
+function decodeEntities(text: string): string {
+  return text.replace(/&(#x?[0-9a-f]+|[a-z]+);/gi, (m, code: string) => {
+    if (code[0] === "#") {
+      const num = code[1] === "x" || code[1] === "X"
+        ? parseInt(code.slice(2), 16)
+        : parseInt(code.slice(1), 10);
+      if (!Number.isFinite(num) || num < 0 || num > 0x10ffff) return m;
+      try { return String.fromCodePoint(num); } catch { return m; }
+    }
+    return NAMED_ENTITIES[code.toLowerCase()] ?? m;
+  });
+}
+
 function sanitiseString(value: unknown, maxLen: number): string {
   if (typeof value !== "string") return "";
-  return value.replace(/<[^>]*>/g, "").trim().slice(0, maxLen);
+  // Strip tags first, then decode entities (so any decoded "<" can't form a tag),
+  // then collapse the whitespace that decoded &nbsp; runs leave behind.
+  return decodeEntities(value.replace(/<[^>]*>/g, ""))
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, maxLen);
 }
 
 function isValidUrl(url: string): boolean {
