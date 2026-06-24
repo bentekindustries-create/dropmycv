@@ -16,7 +16,8 @@ export type FunnelEvent =
   | "pack_completed"
   | "pack_emailed"
   | "free_check_completed" // free /cv-checker teaser returned
-  | "ats_check_completed"; // free /ats-resume-checker scan returned
+  | "ats_check_completed" // free /ats-resume-checker scan returned
+  | "job_match_completed"; // free /job-match-checker CV-vs-JD check returned
 
 type Props = Record<string, string | number | boolean>;
 
