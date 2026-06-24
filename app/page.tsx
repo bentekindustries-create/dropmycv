@@ -968,6 +968,7 @@ export default function Home() {
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Find jobs</p>
                 <ul className="space-y-1.5">
                   <li><a href="/match-my-cv-to-jobs" className="text-slate-500 hover:text-teal transition-colors">Match my CV to jobs</a></li>
+                  <li><a href="/job-match-checker" className="text-slate-500 hover:text-teal transition-colors">Job match checker</a></li>
                   <li><a href="/what-jobs-can-i-get-with-my-cv" className="text-slate-500 hover:text-teal transition-colors">What jobs can I get?</a></li>
                   <li><a href="/ai-job-matcher" className="text-slate-500 hover:text-teal transition-colors">AI job matcher</a></li>
                   <li><a href="/guides" className="text-slate-500 hover:text-teal transition-colors">Guides</a></li>
@@ -977,6 +978,7 @@ export default function Home() {
                 <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Your CV</p>
                 <ul className="space-y-1.5">
                   <li><a href="/cv-checker" className="text-slate-500 hover:text-teal transition-colors">Free CV checker</a></li>
+                  <li><a href="/ats-resume-checker" className="text-slate-500 hover:text-teal transition-colors">ATS resume checker</a></li>
                   <li><a href="/cv-review" className="text-slate-500 hover:text-teal transition-colors">AI CV review</a></li>
                   <li><a href="/application-pack" className="text-slate-500 hover:text-teal transition-colors">Application Pack</a></li>
                   <li><a href="/private-job-search" className="text-slate-500 hover:text-teal transition-colors">Private job search</a></li>
@@ -1530,6 +1532,10 @@ export default function Home() {
         dropmycv · No data stored · No account needed
         <span className="mx-3">·</span>
         <a href="/cv-checker" className="hover:text-white/80 transition-colors">Free CV checker</a>
+        <span className="mx-2">·</span>
+        <a href="/ats-resume-checker" className="hover:text-white/80 transition-colors">ATS checker</a>
+        <span className="mx-2">·</span>
+        <a href="/job-match-checker" className="hover:text-white/80 transition-colors">Job match checker</a>
         <span className="mx-2">·</span>
         <a href="/cv-review" className="hover:text-white/80 transition-colors">AI CV review</a>
         <span className="mx-2">·</span>

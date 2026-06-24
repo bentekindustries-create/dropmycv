@@ -255,6 +255,7 @@ export default function AtsResumeChecker() {
                 <p className="text-sm text-slate-500 mt-4">
                   Related:{" "}
                   <Link href="/cv-checker" className="text-teal hover:underline">free CV checker</Link>{" "}·{" "}
+                  <Link href="/job-match-checker" className="text-teal hover:underline">job match checker</Link>{" "}·{" "}
                   <Link href="/match-my-cv-to-jobs" className="text-teal hover:underline">match my CV to jobs</Link>{" "}·{" "}
                   <Link href="/cv-review" className="text-teal hover:underline">full AI CV review</Link>
                 </p>

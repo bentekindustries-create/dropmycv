@@ -14,6 +14,10 @@ export function MarketingShell({ children }: { children: React.ReactNode }) {
       <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-8">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
+        <Link href="/ats-resume-checker" className="hover:text-white/80 transition-colors">ATS checker</Link>
+        <span className="mx-2">·</span>
+        <Link href="/job-match-checker" className="hover:text-white/80 transition-colors">Job match checker</Link>
+        <span className="mx-2">·</span>
         <Link href="/about" className="hover:text-white/80 transition-colors">About</Link>
         <span className="mx-2">·</span>
         <Link href="/privacy" className="hover:text-white/80 transition-colors">Privacy</Link>
