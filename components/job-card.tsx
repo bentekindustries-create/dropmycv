@@ -59,7 +59,14 @@ export function JobCard({ job, currency, onHideJob, onHideCompany, onLike, liked
   const work = workType(job);
 
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 hover:border-teal hover:shadow-sm transition-all flex flex-col gap-3">
+    <div
+      className={[
+        "rounded-xl border p-5 hover:shadow-sm transition-all flex flex-col gap-3",
+        liked
+          ? "bg-teal-light border-teal shadow-sm"
+          : "bg-white border-slate-200 hover:border-teal",
+      ].join(" ")}
+    >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
           <h3 className="font-semibold text-slate-800 leading-snug">{job.title}</h3>
@@ -134,15 +141,15 @@ export function JobCard({ job, currency, onHideJob, onHideCompany, onLike, liked
             <button
               onClick={() => onLike(job.id)}
               aria-pressed={liked}
-              title="Show me more like this"
+              title={liked ? "Remove from your shortlist" : "Add to your shortlist"}
               className={[
                 "inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full transition-colors",
                 liked
-                  ? "bg-teal-light text-teal"
+                  ? "bg-teal text-white hover:bg-teal-dark"
                   : "bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600",
               ].join(" ")}
             >
-              👍 More like this
+              {liked ? "✓ Shortlisted" : "👍 Shortlist"}
             </button>
           )}
           {onHideJob && (

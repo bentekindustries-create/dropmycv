@@ -165,19 +165,6 @@ function jobTopSalary(job: JobMatch): number {
   return job.salaryMax ?? job.salaryMin ?? 0;
 }
 
-// "More like this" — score a job by overlap with the jobs the user thumbed up
-function jobSimilarity(job: JobMatch, liked: JobMatch[]): number {
-  if (liked.length === 0) return 0;
-  const jobSkills = new Set((job.matchedSkills ?? []).map((s) => s.toLowerCase()));
-  const jobWords = new Set(job.title.toLowerCase().split(/\W+/).filter((w) => w.length > 3));
-  let score = 0;
-  for (const lj of liked) {
-    for (const s of lj.matchedSkills ?? []) if (jobSkills.has(s.toLowerCase())) score += 2;
-    for (const w of lj.title.toLowerCase().split(/\W+/)) if (w.length > 3 && jobWords.has(w)) score += 1;
-  }
-  return score;
-}
-
 const HIDDEN_KEY = "dropmycv_hidden";
 
 function loadHidden(): { jobs: string[]; companies: string[] } {
@@ -235,7 +222,8 @@ export default function Home() {
 
   const currency = getCurrency(country);
 
-  // Apply hide list + filters, sort, then apply "more like this" reordering
+  // Apply hide list + filters, then sort. Thumbs-up is a selection marker only —
+  // liked jobs stay in place (highlighted in the card), they don't reorder the list.
   const visibleJobs = useMemo(() => {
     const all = result?.jobs ?? [];
     const hiddenJobSet = new Set(hiddenJobs);
@@ -249,17 +237,8 @@ export default function Home() {
       if (minSalary > 0 && jobTopSalary(job) < minSalary) return false;
       return true;
     });
-    const sorted = sortJobs(filtered, sortKey);
-
-    // Thumbs-up reweighting only applies to the default relevance view
-    if (sortKey !== "relevance" || likedJobs.length === 0) return sorted;
-    const likedSet = new Set(likedJobs);
-    const liked = sorted.filter((j) => likedSet.has(j.id));
-    const rest = sorted.filter((j) => !likedSet.has(j.id));
-    const likedFull = (result?.jobs ?? []).filter((j) => likedSet.has(j.id));
-    rest.sort((a, b) => jobSimilarity(b, likedFull) - jobSimilarity(a, likedFull));
-    return [...liked, ...rest];
-  }, [result?.jobs, sortKey, workFilter, employmentFilter, minSalary, onlySalary, likedJobs, hiddenJobs, hiddenCompanies]);
+    return sortJobs(filtered, sortKey);
+  }, [result?.jobs, sortKey, workFilter, employmentFilter, minSalary, onlySalary, hiddenJobs, hiddenCompanies]);
 
   const sortedJobs = visibleJobs;
   const hiddenCount = (result?.jobs ?? []).length - (result?.jobs ?? []).filter((job) => {
