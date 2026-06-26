@@ -20,6 +20,14 @@ export const LANDING_ROLES = [
   "Operations Manager",
   "Plumber",
   "Teacher",
+  "Warehouse Worker",
+  "Chef",
+  "Receptionist",
+  "Civil Engineer",
+  "Social Worker",
+  "Bookkeeper",
+  "Executive Assistant",
+  "Web Developer",
 ];
 
 export interface LandingLocation {
@@ -38,25 +46,43 @@ export const LANDING_LOCATIONS: LandingLocation[] = [
   { city: "Canberra", country: "au", currency: "$" },
   { city: "Gold Coast", country: "au", currency: "$" },
   { city: "Newcastle", country: "au", currency: "$" },
+  { city: "Hobart", country: "au", currency: "$" },
+  { city: "Wollongong", country: "au", currency: "$" },
+  { city: "Geelong", country: "au", currency: "$" },
   // United Kingdom
   { city: "London", country: "gb", currency: "£" },
   { city: "Manchester", country: "gb", currency: "£" },
   { city: "Birmingham", country: "gb", currency: "£" },
   { city: "Edinburgh", country: "gb", currency: "£" },
   { city: "Glasgow", country: "gb", currency: "£" },
+  { city: "Leeds", country: "gb", currency: "£" },
+  { city: "Liverpool", country: "gb", currency: "£" },
+  { city: "Bristol", country: "gb", currency: "£" },
+  { city: "Cardiff", country: "gb", currency: "£" },
+  { city: "Belfast", country: "gb", currency: "£" },
   // United States
   { city: "New York", country: "us", currency: "$" },
   { city: "San Francisco", country: "us", currency: "$" },
   { city: "Los Angeles", country: "us", currency: "$" },
   { city: "Chicago", country: "us", currency: "$" },
   { city: "Austin", country: "us", currency: "$" },
+  { city: "Boston", country: "us", currency: "$" },
+  { city: "Seattle", country: "us", currency: "$" },
+  { city: "Denver", country: "us", currency: "$" },
+  { city: "Atlanta", country: "us", currency: "$" },
+  { city: "Dallas", country: "us", currency: "$" },
+  { city: "Houston", country: "us", currency: "$" },
   // Canada
   { city: "Toronto", country: "ca", currency: "$" },
   { city: "Vancouver", country: "ca", currency: "$" },
+  { city: "Montreal", country: "ca", currency: "$" },
+  { city: "Calgary", country: "ca", currency: "$" },
+  { city: "Ottawa", country: "ca", currency: "$" },
   // New Zealand
   { city: "Auckland", country: "nz", currency: "$" },
   { city: "Wellington", country: "nz", currency: "$" },
   { city: "Christchurch", country: "nz", currency: "$" },
+  { city: "Hamilton", country: "nz", currency: "$" },
   // Singapore
   { city: "Singapore", country: "sg", currency: "$" },
   // Germany

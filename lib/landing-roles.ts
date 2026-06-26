@@ -138,6 +138,62 @@ export const ROLE_PROFILES: Record<string, RoleProfile> = {
     titles: ["Primary School Teacher", "Secondary Teacher", "Early Childhood Educator", "Relief Teacher"],
     related: ["Administration Assistant", "Human Resources Manager", "Customer Service"],
   },
+  "warehouse worker": {
+    blurb: "Moving and managing stock — reliability, safety and (often) a forklift licence matter more than formal qualifications.",
+    skills: ["Picking & Packing", "Forklift Licence", "Inventory Control", "RF Scanning", "Manual Handling", "Stock Replenishment", "Warehouse Safety (WHS)"],
+    sectors: ["Logistics & Distribution", "Retail", "Manufacturing", "E-commerce", "Cold Storage"],
+    titles: ["Storeperson", "Forklift Operator", "Pick Packer", "Warehouse Assistant"],
+    related: ["Operations Manager", "Customer Service", "Administration Assistant"],
+  },
+  "chef": {
+    blurb: "Running the kitchen and the menu — listings screen hard for section experience, speed and food-safety knowledge.",
+    skills: ["Food Preparation", "Menu Development", "Food Safety / HACCP", "Kitchen Management", "Stock Control", "À la carte", "Section Cooking"],
+    sectors: ["Restaurants", "Hotels", "Catering", "Pubs & Bars", "Aged Care & Healthcare"],
+    titles: ["Sous Chef", "Chef de Partie", "Head Chef", "Commis Chef"],
+    related: ["Customer Service", "Operations Manager", "Administration Assistant"],
+  },
+  "receptionist": {
+    blurb: "First point of contact — listings weigh phone manner, scheduling and software fluency over credentials.",
+    skills: ["Front Desk", "Diary / Calendar Management", "Phone & Email Handling", "Data Entry", "Microsoft Office", "Customer Service", "Booking Systems"],
+    sectors: ["Healthcare & Medical", "Professional Services", "Dental", "Real Estate", "Corporate"],
+    titles: ["Medical Receptionist", "Front Office Coordinator", "Administration Receptionist", "Dental Receptionist"],
+    related: ["Administration Assistant", "Executive Assistant", "Customer Service"],
+  },
+  "civil engineer": {
+    blurb: "Designing and delivering infrastructure — listings look for project exposure and the relevant design software.",
+    skills: ["AutoCAD / Civil 3D", "Structural Design", "Project Delivery", "Stormwater & Drainage", "Site Supervision", "Contract Management", "Chartered (CPEng) pathway"],
+    sectors: ["Construction", "Government & Councils", "Consulting Engineering", "Mining & Resources", "Utilities"],
+    titles: ["Graduate Civil Engineer", "Structural Engineer", "Project Engineer", "Site Engineer"],
+    related: ["Mechanical Engineer", "Project Manager", "Operations Manager"],
+  },
+  "social worker": {
+    blurb: "Supporting people through complex circumstances — current registration and casework experience are the screening line.",
+    skills: ["Case Management", "Risk Assessment", "Child Protection", "Counselling", "Care Planning", "Stakeholder Liaison", "AASW Registration"],
+    sectors: ["Government & Community Services", "Health", "Aged & Disability Care", "Not-for-profit", "Education"],
+    titles: ["Case Manager", "Child Protection Worker", "Community Support Worker", "Clinical Social Worker"],
+    related: ["Registered Nurse", "Human Resources Manager", "Administration Assistant"],
+  },
+  "bookkeeper": {
+    blurb: "Keeping day-to-day finances in order — listings expect hands-on software fluency and clean reconciliation habits.",
+    skills: ["Xero", "MYOB", "Accounts Payable / Receivable", "Bank Reconciliations", "Payroll", "BAS / GST", "Excel"],
+    sectors: ["Professional Services", "Construction", "Retail", "Small Business", "Hospitality"],
+    titles: ["Accounts Officer", "Payroll Officer", "Assistant Accountant", "Accounts All-rounder"],
+    related: ["Accountant", "Financial Analyst", "Administration Assistant"],
+  },
+  "executive assistant": {
+    blurb: "Keeping leaders effective — listings prize discretion, diary control and confident stakeholder handling.",
+    skills: ["Diary & Travel Management", "Inbox Management", "Stakeholder Liaison", "Board Papers & Minutes", "Event Coordination", "Microsoft Office", "Expense Management"],
+    sectors: ["Corporate", "Professional Services", "Government", "Finance", "Technology"],
+    titles: ["Personal Assistant", "Office Manager", "Executive Assistant to CEO", "Team Assistant"],
+    related: ["Administration Assistant", "Receptionist", "Operations Manager"],
+  },
+  "web developer": {
+    blurb: "Building for the browser — portfolios and shipped sites count for more than the exact framework list.",
+    skills: ["HTML / CSS", "JavaScript / TypeScript", "React", "Next.js", "Responsive Design", "REST APIs", "Git", "Accessibility"],
+    sectors: ["Agencies", "Technology & SaaS", "E-commerce", "Media", "Government"],
+    titles: ["Frontend Developer", "Full Stack Developer", "WordPress Developer", "UI Developer"],
+    related: ["Software Engineer", "Graphic Designer", "Data Analyst"],
+  },
 };
 
 export function roleProfileFor(role: string): RoleProfile | null {

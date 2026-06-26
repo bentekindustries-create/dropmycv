@@ -24,10 +24,19 @@ export async function generateMetadata({
   const parsed = parseSlug(slug);
   if (!parsed) return { title: "Jobs" };
   const { role, city } = parsed;
+
+  // A "find {role} jobs in {city}" page with zero live listings is a thin /
+  // doorway page — keep it out of Google's index (still follow its links). This
+  // fetch is memoized with the page's own searchLandingJobs call, so it adds no
+  // extra API request (see Next's generateMetadata fetch memoization).
+  const { country } = locForCity(city);
+  const { total } = await searchLandingJobs(role, city, country);
+
   return {
     title: `${role} jobs in ${city} — matched to your CV`,
     description: `Find ${role} jobs in ${city}: what these roles ask for, typical pay, common employers, and how to match your CV to the best ones in seconds — ranked by AI, no account, nothing stored. Free.`,
     alternates: { canonical: `/jobs/${slug}` },
+    ...(total < 1 ? { robots: { index: false, follow: true } } : {}),
   };
 }
 
