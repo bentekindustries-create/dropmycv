@@ -62,9 +62,18 @@ const STRUCTURED_DATA = {
   "@graph": [
     {
       "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
       name: "dropmycv",
       url: SITE_URL,
       email: "info@dropmycv.app",
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${SITE_URL}/#website`,
+      name: "dropmycv",
+      alternateName: ["Drop My CV", "dropmycv.app"],
+      url: SITE_URL,
+      publisher: { "@id": `${SITE_URL}/#organization` },
     },
     {
       "@type": "WebApplication",
