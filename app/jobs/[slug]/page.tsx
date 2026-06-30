@@ -5,6 +5,8 @@ import { parseSlug, locForCity, landingSlug, citiesForCountry, LANDING_COUNTRIES
 import { searchLandingJobs } from "@/lib/landing-jobs";
 import { roleProfileFor } from "@/lib/landing-roles";
 
+const SITE_URL = "https://www.dropmycv.app";
+
 export const revalidate = 86400; // refresh live job data daily
 
 // Generate on-demand on first request and cache (ISR). Keeps builds fast and
@@ -32,9 +34,22 @@ export async function generateMetadata({
   const { country } = locForCity(city);
   const { total } = await searchLandingJobs(role, city, country);
 
+  // Lead the title/description with freshness + a live count (when meaningful).
+  // These are the levers that earn clicks once a page reaches page 1.
+  const title =
+    total >= 10
+      ? `${role} jobs in ${city} — ${total.toLocaleString()}+ live roles, updated daily`
+      : total > 0
+        ? `${role} jobs in ${city} — live roles, updated daily`
+        : `${role} jobs in ${city} — matched to your CV`;
+  const description =
+    total > 0
+      ? `${total >= 10 ? `${total.toLocaleString()}+ live ` : "Live "}${role} jobs in ${city}, refreshed daily. Drop your CV and our AI ranks the best matches for your skills in seconds — no account, nothing stored. Free.`
+      : `Find ${role} jobs in ${city} and match your CV to the best ones in seconds — ranked by AI, no account, nothing stored. Free.`;
+
   return {
-    title: `${role} jobs in ${city} — matched to your CV`,
-    description: `Find ${role} jobs in ${city}: what these roles ask for, typical pay, common employers, and how to match your CV to the best ones in seconds — ranked by AI, no account, nothing stored. Free.`,
+    title,
+    description,
     alternates: { canonical: `/jobs/${slug}` },
     ...(total < 1 ? { robots: { index: false, follow: true } } : {}),
   };
@@ -72,7 +87,7 @@ export default async function JobsLanding({
   }
 
   // Internal links: same role in nearby cities, related roles in this city, country hub.
-  const otherCities = citiesForCountry(country).filter((c) => c.toLowerCase() !== city.toLowerCase()).slice(0, 5);
+  const otherCities = citiesForCountry(country).filter((c) => c.toLowerCase() !== city.toLowerCase()).slice(0, 8);
   const relatedRoles = (profile?.related ?? ["Project Manager", "Data Analyst", "Customer Service"]).slice(0, 3);
   const countryHub = LANDING_COUNTRIES.find((c) => c.code === country);
 
@@ -112,9 +127,24 @@ export default async function JobsLanding({
     })),
   };
 
+  // Breadcrumb trail (Home › Jobs in {country} › {role} in {city}) — improves how
+  // the page appears in search results and reinforces the crawl path.
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "dropmycv", item: SITE_URL },
+      ...(countryHub
+        ? [{ "@type": "ListItem", position: 2, name: `Jobs in ${countryHub.name}`, item: `${SITE_URL}/jobs-in/${countryHub.slug}` }]
+        : []),
+      { "@type": "ListItem", position: countryHub ? 3 : 2, name: `${role} jobs in ${city}`, item: `${SITE_URL}/jobs/${slug}` },
+    ],
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
       <header className="bg-navy px-6 py-4">
         <div className="max-w-3xl mx-auto">
           <Link href="/" className="text-2xl font-extrabold tracking-tight transition-colors group">
@@ -125,6 +155,19 @@ export default async function JobsLanding({
 
       <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-12 space-y-10">
         <div className="space-y-2">
+          <nav aria-label="Breadcrumb" className="text-xs text-slate-400">
+            <Link href="/" className="hover:text-teal transition-colors">Home</Link>
+            {countryHub && (
+              <>
+                <span className="mx-1.5">›</span>
+                <Link href={`/jobs-in/${countryHub.slug}`} className="hover:text-teal transition-colors">
+                  Jobs in {countryHub.name}
+                </Link>
+              </>
+            )}
+            <span className="mx-1.5">›</span>
+            <span className="text-slate-500">{role} in {city}</span>
+          </nav>
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-navy leading-tight">
             {role} jobs in {city}, matched to your CV
           </h1>
