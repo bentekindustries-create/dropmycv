@@ -828,9 +828,10 @@ export default function Home() {
             {/* AI CV review — paid add-on, pitched on the landing page (#2) */}
             <div className="rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-5 sm:p-6 text-center space-y-2">
               <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest">Optional add-on · A$9</p>
-              <h3 className="text-lg font-serif font-bold text-navy">
+              {/* h2, not h3: this is the first section heading after the page h1, so h3 skipped a level */}
+              <h2 className="text-lg font-serif font-bold text-navy">
                 Generic advice tells you how your CV <em className="not-italic underline decoration-teal/40">looks</em>. We show how it <em className="not-italic underline decoration-teal/40">performs</em>.
-              </h3>
+              </h2>
               <p className="text-sm text-slate-500 max-w-md mx-auto">
                 A chatbot can give you generic CV tips — but it has no idea which jobs you&apos;re
                 applying for or what&apos;s in demand right now. We check your CV against the{" "}
