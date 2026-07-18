@@ -7,6 +7,13 @@ import { roleProfileFor } from "@/lib/landing-roles";
 
 const SITE_URL = "https://www.dropmycv.app";
 
+// A "{role} jobs in {city}" page carrying only a listing or two under-delivers on
+// its own title, so we keep it out of the index (audit 2026-06-23 found the thin
+// ones cluster in trades/nursing across DE/FR/NL and niche roles in small cities —
+// e.g. Plumber@Paris:1, Electrician@Amsterdam:2). Dynamic rather than a hand-kept
+// blocklist, so pages re-enter the index automatically when real listings return.
+const MIN_INDEXABLE_LISTINGS = 3;
+
 export const revalidate = 86400; // refresh live job data daily
 
 // Generate on-demand on first request and cache (ISR). Keeps builds fast and
@@ -51,7 +58,7 @@ export async function generateMetadata({
     title,
     description,
     alternates: { canonical: `/jobs/${slug}` },
-    ...(total < 1 ? { robots: { index: false, follow: true } } : {}),
+    ...(total < MIN_INDEXABLE_LISTINGS ? { robots: { index: false, follow: true } } : {}),
   };
 }
 
