@@ -67,11 +67,11 @@ export default function About() {
 
           <h2 className="text-xl font-semibold text-navy pt-2">Contact &amp; support</h2>
           <p>
-            Email <a href="mailto:info@dropmycv.app" className="text-teal hover:underline">info@dropmycv.app</a> —
+            Email <a href="mailto:info@dropmycv.app" className="text-teal-ink hover:underline">info@dropmycv.app</a> —
             a real person reads every message. For refunds on a CV review, just ask: under Australian
             Consumer Law you&apos;re covered. See our{" "}
-            <Link href="/privacy" className="text-teal hover:underline">Privacy Policy</Link>{" "}and{" "}
-            <Link href="/terms" className="text-teal hover:underline">Terms</Link>.
+            <Link href="/privacy" className="text-teal-ink hover:underline">Privacy Policy</Link>{" "}and{" "}
+            <Link href="/terms" className="text-teal-ink hover:underline">Terms</Link>.
           </p>
 
           <div className="not-prose rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-6 text-center mt-8">
@@ -85,7 +85,7 @@ export default function About() {
         </article>
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-8">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-8">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/privacy" className="hover:text-white/80 transition-colors">Privacy</Link>

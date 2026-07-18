@@ -58,7 +58,7 @@ export default function MatchMyCv() {
           Each role is scored out of 100 from your <strong>title alignment, skills overlap, seniority
           fit, location and industry relevance</strong>, with fresher listings ranked higher. Every
           match shows a one-line reason, so it&apos;s never a black box — see the full breakdown on the{" "}
-          <Link href="/ai-job-matcher" className="text-teal hover:underline">AI job matcher</Link>{" "}page.
+          <Link href="/ai-job-matcher" className="text-teal-ink hover:underline">AI job matcher</Link>{" "}page.
           It&apos;s a strong starting point; always read the original listing before applying.
         </p>
 
@@ -67,16 +67,16 @@ export default function MatchMyCv() {
           No account, no sign-up, and your CV is never stored. Your contact details are stripped in
           your browser, and each search is stateless — there&apos;s no profile and no recruiter
           database. Read more about{" "}
-          <Link href="/private-job-search" className="text-teal hover:underline">how we keep your job search private</Link>.
+          <Link href="/private-job-search" className="text-teal-ink hover:underline">how we keep your job search private</Link>.
         </p>
 
         <h2 className="text-xl font-semibold text-navy pt-2">Want to know why you&apos;re not getting interviews?</h2>
         <p>
           After matching, you can unlock an{" "}
-          <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link>{" "}for a
+          <Link href="/cv-review" className="text-teal-ink hover:underline">AI CV review</Link>{" "}for a
           one-off A$9 — checked against the live jobs you matched, showing the exact keyword gaps,
           stronger rewrites and what to fix first. Or start with a{" "}
-          <Link href="/cv-checker" className="text-teal hover:underline">free CV check</Link>.
+          <Link href="/cv-checker" className="text-teal-ink hover:underline">free CV check</Link>.
         </p>
 
         <h2 className="text-xl font-semibold text-navy pt-2">Who it helps</h2>
@@ -90,8 +90,8 @@ export default function MatchMyCv() {
         <h2 className="text-xl font-semibold text-navy pt-2">FAQ</h2>
         <p><strong className="text-slate-700">Do I need an account?</strong><br />No — no sign-up or login. Drop your CV and you get matches in seconds.</p>
         <p><strong className="text-slate-700">Is my CV stored?</strong><br />No. It&apos;s read in your browser, your email/phone/links are stripped first, and the text is used only to find matches, then discarded.</p>
-        <p><strong className="text-slate-700">Which countries?</strong><br />Australia, the UK, US, Canada, NZ, Singapore, Germany, France and the Netherlands — see <Link href="/jobs-in/australia" className="text-teal hover:underline">country pages</Link>.</p>
-        <p><strong className="text-slate-700">Is it really free?</strong><br />Yes. The optional <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link>{" "}is A$9; everything else is free.</p>
+        <p><strong className="text-slate-700">Which countries?</strong><br />Australia, the UK, US, Canada, NZ, Singapore, Germany, France and the Netherlands — see <Link href="/jobs-in/australia" className="text-teal-ink hover:underline">country pages</Link>.</p>
+        <p><strong className="text-slate-700">Is it really free?</strong><br />Yes. The optional <Link href="/cv-review" className="text-teal-ink hover:underline">AI CV review</Link>{" "}is A$9; everything else is free.</p>
 
         <CtaBlock label="Match my CV now — free →" sub="Drop your CV and see your matches in seconds." />
       </article>

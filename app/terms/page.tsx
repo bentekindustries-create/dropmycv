@@ -18,7 +18,7 @@ export default function TermsOfService() {
 
       <main className="max-w-3xl mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold text-slate-800 mb-2">Terms of Service</h1>
-        <p className="text-slate-400 text-sm mb-10">Last updated: June 2026</p>
+        <p className="text-slate-500 text-sm mb-10">Last updated: June 2026</p>
 
         <div className="prose prose-slate max-w-none space-y-8 text-slate-600 leading-relaxed">
 
@@ -92,7 +92,7 @@ export default function TermsOfService() {
             <h2 className="text-lg font-semibold text-slate-800 mb-3">6. Privacy</h2>
             <p>
               Our handling of your information is described in our{" "}
-              <Link href="/privacy" className="text-teal hover:underline">
+              <Link href="/privacy" className="text-teal-ink hover:underline">
                 Privacy Policy
               </Link>
               . In short, we do not store the information you submit. Your CV is read locally
@@ -164,7 +164,7 @@ export default function TermsOfService() {
               under the Australian Consumer Law: if the service is not delivered, or is not of
               acceptable quality, you may be entitled to a remedy, which can include a refund. To
               request a refund or report a problem, contact{" "}
-              <a href="mailto:info@dropmycv.app" className="text-teal hover:underline">
+              <a href="mailto:info@dropmycv.app" className="text-teal-ink hover:underline">
                 info@dropmycv.app
               </a>
               .
@@ -208,7 +208,7 @@ export default function TermsOfService() {
             <h2 className="text-lg font-semibold text-slate-800 mb-3">15. Contact</h2>
             <p>
               For questions about these Terms, contact us at{" "}
-              <a href="mailto:info@dropmycv.app" className="text-teal hover:underline">
+              <a href="mailto:info@dropmycv.app" className="text-teal-ink hover:underline">
                 info@dropmycv.app
               </a>
             </p>
@@ -217,7 +217,7 @@ export default function TermsOfService() {
         </div>
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-12">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-12">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/privacy" className="hover:text-white/80 transition-colors">Privacy Policy</Link>

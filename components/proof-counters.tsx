@@ -42,7 +42,7 @@ export function ProofCounters() {
           </div>
         ))}
       </div>
-      <p className="text-[11px] text-slate-300 mt-1.5">
+      <p className="text-[11px] text-slate-500 mt-1.5">
         Anonymous running totals — just counts, nothing about you or your CV.
       </p>
     </div>

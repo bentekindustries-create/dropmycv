@@ -62,7 +62,7 @@ function buildCvText(answers: QAnswers): string {
 }
 
 const TIERS = [
-  { label: "Top Matches", range: [0, 4], accent: "text-teal", dot: "bg-teal" },
+  { label: "Top Matches", range: [0, 4], accent: "text-teal-ink", dot: "bg-teal" },
   { label: "Good Matches", range: [5, 9], accent: "text-navy", dot: "bg-navy" },
   { label: "Worth a Look", range: [10, 14], accent: "text-slate-500", dot: "bg-slate-400" },
 ];
@@ -660,7 +660,7 @@ export default function Home() {
                 <p className="text-sm text-navy font-medium">You have results from your last session.</p>
                 <button
                   onClick={restoreSession}
-                  className="text-xs font-semibold text-teal hover:text-navy underline underline-offset-2"
+                  className="text-xs font-semibold text-teal-ink hover:text-navy underline underline-offset-2"
                 >
                   View them →
                 </button>
@@ -671,7 +671,7 @@ export default function Home() {
             <div className="text-center space-y-3">
               <h1 className="text-4xl font-serif font-bold text-navy tracking-tight leading-tight">
                 Get matched to live jobs in seconds —<br />
-                <span className="text-teal">without handing over your data.</span>
+                <span className="text-teal-ink">without handing over your data.</span>
               </h1>
               <p className="text-slate-500 text-base max-w-xl mx-auto">
                 Drop your CV and our AI ranks thousands of live roles from Seek, LinkedIn, Indeed
@@ -688,7 +688,7 @@ export default function Home() {
                 { icon: "⚡", label: "Results in seconds" },
                 { icon: "🇦🇺", label: "Built in Australia" },
               ].map(({ icon, label }) => (
-                <div key={label} className="flex items-center gap-1.5 text-xs text-slate-400">
+                <div key={label} className="flex items-center gap-1.5 text-xs text-slate-500">
                   <span>{icon}</span>
                   <span>{label}</span>
                 </div>
@@ -700,21 +700,23 @@ export default function Home() {
 
             {/* Sample match — show the output before they commit */}
             <div>
-              <p className="text-xs uppercase tracking-widest text-slate-400 text-center mb-3">
+              <p className="text-xs uppercase tracking-widest text-slate-500 text-center mb-3">
                 Here&apos;s what a match looks like
               </p>
               <div className="grid sm:grid-cols-2 gap-4 max-w-2xl mx-auto">
                 <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <h3 className="font-semibold text-slate-800 leading-snug">Senior Project Manager</h3>
+                      {/* Not a heading: these sample cards are illustrative, so using h3 here
+                          broke the document's heading order (h1 → h3). */}
+                      <p className="font-semibold text-slate-800 leading-snug">Senior Project Manager</p>
                       <p className="text-sm text-slate-500 mt-0.5">Aurecon · Brisbane, QLD</p>
                     </div>
-                    <span className="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-light text-teal">
+                    <span className="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-light text-teal-ink">
                       86% match
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 italic leading-snug mt-2">
+                  <p className="text-xs text-slate-500 italic leading-snug mt-2">
                     Strong fit — program governance, stakeholder management &amp; transport-sector
                     delivery line up with this role.
                   </p>
@@ -733,14 +735,14 @@ export default function Home() {
                 <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                      <h3 className="font-semibold text-slate-800 leading-snug">Registered Nurse</h3>
+                      <p className="font-semibold text-slate-800 leading-snug">Registered Nurse</p>
                       <p className="text-sm text-slate-500 mt-0.5">Ramsay Health · Melbourne, VIC</p>
                     </div>
-                    <span className="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-light text-teal">
+                    <span className="shrink-0 text-xs font-semibold px-2.5 py-1 rounded-full bg-teal-light text-teal-ink">
                       81% match
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 italic leading-snug mt-2">
+                  <p className="text-xs text-slate-500 italic leading-snug mt-2">
                     Strong fit — acute care, patient assessment &amp; medication management align;
                     aged-care experience would widen adjacent matches.
                   </p>
@@ -757,7 +759,7 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <p className="text-center text-xs text-slate-400 mt-3 max-w-xl mx-auto leading-relaxed">
+              <p className="text-center text-xs text-slate-500 mt-3 max-w-xl mx-auto leading-relaxed">
                 Examples — every match includes a score, the reason it fits, your matching skills,
                 salary where available, and a link to the original listing.
               </p>
@@ -790,7 +792,7 @@ export default function Home() {
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder="Any — or type a city, state, postcode"
-                  className="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
+                  className="flex-1 text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
                 />
               </div>
             </div>
@@ -805,11 +807,11 @@ export default function Home() {
                 }}
               />
               {/* Privacy reassurance right at the upload decision point */}
-              <p className="text-center text-xs text-slate-400 leading-relaxed max-w-xl mx-auto mt-3">
+              <p className="text-center text-xs text-slate-500 leading-relaxed max-w-xl mx-auto mt-3">
                 <span className="text-slate-500 font-medium">🔒 How your CV is handled:</span>{" "}
                 parsed on your device → email, phone &amp; links stripped → encrypted text matched →
                 results returned → text discarded.{" "}
-                <a href="/private-job-search" className="text-teal hover:underline">See exactly how</a>
+                <a href="/private-job-search" className="text-teal-ink hover:underline">See exactly how</a>
               </p>
             </div>
 
@@ -817,7 +819,7 @@ export default function Home() {
             <div className="text-center">
               <button
                 onClick={() => { setQStep(0); setQAnswers({}); setStage("questionnaire"); }}
-                className="text-sm text-slate-400 hover:text-teal transition-colors underline underline-offset-2"
+                className="text-sm text-slate-500 hover:text-teal-ink transition-colors underline underline-offset-2"
               >
                 No CV? Answer a few questions instead →
               </button>
@@ -825,7 +827,7 @@ export default function Home() {
 
             {/* AI CV review — paid add-on, pitched on the landing page (#2) */}
             <div className="rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-5 sm:p-6 text-center space-y-2">
-              <p className="text-xs font-semibold text-teal uppercase tracking-widest">Optional add-on · A$9</p>
+              <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest">Optional add-on · A$9</p>
               <h3 className="text-lg font-serif font-bold text-navy">
                 Generic advice tells you how your CV <em className="not-italic underline decoration-teal/40">looks</em>. We show how it <em className="not-italic underline decoration-teal/40">performs</em>.
               </h3>
@@ -851,11 +853,11 @@ export default function Home() {
                 { step: "3", title: "Skip the scrolling", desc: "A ranked shortlist you can actually apply to — not 900 tabs to sift through" },
               ].map((item) => (
                 <div key={item.step} className="text-center pt-4">
-                  <div className="text-xs font-semibold text-teal uppercase tracking-widest mb-1">
+                  <div className="text-xs font-semibold text-teal-ink uppercase tracking-widest mb-1">
                     Step {item.step}
                   </div>
                   <div className="font-semibold text-slate-700 text-sm">{item.title}</div>
-                  <div className="text-slate-400 text-xs mt-1 leading-relaxed">{item.desc}</div>
+                  <div className="text-slate-500 text-xs mt-1 leading-relaxed">{item.desc}</div>
                 </div>
               ))}
             </div>
@@ -869,10 +871,10 @@ export default function Home() {
                 <table className="w-full text-sm max-w-xl mx-auto">
                   <thead>
                     <tr className="text-left">
-                      <th className="p-2 font-medium text-slate-400"></th>
-                      <th className="p-2 font-semibold text-slate-600 text-center">Free CV check</th>
-                      <th className="p-2 font-semibold text-slate-600 text-center">Free job match</th>
-                      <th className="p-2 font-semibold text-navy text-center">A$9 review</th>
+                      <th scope="col" className="p-2 font-medium text-slate-500"><span className="sr-only">Feature</span></th>
+                      <th scope="col" className="p-2 font-semibold text-slate-600 text-center">Free CV check</th>
+                      <th scope="col" className="p-2 font-semibold text-slate-600 text-center">Free job match</th>
+                      <th scope="col" className="p-2 font-semibold text-navy text-center">A$9 review</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -885,7 +887,7 @@ export default function Home() {
                       { f: "Account / CV stored", a: "No", b: "No", c: "No" },
                     ].map((r, i) => (
                       <tr key={r.f} className={i % 2 ? "" : "bg-slate-50/50"}>
-                        <td className="p-2 text-slate-600 font-medium">{r.f}</td>
+                        <th scope="row" className="p-2 text-slate-600 font-medium text-left">{r.f}</th>
                         <td className="p-2 text-slate-500 text-center">{r.a}</td>
                         <td className="p-2 text-slate-500 text-center">{r.b}</td>
                         <td className="p-2 text-slate-700 text-center">{r.c}</td>
@@ -894,9 +896,9 @@ export default function Home() {
                   </tbody>
                 </table>
               </div>
-              <p className="text-center text-xs text-slate-400 mt-3">
+              <p className="text-center text-xs text-slate-500 mt-3">
                 Found the one you really want?{" "}
-                <a href="/application-pack" className="text-teal hover:underline">Get an Application Pack</a>{" "}
+                <a href="/application-pack" className="text-teal-ink hover:underline">Get an Application Pack</a>{" "}
                 tailored to that job — A$19.
               </p>
             </div>
@@ -904,7 +906,7 @@ export default function Home() {
             {/* When you're ready to apply — A$19 Application Pack */}
             <div className="rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex-1">
-                <p className="text-xs font-semibold text-teal uppercase tracking-widest">When you&apos;re ready to apply · A$19</p>
+                <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest">When you&apos;re ready to apply · A$19</p>
                 <h3 className="text-lg font-serif font-bold text-navy mt-0.5">Get an Application Pack for one role</h3>
                 <p className="text-sm text-slate-500 mt-1">
                   Pick a matched job and we build a tailored cover-letter draft, reworded CV bullets,
@@ -921,7 +923,7 @@ export default function Home() {
 
             {/* Proof strip — real, claimable sources */}
             <div className="text-center pt-2">
-              <p className="text-xs uppercase tracking-widest text-slate-400 mb-3">
+              <p className="text-xs uppercase tracking-widest text-slate-500 mb-3">
                 We search multiple providers &amp; company career pages, surfacing roles from sources such as
               </p>
               <div className="flex items-center justify-center gap-x-4 gap-y-2 flex-wrap text-sm font-medium text-slate-500">
@@ -965,31 +967,31 @@ export default function Home() {
             {/* Explore — internal links for SEO + navigation */}
             <div className="pt-4 border-t border-slate-100 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-4 text-sm">
               <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Find jobs</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Find jobs</p>
                 <ul className="space-y-1.5">
-                  <li><a href="/match-my-cv-to-jobs" className="text-slate-500 hover:text-teal transition-colors">Match my CV to jobs</a></li>
-                  <li><a href="/job-match-checker" className="text-slate-500 hover:text-teal transition-colors">Job match checker</a></li>
-                  <li><a href="/what-jobs-can-i-get-with-my-cv" className="text-slate-500 hover:text-teal transition-colors">What jobs can I get?</a></li>
-                  <li><a href="/ai-job-matcher" className="text-slate-500 hover:text-teal transition-colors">AI job matcher</a></li>
-                  <li><a href="/guides" className="text-slate-500 hover:text-teal transition-colors">Guides</a></li>
+                  <li><a href="/match-my-cv-to-jobs" className="text-slate-500 hover:text-teal-ink transition-colors">Match my CV to jobs</a></li>
+                  <li><a href="/job-match-checker" className="text-slate-500 hover:text-teal-ink transition-colors">Job match checker</a></li>
+                  <li><a href="/what-jobs-can-i-get-with-my-cv" className="text-slate-500 hover:text-teal-ink transition-colors">What jobs can I get?</a></li>
+                  <li><a href="/ai-job-matcher" className="text-slate-500 hover:text-teal-ink transition-colors">AI job matcher</a></li>
+                  <li><a href="/guides" className="text-slate-500 hover:text-teal-ink transition-colors">Guides</a></li>
                 </ul>
               </div>
               <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Your CV</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Your CV</p>
                 <ul className="space-y-1.5">
-                  <li><a href="/cv-checker" className="text-slate-500 hover:text-teal transition-colors">Free CV checker</a></li>
-                  <li><a href="/ats-resume-checker" className="text-slate-500 hover:text-teal transition-colors">ATS resume checker</a></li>
-                  <li><a href="/cv-review" className="text-slate-500 hover:text-teal transition-colors">AI CV review</a></li>
-                  <li><a href="/application-pack" className="text-slate-500 hover:text-teal transition-colors">Application Pack</a></li>
-                  <li><a href="/private-job-search" className="text-slate-500 hover:text-teal transition-colors">Private job search</a></li>
+                  <li><a href="/cv-checker" className="text-slate-500 hover:text-teal-ink transition-colors">Free CV checker</a></li>
+                  <li><a href="/ats-resume-checker" className="text-slate-500 hover:text-teal-ink transition-colors">ATS resume checker</a></li>
+                  <li><a href="/cv-review" className="text-slate-500 hover:text-teal-ink transition-colors">AI CV review</a></li>
+                  <li><a href="/application-pack" className="text-slate-500 hover:text-teal-ink transition-colors">Application Pack</a></li>
+                  <li><a href="/private-job-search" className="text-slate-500 hover:text-teal-ink transition-colors">Private job search</a></li>
                 </ul>
               </div>
               <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">By country</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">By country</p>
                 <ul className="space-y-1.5">
-                  <li><a href="/jobs-in/australia" className="text-slate-500 hover:text-teal transition-colors">Jobs in Australia</a></li>
-                  <li><a href="/jobs-in/united-kingdom" className="text-slate-500 hover:text-teal transition-colors">Jobs in the UK</a></li>
-                  <li><a href="/jobs-in/united-states" className="text-slate-500 hover:text-teal transition-colors">Jobs in the US</a></li>
+                  <li><a href="/jobs-in/australia" className="text-slate-500 hover:text-teal-ink transition-colors">Jobs in Australia</a></li>
+                  <li><a href="/jobs-in/united-kingdom" className="text-slate-500 hover:text-teal-ink transition-colors">Jobs in the UK</a></li>
+                  <li><a href="/jobs-in/united-states" className="text-slate-500 hover:text-teal-ink transition-colors">Jobs in the US</a></li>
                 </ul>
               </div>
             </div>
@@ -1023,11 +1025,11 @@ export default function Home() {
             <div className="py-16 max-w-lg mx-auto space-y-8">
               {/* Header */}
               <div className="space-y-1">
-                <button onClick={reset} className="text-xs text-slate-400 hover:text-slate-600 transition-colors">
+                <button onClick={reset} className="text-xs text-slate-500 hover:text-slate-600 transition-colors">
                   ← Back
                 </button>
                 <h2 className="text-2xl font-bold text-slate-800">Let&apos;s find you something</h2>
-                <p className="text-slate-400 text-sm">Answer {QUESTIONS.length} quick questions and we&apos;ll search live jobs for you.</p>
+                <p className="text-slate-500 text-sm">Answer {QUESTIONS.length} quick questions and we&apos;ll search live jobs for you.</p>
               </div>
 
               {/* Progress */}
@@ -1043,11 +1045,11 @@ export default function Home() {
               {/* Question card */}
               <div className="space-y-4">
                 <div>
-                  <p className="text-xs font-semibold text-teal uppercase tracking-widest mb-1">
+                  <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest mb-1">
                     Question {qStep + 1} of {QUESTIONS.length}
                   </p>
                   <h3 className="text-lg font-semibold text-slate-800">{q.question}</h3>
-                  {q.optional && <p className="text-xs text-slate-400 mt-0.5">Optional — skip if not applicable</p>}
+                  {q.optional && <p className="text-xs text-slate-500 mt-0.5">Optional — skip if not applicable</p>}
                 </div>
 
                 {q.type === "choice" && q.options ? (
@@ -1080,7 +1082,7 @@ export default function Home() {
                     onChange={(e) => setQAnswers({ ...qAnswers, [q.id]: e.target.value })}
                     onKeyDown={(e) => { if (e.key === "Enter" && canAdvance) handleQNext(); }}
                     placeholder={q.hint}
-                    className="w-full text-sm border border-slate-200 rounded-xl px-4 py-3 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
+                    className="w-full text-sm border border-slate-200 rounded-xl px-4 py-3 bg-white text-slate-700 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
                   />
                 )}
               </div>
@@ -1089,7 +1091,7 @@ export default function Home() {
               <div className="flex items-center justify-between">
                 <button
                   onClick={() => qStep > 0 ? setQStep(qStep - 1) : reset()}
-                  className="text-sm text-slate-400 hover:text-slate-600 transition-colors"
+                  className="text-sm text-slate-500 hover:text-slate-600 transition-colors"
                 >
                   ← {qStep > 0 ? "Back" : "Cancel"}
                 </button>
@@ -1113,7 +1115,7 @@ export default function Home() {
               <p className="text-lg font-semibold text-slate-700 transition-all">
                 {MATCHING_STEPS[matchingStep]}
               </p>
-              <p className="text-slate-400 mt-1 text-sm">
+              <p className="text-slate-500 mt-1 text-sm">
                 {matchingStep === 0 && <>{fileName.includes("(no CV)") ? <>Building your profile…</> : <>Removing your email, phone &amp; links</>}</>}
                 {matchingStep === 1 && <>Checking Adzuna, Seek, LinkedIn &amp; more</>}
                 {matchingStep === 2 && <>Almost there — finding your best matches</>}
@@ -1129,7 +1131,7 @@ export default function Home() {
               ))}
             </div>
             {/* Persistent privacy reassurance */}
-            <p className="flex items-center gap-1.5 text-xs text-slate-400 mt-2">
+            <p className="flex items-center gap-1.5 text-xs text-slate-500 mt-2">
               <span>🔒</span>
               <span>Your email, phone &amp; links are stripped in your browser, and your CV is never stored.</span>
             </p>
@@ -1145,14 +1147,14 @@ export default function Home() {
                 <h2 className="text-xl font-bold text-slate-800">
                   {sortedJobs.length} matches found
                 </h2>
-                <p className="text-slate-400 text-sm mt-0.5">
+                <p className="text-slate-500 text-sm mt-0.5">
                   {result.profile.jobTitles[0]} · {result.profile.experienceLevel} level ·{" "}
                   {COUNTRIES.find((c) => c.code === country)?.label}
                 </p>
               </div>
               <button
                 onClick={reset}
-                className="text-sm text-teal hover:text-navy font-medium"
+                className="text-sm text-teal-ink hover:text-navy font-medium"
               >
                 ← Upload another CV
               </button>
@@ -1251,7 +1253,7 @@ export default function Home() {
 
             {/* Refine controls */}
             <div className="flex flex-col gap-2 p-4 bg-slate-50 rounded-xl border border-slate-100">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">Refine results</p>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">Refine results</p>
               <div className="flex items-center gap-2 flex-wrap">
                 <label htmlFor="refine-location" className="text-xs text-slate-500 shrink-0 w-16">Location</label>
                 <input
@@ -1261,7 +1263,7 @@ export default function Home() {
                   onChange={(e) => setLocation(e.target.value)}
                   placeholder={`Anywhere in ${COUNTRIES.find((c) => c.code === country)?.label.replace(/^.+ /, "") ?? "the country"}`}
                   onKeyDown={(e) => { if (e.key === "Enter") handleRefine(); }}
-                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent w-44"
+                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent w-44"
                 />
               </div>
               <div className="flex items-center gap-2 flex-wrap">
@@ -1273,7 +1275,7 @@ export default function Home() {
                   onChange={(e) => setKeywords(e.target.value)}
                   placeholder="e.g. remote, fintech, Python"
                   onKeyDown={(e) => { if (e.key === "Enter") handleRefine(); }}
-                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent w-44"
+                  className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white text-slate-700 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent w-44"
                 />
               </div>
               <div>
@@ -1289,7 +1291,7 @@ export default function Home() {
             {/* Extracted keywords */}
             {result.profile.skills.length > 0 && (
               <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">
                   Extracted Keywords
                 </p>
                 <div className="flex flex-wrap gap-2">
@@ -1327,7 +1329,7 @@ export default function Home() {
             <div className="flex flex-col gap-3">
               {/* Sort */}
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs text-slate-400 w-16">Sort by:</span>
+                <span className="text-xs text-slate-500 w-16">Sort by:</span>
                 {(["relevance", "salary", "newest"] as SortKey[]).map((key) => (
                   <button
                     key={key}
@@ -1346,7 +1348,7 @@ export default function Home() {
 
               {/* Work type */}
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs text-slate-400 w-16">Work type:</span>
+                <span className="text-xs text-slate-500 w-16">Work type:</span>
                 {([
                   { key: "any", label: "Any" },
                   { key: "remote", label: "🌏 Remote" },
@@ -1370,7 +1372,7 @@ export default function Home() {
 
               {/* Employment type */}
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs text-slate-400 w-16">Type:</span>
+                <span className="text-xs text-slate-500 w-16">Type:</span>
                 {([
                   { key: "any", label: "Any" },
                   { key: "fulltime", label: "Full-time" },
@@ -1394,7 +1396,7 @@ export default function Home() {
 
               {/* Minimum pay */}
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs text-slate-400 w-16">Min pay:</span>
+                <span className="text-xs text-slate-500 w-16">Min pay:</span>
                 <select
                   value={minSalary}
                   onChange={(e) => setMinSalary(Number(e.target.value))}
@@ -1406,12 +1408,12 @@ export default function Home() {
                   <option value={100000}>{currency}100k+</option>
                   <option value={150000}>{currency}150k+</option>
                 </select>
-                <span className="text-[11px] text-slate-300">(where listed)</span>
+                <span className="text-[11px] text-slate-500">(where listed)</span>
               </div>
 
               {/* Salary toggle */}
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="text-xs text-slate-400 w-16">Salary:</span>
+                <span className="text-xs text-slate-500 w-16">Salary:</span>
                 <button
                   onClick={() => setOnlySalary((v) => !v)}
                   className={[
@@ -1427,11 +1429,11 @@ export default function Home() {
 
               {/* Hidden notice */}
               {hiddenCount > 0 && (
-                <div className="flex items-center gap-2 text-xs text-slate-400">
+                <div className="flex items-center gap-2 text-xs text-slate-500">
                   <span>{hiddenCount} job{hiddenCount === 1 ? "" : "s"} hidden</span>
                   <button
                     onClick={clearHidden}
-                    className="text-teal hover:text-navy font-medium underline underline-offset-2"
+                    className="text-teal-ink hover:text-navy font-medium underline underline-offset-2"
                   >
                     Show all
                   </button>
@@ -1443,7 +1445,7 @@ export default function Home() {
             {sortedJobs.length === 0 ? (
               (result.jobs.length > 0) ? (
                 /* Jobs exist but filters hid them all */
-                <div className="text-center py-16 text-slate-400">
+                <div className="text-center py-16 text-slate-500">
                   <p className="text-4xl mb-3">🫥</p>
                   <p className="font-medium text-slate-600">No jobs match your filters.</p>
                   <p className="text-sm mt-1">Try widening the work type or salary filter.</p>
@@ -1455,7 +1457,7 @@ export default function Home() {
                   </button>
                 </div>
               ) : (
-                <div className="text-center py-16 text-slate-400">
+                <div className="text-center py-16 text-slate-500">
                   <p className="text-4xl mb-3">🔍</p>
                   <p className="font-medium text-slate-600">No live matches right now.</p>
                   <p className="text-sm mt-1">Try adding keywords above or upload a different CV.</p>
@@ -1487,7 +1489,7 @@ export default function Home() {
                         <h3 className={`text-sm font-semibold ${accent}`}>
                           {label}
                         </h3>
-                        <span className="text-xs text-slate-300">
+                        <span className="text-xs text-slate-500">
                           {tier.length} {tier.length === 1 ? "role" : "roles"}
                         </span>
                       </div>
@@ -1502,7 +1504,7 @@ export default function Home() {
               </div>
             )}
 
-            <p className="text-xs text-center text-slate-300 pb-4">
+            <p className="text-xs text-center text-slate-500 pb-4">
               Clicking &ldquo;Apply Now&rdquo; takes you to the original listing
             </p>
           </div>
@@ -1514,7 +1516,7 @@ export default function Home() {
             <p className="text-4xl">😬</p>
             <div>
               <p className="font-semibold text-slate-700">Something went wrong</p>
-              <p className="text-slate-400 text-sm mt-1 max-w-sm mx-auto">{error}</p>
+              <p className="text-slate-500 text-sm mt-1 max-w-sm mx-auto">{error}</p>
             </div>
             <button
               onClick={reset}
@@ -1526,7 +1528,7 @@ export default function Home() {
         )}
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70">
         A <a href="/about" className="font-medium text-white/60 hover:text-white/80 transition-colors">BenTek Industries</a>{" "}product
         <span className="mx-3">·</span>
         dropmycv · No data stored · No account needed

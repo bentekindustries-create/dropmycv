@@ -1,7 +1,7 @@
 import type { CvReview } from "@/lib/types";
 
 function scoreColor(score: number) {
-  if (score >= 75) return "text-teal";
+  if (score >= 75) return "text-teal-ink";
   if (score >= 50) return "text-amber-600";
   return "text-rose-600";
 }
@@ -19,7 +19,7 @@ export function CvReviewCard({ review }: CvReviewCardProps) {
           <div className={`text-4xl font-serif font-bold ${scoreColor(review.overallScore)}`}>
             {review.overallScore}
           </div>
-          <div className="text-[10px] uppercase tracking-widest text-slate-400">/ 100</div>
+          <div className="text-[10px] uppercase tracking-widest text-slate-500">/ 100</div>
         </div>
         <div>
           <h3 className="text-sm font-semibold text-navy uppercase tracking-widest mb-1">
@@ -86,7 +86,7 @@ export function CvReviewCard({ review }: CvReviewCardProps) {
           <div className="space-y-3">
             {review.rewrites.map((r, i) => (
               <div key={i} className="bg-white rounded-xl p-3 border border-slate-100 text-sm">
-                <p className="text-slate-400 line-through leading-snug">{r.before}</p>
+                <p className="text-slate-500 line-through leading-snug">{r.before}</p>
                 <p className="text-navy font-medium mt-1 leading-snug">{r.after}</p>
               </div>
             ))}
@@ -102,7 +102,7 @@ export function CvReviewCard({ review }: CvReviewCardProps) {
           </p>
           {review.atsKeywords.present.length > 0 && (
             <div className="mb-2">
-              <p className="text-xs text-slate-400 mb-1">Already covered</p>
+              <p className="text-xs text-slate-500 mb-1">Already covered</p>
               <div className="flex flex-wrap gap-1.5">
                 {review.atsKeywords.present.map((k) => (
                   <span key={k} className="text-xs bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded-full">
@@ -114,7 +114,7 @@ export function CvReviewCard({ review }: CvReviewCardProps) {
           )}
           {review.atsKeywords.missing.length > 0 && (
             <div>
-              <p className="text-xs text-slate-400 mb-1">Consider adding</p>
+              <p className="text-xs text-slate-500 mb-1">Consider adding</p>
               <div className="flex flex-wrap gap-1.5">
                 {review.atsKeywords.missing.map((k) => (
                   <span key={k} className="text-xs bg-rose-50 text-rose-600 px-2 py-0.5 rounded-full">
@@ -127,7 +127,7 @@ export function CvReviewCard({ review }: CvReviewCardProps) {
         </div>
       )}
 
-      <p className="text-[11px] text-slate-400 text-center pt-2 border-t border-[#c8ecea]">
+      <p className="text-[11px] text-slate-500 text-center pt-2 border-t border-[#c8ecea]">
         AI-generated guidance · your CV was reviewed in this session and not stored
       </p>
     </div>

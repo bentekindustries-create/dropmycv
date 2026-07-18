@@ -56,8 +56,8 @@ export default async function GuidePage({
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
       <article className="space-y-4 text-slate-600">
         <div className="space-y-2">
-          <p className="text-xs text-slate-400">
-            <Link href="/guides" className="hover:text-teal">Guides</Link> · {formatGuideDate(guide.date)} · {guide.readMins} min read
+          <p className="text-xs text-slate-500">
+            <Link href="/guides" className="hover:text-teal-ink">Guides</Link> · {formatGuideDate(guide.date)} · {guide.readMins} min read
           </p>
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-navy leading-tight">{guide.title}</h1>
         </div>
@@ -66,11 +66,11 @@ export default async function GuidePage({
 
       {others.length > 0 && (
         <div className="mt-12 pt-6 border-t border-slate-100">
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">More guides</p>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-3">More guides</p>
           <ul className="space-y-2">
             {others.map((g) => (
               <li key={g.slug}>
-                <Link href={`/guides/${g.slug}`} className="text-teal hover:underline text-sm">{g.title}</Link>
+                <Link href={`/guides/${g.slug}`} className="text-teal-ink hover:underline text-sm">{g.title}</Link>
               </li>
             ))}
           </ul>

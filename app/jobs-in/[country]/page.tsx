@@ -76,7 +76,7 @@ export default async function CountryHub({
 
         {cities.length > 0 && (
           <div>
-            <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-4">
+            <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-4">
               Popular searches in {c.name}
             </h2>
             <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
@@ -88,7 +88,7 @@ export default async function CountryHub({
                       <li key={role}>
                         <Link
                           href={`/jobs/${landingSlug(role, city)}`}
-                          className="text-sm text-slate-500 hover:text-teal transition-colors"
+                          className="text-sm text-slate-500 hover:text-teal-ink transition-colors"
                         >
                           {role} jobs in {city}
                         </Link>
@@ -109,16 +109,16 @@ export default async function CountryHub({
           </p>
           <p>
             More:{" "}
-            <Link href="/private-job-search" className="text-teal hover:underline">private job search</Link>{" "}
+            <Link href="/private-job-search" className="text-teal-ink hover:underline">private job search</Link>{" "}
             ·{" "}
-            <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link>{" "}
+            <Link href="/cv-review" className="text-teal-ink hover:underline">AI CV review</Link>{" "}
             ·{" "}
-            <Link href="/compare/dropmycv-vs-job-boards" className="text-teal hover:underline">vs job boards</Link>
+            <Link href="/compare/dropmycv-vs-job-boards" className="text-teal-ink hover:underline">vs job boards</Link>
           </p>
         </div>
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-8">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-8">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/privacy" className="hover:text-white/80 transition-colors">Privacy</Link>

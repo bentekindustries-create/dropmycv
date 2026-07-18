@@ -17,7 +17,7 @@ export function StripDemo() {
     <div className="not-prose">
       <button
         onClick={() => setShow((v) => !v)}
-        className="text-sm font-semibold text-teal hover:text-navy underline underline-offset-2"
+        className="text-sm font-semibold text-teal-ink hover:text-navy underline underline-offset-2"
       >
         {show ? "Hide" : "Don't believe us? See exactly what we send →"}
       </button>
@@ -29,10 +29,10 @@ export function StripDemo() {
             <pre className="text-xs text-slate-600 whitespace-pre-wrap font-mono leading-relaxed">{SAMPLE}</pre>
           </div>
           <div className="rounded-xl border border-[#c8ecea] bg-teal-light/40 p-4">
-            <p className="text-xs font-semibold text-teal uppercase tracking-widest mb-2">What actually gets sent</p>
+            <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest mb-2">What actually gets sent</p>
             <pre className="text-xs text-slate-600 whitespace-pre-wrap font-mono leading-relaxed">{stripped}</pre>
           </div>
-          <p className="sm:col-span-2 text-xs text-slate-400">
+          <p className="sm:col-span-2 text-xs text-slate-500">
             This runs the real function we use. Your email, phone and links become{" "}
             <code className="text-slate-500">[email]</code>, <code className="text-slate-500">[phone]</code>{" "}and{" "}
             <code className="text-slate-500">[link]</code>{" "}before anything leaves your browser. Your name and

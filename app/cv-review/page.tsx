@@ -99,7 +99,7 @@ export default function CvReviewLanding() {
       <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-12 space-y-12">
         {/* Hero */}
         <section className="text-center space-y-3">
-          <p className="text-xs font-semibold text-teal uppercase tracking-widest">AI CV review · A$9</p>
+          <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest">AI CV review · A$9</p>
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-navy leading-tight">
             Know exactly why you&apos;re not getting interviews
           </h1>
@@ -116,7 +116,7 @@ export default function CvReviewLanding() {
             >
               Drop your CV to start →
             </Link>
-            <p className="text-xs text-slate-400 mt-2">Free match first · review is an optional A$9 add-on</p>
+            <p className="text-xs text-slate-500 mt-2">Free match first · review is an optional A$9 add-on</p>
           </div>
         </section>
 
@@ -159,10 +159,10 @@ export default function CvReviewLanding() {
           <h2 className="text-lg font-serif font-bold text-navy text-center mb-1">
             Here&apos;s what a review looks like
           </h2>
-          <p className="text-xs text-slate-400 text-center mb-5">Samples — yours is tailored to your CV and your live matches</p>
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Sample 1 — a software engineer CV</p>
+          <p className="text-xs text-slate-500 text-center mb-5">Samples — yours is tailored to your CV and your live matches</p>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Sample 1 — a software engineer CV</p>
           <CvReviewCard review={SAMPLE} />
-          <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2 mt-8">Sample 2 — a marketing CV</p>
+          <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2 mt-8">Sample 2 — a marketing CV</p>
           <CvReviewCard review={SAMPLE_NONTECH} />
         </section>
 
@@ -172,7 +172,7 @@ export default function CvReviewLanding() {
             <span className="font-medium text-navy">One-off A$9. No subscription. Nothing stored.</span>{" "}
             Paid securely via Stripe — we never see your card details. If a review isn&apos;t delivered
             or there&apos;s a genuine issue, email{" "}
-            <a href="mailto:info@dropmycv.app" className="text-teal hover:underline">info@dropmycv.app</a>{" "}
+            <a href="mailto:info@dropmycv.app" className="text-teal-ink hover:underline">info@dropmycv.app</a>{" "}
             and we&apos;ll make it right in line with Australian Consumer Law.
           </p>
           <Link
@@ -184,7 +184,7 @@ export default function CvReviewLanding() {
         </section>
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-8">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-8">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/privacy" className="hover:text-white/80 transition-colors">Privacy</Link>

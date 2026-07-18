@@ -19,7 +19,7 @@ interface Keywords {
 const CHECKER_CV_KEY = "dropmycv_checker_cv";
 
 function scoreColor(s: number) {
-  if (s >= 75) return "text-teal";
+  if (s >= 75) return "text-teal-ink";
   if (s >= 50) return "text-amber-600";
   return "text-rose-600";
 }
@@ -96,7 +96,7 @@ export default function AtsResumeChecker() {
 
       <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-12 space-y-8">
         <section className="text-center space-y-3">
-          <p className="text-xs font-semibold text-teal uppercase tracking-widest">Free ATS resume checker</p>
+          <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest">Free ATS resume checker</p>
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-navy leading-tight">
             Is your resume ATS-friendly?
           </h1>
@@ -125,7 +125,7 @@ export default function AtsResumeChecker() {
                   placeholder="Paste the job ad here. We'll check how well your CV's keywords match what this role screens for. The text is sent only to produce your score, then discarded."
                   className="mt-3 w-full rounded-lg border border-slate-200 p-3 text-slate-700 focus:border-teal focus:outline-none"
                 />
-                <p className="text-xs text-slate-400 mt-1">
+                <p className="text-xs text-slate-500 mt-1">
                   Leave blank and we&apos;ll infer your target role from the CV instead.
                 </p>
               </details>
@@ -133,14 +133,14 @@ export default function AtsResumeChecker() {
 
             {/* Sample result — show the output before they commit */}
             <section>
-              <p className="text-xs uppercase tracking-widest text-slate-400 text-center mb-3">
+              <p className="text-xs uppercase tracking-widest text-slate-500 text-center mb-3">
                 Here&apos;s what your ATS check looks like
               </p>
               <div className="rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-6 space-y-5 max-w-xl mx-auto">
                 <div className="flex items-start gap-4">
                   <div className="shrink-0 text-center">
                     <div className="text-4xl font-serif font-bold text-amber-600">72</div>
-                    <div className="text-[10px] uppercase tracking-widest text-slate-400">ATS score</div>
+                    <div className="text-[10px] uppercase tracking-widest text-slate-500">ATS score</div>
                   </div>
                   <div>
                     <h2 className="text-sm font-semibold text-navy uppercase tracking-widest mb-1">Example ATS check</h2>
@@ -163,7 +163,7 @@ export default function AtsResumeChecker() {
                   ))}
                 </div>
               </div>
-              <p className="text-center text-xs text-slate-400 mt-2">
+              <p className="text-center text-xs text-slate-500 mt-2">
                 Example output — your real check is based on your own CV.
               </p>
             </section>
@@ -211,7 +211,7 @@ export default function AtsResumeChecker() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-left">
-                        <th className="p-2 font-medium text-slate-400"></th>
+                        <th className="p-2 font-medium text-slate-500"></th>
                         <th className="p-2 font-semibold text-slate-600 text-center">Free ATS check</th>
                         <th className="p-2 font-semibold text-navy text-center">A$9 review</th>
                       </tr>
@@ -240,7 +240,7 @@ export default function AtsResumeChecker() {
                 <p>
                   Your CV file is opened in your browser. Your email, phone and links are stripped
                   before any text is sent, and nothing is stored — no account, no profile, no
-                  recruiter database. <Link href="/private-job-search" className="text-teal hover:underline">How privacy works</Link>.
+                  recruiter database. <Link href="/private-job-search" className="text-teal-ink hover:underline">How privacy works</Link>.
                 </p>
               </div>
 
@@ -250,14 +250,14 @@ export default function AtsResumeChecker() {
                   <p><strong className="text-slate-700">Is it really free?</strong><br />Yes — the ATS check is free with no account. The full review is an optional A$9.</p>
                   <p><strong className="text-slate-700">Do ATS really auto-reject resumes?</strong><br />Most don&apos;t auto-reject outright, but they do parse your CV into fields and let recruiters filter by keyword. Bad formatting and missing keywords genuinely cost you — that&apos;s what this check catches.</p>
                   <p><strong className="text-slate-700">Should I use a PDF or Word file?</strong><br />A text-based PDF or a .docx both work. Avoid image/scanned PDFs — an ATS can&apos;t read them.</p>
-                  <p><strong className="text-slate-700">How is this different from the CV checker?</strong><br />The <Link href="/cv-checker" className="text-teal hover:underline">free CV checker</Link> rates how persuasive your CV is to a human. This rates how readable it is to the machine. Use both.</p>
+                  <p><strong className="text-slate-700">How is this different from the CV checker?</strong><br />The <Link href="/cv-checker" className="text-teal-ink hover:underline">free CV checker</Link> rates how persuasive your CV is to a human. This rates how readable it is to the machine. Use both.</p>
                 </div>
                 <p className="text-sm text-slate-500 mt-4">
                   Related:{" "}
-                  <Link href="/cv-checker" className="text-teal hover:underline">free CV checker</Link>{" "}·{" "}
-                  <Link href="/job-match-checker" className="text-teal hover:underline">job match checker</Link>{" "}·{" "}
-                  <Link href="/match-my-cv-to-jobs" className="text-teal hover:underline">match my CV to jobs</Link>{" "}·{" "}
-                  <Link href="/cv-review" className="text-teal hover:underline">full AI CV review</Link>
+                  <Link href="/cv-checker" className="text-teal-ink hover:underline">free CV checker</Link>{" "}·{" "}
+                  <Link href="/job-match-checker" className="text-teal-ink hover:underline">job match checker</Link>{" "}·{" "}
+                  <Link href="/match-my-cv-to-jobs" className="text-teal-ink hover:underline">match my CV to jobs</Link>{" "}·{" "}
+                  <Link href="/cv-review" className="text-teal-ink hover:underline">full AI CV review</Link>
                 </p>
               </div>
             </section>
@@ -268,7 +268,7 @@ export default function AtsResumeChecker() {
           <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
             <div className="w-12 h-12 border-4 border-slate-100 border-t-teal rounded-full animate-spin" />
             <p className="text-slate-600 font-medium">Scanning your CV…</p>
-            <p className="text-xs text-slate-400 flex items-center gap-1.5">
+            <p className="text-xs text-slate-500 flex items-center gap-1.5">
               <span>🔒</span> Your email, phone &amp; links removed in your browser — nothing stored
             </p>
           </div>
@@ -300,14 +300,14 @@ export default function AtsResumeChecker() {
               <div className="flex items-start gap-4">
                 <div className="shrink-0 text-center">
                   <div className={`text-4xl font-serif font-bold ${scoreColor(atsScore)}`}>{atsScore}</div>
-                  <div className="text-[10px] uppercase tracking-widest text-slate-400">ATS score</div>
+                  <div className="text-[10px] uppercase tracking-widest text-slate-500">ATS score</div>
                 </div>
                 <div>
                   <h2 className="text-sm font-semibold text-navy uppercase tracking-widest mb-1">
                     Your ATS check{keywords.targetRole ? ` · ${keywords.targetRole}` : ""}
                   </h2>
                   <p className="text-slate-700 leading-snug">{keywords.keywordVerdict}</p>
-                  <p className="text-xs text-slate-400 mt-1">
+                  <p className="text-xs text-slate-500 mt-1">
                     Format {format.score}/100 · Keyword match {keywords.keywordScore}/100
                   </p>
                 </div>
@@ -358,11 +358,11 @@ export default function AtsResumeChecker() {
               >
                 Match my CV &amp; unlock the full review — A$9 →
               </button>
-              <p className="text-xs text-slate-400">Free job matches first · review is the optional A$9 add-on</p>
+              <p className="text-xs text-slate-500">Free job matches first · review is the optional A$9 add-on</p>
               <div className="pt-1">
                 <button
                   onClick={unlockFullReview}
-                  className="text-sm text-teal hover:text-navy font-medium underline underline-offset-2"
+                  className="text-sm text-teal-ink hover:text-navy font-medium underline underline-offset-2"
                 >
                   Or just match this CV to live jobs — free →
                 </button>
@@ -372,7 +372,7 @@ export default function AtsResumeChecker() {
         )}
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-8">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-8">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/cv-checker" className="hover:text-white/80 transition-colors">CV checker</Link>

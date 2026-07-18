@@ -207,7 +207,7 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
         <div className="flex items-center gap-2">
           <button
             onClick={goBack}
-            className="text-xs text-slate-400 hover:text-slate-600 transition-colors"
+            className="text-xs text-slate-500 hover:text-slate-600 transition-colors"
           >
             ←
           </button>
@@ -229,7 +229,7 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
                 <span className="text-base">{cat.icon}</span>
                 <span className="flex-1">{cat.label}</span>
                 {selectedCount > 0 && (
-                  <span className="text-xs bg-teal-light text-teal px-1.5 py-0.5 rounded-full font-semibold">
+                  <span className="text-xs bg-teal-light text-teal-ink px-1.5 py-0.5 rounded-full font-semibold">
                     {selectedCount}
                   </span>
                 )}
@@ -253,11 +253,11 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
                 <span className="text-xl">{sub.icon}</span>
                 <span className="flex-1">{sub.label}</span>
                 {selectedCount > 0 && (
-                  <span className="text-xs bg-teal-light text-teal px-1.5 py-0.5 rounded-full font-semibold">
+                  <span className="text-xs bg-teal-light text-teal-ink px-1.5 py-0.5 rounded-full font-semibold">
                     {selectedCount}
                   </span>
                 )}
-                <span className="text-slate-300 text-xs">→</span>
+                <span className="text-slate-500 text-xs">→</span>
               </button>
             );
           })}
@@ -294,7 +294,7 @@ export function SkillPicker({ value, onChange }: SkillPickerProps) {
         value={customText}
         onChange={(e) => setCustomText(e.target.value)}
         placeholder="Or type your own skills, comma separated…"
-        className="w-full text-sm border border-slate-200 rounded-xl px-4 py-3 bg-white text-slate-700 placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
+        className="w-full text-sm border border-slate-200 rounded-xl px-4 py-3 bg-white text-slate-700 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-teal focus:border-transparent"
       />
     </div>
   );

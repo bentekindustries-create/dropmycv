@@ -38,7 +38,7 @@ export default function AiJobMatcher() {
           <li><strong>Many sources, one shortlist.</strong>{" "}It searches multiple job-search providers and company career pages at once, not a single board.</li>
           <li><strong>A match score and reason</strong>{" "}on every role — no black box.</li>
           <li><strong>Private by design.</strong>{" "}No account, no stored CV, no recruiter database. Your contact details are stripped in your browser first.</li>
-          <li><strong>Free.</strong>{" "}Matching costs nothing; an optional <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link>{" "}is A$9.</li>
+          <li><strong>Free.</strong>{" "}Matching costs nothing; an optional <Link href="/cv-review" className="text-teal-ink hover:underline">AI CV review</Link>{" "}is A$9.</li>
         </ul>
 
         <h2 className="text-xl font-semibold text-navy pt-2">How your match score works</h2>
@@ -72,10 +72,10 @@ export default function AiJobMatcher() {
           <table className="w-full text-sm border border-slate-200 rounded-lg overflow-hidden">
             <thead>
               <tr className="bg-slate-50 text-left">
-                <th className="p-2.5 font-medium text-slate-400"></th>
-                <th className="p-2.5 font-semibold text-navy">AI job matcher</th>
-                <th className="p-2.5 font-semibold text-slate-500">Job board</th>
-                <th className="p-2.5 font-semibold text-slate-500">Chatbot</th>
+                <th scope="col" className="p-2.5 font-medium text-slate-500"></th>
+                <th scope="col" className="p-2.5 font-semibold text-navy">AI job matcher</th>
+                <th scope="col" className="p-2.5 font-semibold text-slate-500">Job board</th>
+                <th scope="col" className="p-2.5 font-semibold text-slate-500">Chatbot</th>
               </tr>
             </thead>
             <tbody>
@@ -87,7 +87,7 @@ export default function AiJobMatcher() {
                 { f: "Needs no account / private", a: "Yes (dropmycv)", b: "Usually no", c: "Varies" },
               ].map((r, i) => (
                 <tr key={r.f} className={i % 2 ? "" : "bg-slate-50/40"}>
-                  <td className="p-2.5 text-slate-600 font-medium align-top">{r.f}</td>
+                  <th scope="row" className="p-2.5 text-slate-600 font-medium align-top text-left">{r.f}</th>
                   <td className="p-2.5 text-slate-700 align-top">{r.a}</td>
                   <td className="p-2.5 text-slate-500 align-top">{r.b}</td>
                   <td className="p-2.5 text-slate-500 align-top">{r.c}</td>
@@ -96,18 +96,18 @@ export default function AiJobMatcher() {
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-500">
           AI matching is a starting point — always read the original listing and use your own
           judgement before applying.
         </p>
 
         <p className="text-sm text-slate-500">
           Related:{" "}
-          <Link href="/match-my-cv-to-jobs" className="text-teal hover:underline">match my CV to jobs</Link>{" "}
+          <Link href="/match-my-cv-to-jobs" className="text-teal-ink hover:underline">match my CV to jobs</Link>{" "}
           ·{" "}
-          <Link href="/private-job-search" className="text-teal hover:underline">private job search</Link>{" "}
+          <Link href="/private-job-search" className="text-teal-ink hover:underline">private job search</Link>{" "}
           ·{" "}
-          <Link href="/compare/dropmycv-vs-job-boards" className="text-teal hover:underline">vs job boards</Link>
+          <Link href="/compare/dropmycv-vs-job-boards" className="text-teal-ink hover:underline">vs job boards</Link>
         </p>
 
         <CtaBlock label="Try the AI job matcher — free →" sub="Drop your CV and see your ranked matches." />

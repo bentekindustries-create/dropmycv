@@ -32,7 +32,7 @@ export default function GuidesIndex() {
             >
               <h2 className="font-serif font-bold text-navy text-lg leading-snug">{g.title}</h2>
               <p className="text-sm text-slate-500 mt-1.5 leading-relaxed">{g.description}</p>
-              <p className="text-xs text-slate-400 mt-3">{formatGuideDate(g.date)} · {g.readMins} min read</p>
+              <p className="text-xs text-slate-500 mt-3">{formatGuideDate(g.date)} · {g.readMins} min read</p>
             </Link>
           ))}
         </div>

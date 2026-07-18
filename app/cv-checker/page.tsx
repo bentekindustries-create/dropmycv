@@ -16,7 +16,7 @@ interface Check {
 const CHECKER_CV_KEY = "dropmycv_checker_cv";
 
 function scoreColor(s: number) {
-  if (s >= 75) return "text-teal";
+  if (s >= 75) return "text-teal-ink";
   if (s >= 50) return "text-amber-600";
   return "text-rose-600";
 }
@@ -68,7 +68,7 @@ export default function CvChecker() {
 
       <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-12 space-y-8">
         <section className="text-center space-y-3">
-          <p className="text-xs font-semibold text-teal uppercase tracking-widest">Free CV checker</p>
+          <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest">Free CV checker</p>
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-navy leading-tight">
             Is your CV holding you back?
           </h1>
@@ -84,14 +84,14 @@ export default function CvChecker() {
 
             {/* Sample result — show the output before they commit */}
             <section>
-              <p className="text-xs uppercase tracking-widest text-slate-400 text-center mb-3">
+              <p className="text-xs uppercase tracking-widest text-slate-500 text-center mb-3">
                 Here&apos;s what your free check looks like
               </p>
               <div className="rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-6 space-y-5 max-w-xl mx-auto">
                 <div className="flex items-start gap-4">
                   <div className="shrink-0 text-center">
                     <div className="text-4xl font-serif font-bold text-amber-600">68</div>
-                    <div className="text-[10px] uppercase tracking-widest text-slate-400">/ 100</div>
+                    <div className="text-[10px] uppercase tracking-widest text-slate-500">/ 100</div>
                   </div>
                   <div>
                     <h2 className="text-sm font-semibold text-navy uppercase tracking-widest mb-1">Example CV check</h2>
@@ -120,7 +120,7 @@ export default function CvChecker() {
                   Plus <span className="font-semibold text-navy">6 keywords</span> these roles ask for that the CV is missing.
                 </p>
               </div>
-              <p className="text-center text-xs text-slate-400 mt-2">
+              <p className="text-center text-xs text-slate-500 mt-2">
                 Example output — your real check is based on your own CV.
               </p>
             </section>
@@ -162,9 +162,9 @@ export default function CvChecker() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-left">
-                        <th className="p-2 font-medium text-slate-400"></th>
-                        <th className="p-2 font-semibold text-slate-600 text-center">Free check</th>
-                        <th className="p-2 font-semibold text-navy text-center">A$9 review</th>
+                        <th scope="col" className="p-2 font-medium text-slate-500"></th>
+                        <th scope="col" className="p-2 font-semibold text-slate-600 text-center">Free check</th>
+                        <th scope="col" className="p-2 font-semibold text-navy text-center">A$9 review</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -176,7 +176,7 @@ export default function CvChecker() {
                         { f: "Bullet rewrites & action plan", a: "—", b: "✓" },
                       ].map((r, i) => (
                         <tr key={r.f} className={i % 2 ? "" : "bg-slate-50/50"}>
-                          <td className="p-2 text-slate-600 font-medium">{r.f}</td>
+                          <th scope="row" className="p-2 text-slate-600 font-medium text-left">{r.f}</th>
                           <td className="p-2 text-slate-500 text-center">{r.a}</td>
                           <td className="p-2 text-slate-700 text-center">{r.b}</td>
                         </tr>
@@ -191,7 +191,7 @@ export default function CvChecker() {
                 <p>
                   Your CV file is opened in your browser. Your email, phone and links are stripped
                   before any text is sent, and nothing is stored — no account, no profile, no
-                  recruiter database. <Link href="/private-job-search" className="text-teal hover:underline">How privacy works</Link>.
+                  recruiter database. <Link href="/private-job-search" className="text-teal-ink hover:underline">How privacy works</Link>.
                 </p>
               </div>
 
@@ -200,18 +200,18 @@ export default function CvChecker() {
                 <div className="space-y-4 text-sm">
                   <p><strong className="text-slate-700">Is it really free?</strong><br />Yes — the CV check is free with no account. The full review is an optional A$9.</p>
                   <p><strong className="text-slate-700">Do you store my CV?</strong><br />No. It&apos;s read in your browser and the stripped text is checked only to produce your score, then discarded.</p>
-                  <p><strong className="text-slate-700">How is this different from the A$9 review?</strong><br />The free check is a quick triage. The full <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link>{" "}matches your CV to live jobs first, then shows the exact missing keywords, rewrites and a prioritised plan.</p>
+                  <p><strong className="text-slate-700">How is this different from the A$9 review?</strong><br />The free check is a quick triage. The full <Link href="/cv-review" className="text-teal-ink hover:underline">AI CV review</Link>{" "}matches your CV to live jobs first, then shows the exact missing keywords, rewrites and a prioritised plan.</p>
                   <p><strong className="text-slate-700">How long does it take?</strong><br />A few seconds.</p>
                 </div>
                 <p className="text-sm text-slate-500 mt-4">
                   Related:{" "}
-                  <Link href="/ats-resume-checker" className="text-teal hover:underline">ATS resume checker</Link>{" "}
+                  <Link href="/ats-resume-checker" className="text-teal-ink hover:underline">ATS resume checker</Link>{" "}
                   ·{" "}
-                  <Link href="/job-match-checker" className="text-teal hover:underline">job match checker</Link>{" "}
+                  <Link href="/job-match-checker" className="text-teal-ink hover:underline">job match checker</Link>{" "}
                   ·{" "}
-                  <Link href="/match-my-cv-to-jobs" className="text-teal hover:underline">match my CV to jobs</Link>{" "}
+                  <Link href="/match-my-cv-to-jobs" className="text-teal-ink hover:underline">match my CV to jobs</Link>{" "}
                   ·{" "}
-                  <Link href="/cv-review" className="text-teal hover:underline">full AI CV review</Link>
+                  <Link href="/cv-review" className="text-teal-ink hover:underline">full AI CV review</Link>
                 </p>
               </div>
             </section>
@@ -222,7 +222,7 @@ export default function CvChecker() {
           <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
             <div className="w-12 h-12 border-4 border-slate-100 border-t-teal rounded-full animate-spin" />
             <p className="text-slate-600 font-medium">Checking your CV…</p>
-            <p className="text-xs text-slate-400 flex items-center gap-1.5">
+            <p className="text-xs text-slate-500 flex items-center gap-1.5">
               <span>🔒</span> Your email, phone &amp; links removed in your browser — nothing stored
             </p>
           </div>
@@ -247,7 +247,7 @@ export default function CvChecker() {
               <div className="flex items-start gap-4">
                 <div className="shrink-0 text-center">
                   <div className={`text-4xl font-serif font-bold ${scoreColor(check.score)}`}>{check.score}</div>
-                  <div className="text-[10px] uppercase tracking-widest text-slate-400">/ 100</div>
+                  <div className="text-[10px] uppercase tracking-widest text-slate-500">/ 100</div>
                 </div>
                 <div>
                   <h2 className="text-sm font-semibold text-navy uppercase tracking-widest mb-1">Your free CV check</h2>
@@ -299,11 +299,11 @@ export default function CvChecker() {
               >
                 Match my CV &amp; unlock the full review — A$9 →
               </button>
-              <p className="text-xs text-slate-400">Free job matches first · review is the optional A$9 add-on</p>
+              <p className="text-xs text-slate-500">Free job matches first · review is the optional A$9 add-on</p>
               <div className="pt-1">
                 <button
                   onClick={unlockFullReview}
-                  className="text-sm text-teal hover:text-navy font-medium underline underline-offset-2"
+                  className="text-sm text-teal-ink hover:text-navy font-medium underline underline-offset-2"
                 >
                   Or just match this CV to live jobs — free →
                 </button>
@@ -313,7 +313,7 @@ export default function CvChecker() {
         )}
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-8">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-8">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/cv-review" className="hover:text-white/80 transition-colors">Full CV review</Link>

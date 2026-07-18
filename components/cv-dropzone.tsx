@@ -84,7 +84,8 @@ export function CvDropzone({ onExtracted, onError, disabled }: CvDropzoneProps) 
         disabled || parsing ? "opacity-50 cursor-not-allowed" : "",
       ].join(" ")}
     >
-      <input {...getInputProps()} />
+      {/* Screen readers need a name for this visually-hidden file input */}
+      <input {...getInputProps({ "aria-label": "Upload your CV — PDF, Word (.docx) or plain text (.txt)" })} />
 
       {parsing ? (
         <div className="flex flex-col items-center gap-4">
@@ -94,7 +95,7 @@ export function CvDropzone({ onExtracted, onError, disabled }: CvDropzoneProps) 
       ) : isDragActive ? (
         <div className="flex flex-col items-center gap-3">
           <div className="text-5xl" aria-hidden>📄</div>
-          <p className="text-teal font-semibold text-lg">Drop it here!</p>
+          <p className="text-teal-ink font-semibold text-lg">Drop it here!</p>
         </div>
       ) : (
         <div className="flex flex-col items-center gap-3">
@@ -104,9 +105,9 @@ export function CvDropzone({ onExtracted, onError, disabled }: CvDropzoneProps) 
           <div>
             <p className="text-slate-700 font-semibold text-lg">
               Drop your CV file here or{" "}
-              <span className="text-teal underline underline-offset-2">click to choose a file</span>
+              <span className="text-teal-ink underline underline-offset-2">click to choose a file</span>
             </p>
-            <p className="text-slate-400 text-sm mt-1.5">
+            <p className="text-slate-500 text-sm mt-1.5">
               PDF, Word (.docx), or plain text (.txt) · Your email, phone &amp; links are removed
               before any AI processing · Nothing is ever stored
             </p>

@@ -49,15 +49,15 @@ export default function Compare() {
           <table className="w-full text-sm">
             <thead>
               <tr className="bg-slate-50 text-left">
-                <th className="p-3 font-semibold text-slate-500"></th>
-                <th className="p-3 font-semibold text-navy">dropmycv</th>
-                <th className="p-3 font-semibold text-slate-500">Typical job board</th>
+                <th scope="col" className="p-3 font-semibold text-slate-500"></th>
+                <th scope="col" className="p-3 font-semibold text-navy">dropmycv</th>
+                <th scope="col" className="p-3 font-semibold text-slate-500">Typical job board</th>
               </tr>
             </thead>
             <tbody>
               {ROWS.map((r, i) => (
                 <tr key={r.feature} className={i % 2 ? "bg-white" : "bg-slate-50/40"}>
-                  <td className="p-3 text-slate-600 font-medium align-top">{r.feature}</td>
+                  <th scope="row" className="p-3 text-slate-600 font-medium align-top text-left">{r.feature}</th>
                   <td className="p-3 text-slate-700 align-top">{r.us}</td>
                   <td className="p-3 text-slate-500 align-top">{r.them}</td>
                 </tr>
@@ -65,7 +65,7 @@ export default function Compare() {
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-500">
           Comparison reflects how most major job boards typically operate; individual platforms vary.
           We don&apos;t replace job boards — we search across them (and company career pages) and rank
           the results for you.
@@ -97,13 +97,13 @@ export default function Compare() {
 
         <p className="text-sm text-slate-500">
           More:{" "}
-          <Link href="/private-job-search" className="text-teal hover:underline">how we keep your job search private</Link>{" "}
+          <Link href="/private-job-search" className="text-teal-ink hover:underline">how we keep your job search private</Link>{" "}
           ·{" "}
-          <Link href="/cv-review" className="text-teal hover:underline">get an AI review of your CV</Link>
+          <Link href="/cv-review" className="text-teal-ink hover:underline">get an AI review of your CV</Link>
         </p>
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-8">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-8">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/privacy" className="hover:text-white/80 transition-colors">Privacy</Link>

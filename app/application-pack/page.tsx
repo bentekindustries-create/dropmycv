@@ -31,7 +31,7 @@ export default function ApplicationPackLanding() {
       <div className="space-y-12">
         {/* Hero */}
         <section className="text-center space-y-3">
-          <p className="text-xs font-semibold text-teal uppercase tracking-widest">Application Pack · A$19</p>
+          <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest">Application Pack · A$19</p>
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-navy leading-tight">
             Apply faster to one of your matched jobs
           </h1>
@@ -71,11 +71,11 @@ export default function ApplicationPackLanding() {
         {/* Sample peek */}
         <section>
           <h2 className="text-lg font-serif font-bold text-navy text-center mb-1">A peek at the output</h2>
-          <p className="text-xs text-slate-400 text-center mb-5">Example — yours is written for your CV and your chosen role</p>
+          <p className="text-xs text-slate-500 text-center mb-5">Example — yours is written for your CV and your chosen role</p>
           <div className="bg-white rounded-2xl border border-slate-200 p-6 space-y-5 text-sm">
             <div>
               <p className="text-xs font-semibold text-navy uppercase tracking-widest mb-2">Reworded CV bullet</p>
-              <p className="text-slate-400 line-through">Managed project stakeholders.</p>
+              <p className="text-slate-500 line-through">Managed project stakeholders.</p>
               <p className="text-slate-700 font-medium mt-1">
                 Led weekly governance with 12 internal and external stakeholders, keeping a $2.4m
                 delivery program on track and cutting decision delays.
@@ -93,7 +93,7 @@ export default function ApplicationPackLanding() {
               <p className="text-xs font-semibold text-navy uppercase tracking-widest mb-2">Keywords to include for this listing</p>
               <div className="flex flex-wrap gap-1.5">
                 {["Stakeholder Management", "Risk Management", "PRINCE2", "Budget Management", "Change Management"].map((k) => (
-                  <span key={k} className="text-xs font-medium text-teal bg-teal-light px-2.5 py-1 rounded-full">{k}</span>
+                  <span key={k} className="text-xs font-medium text-teal-ink bg-teal-light px-2.5 py-1 rounded-full">{k}</span>
                 ))}
               </div>
             </div>
@@ -119,16 +119,16 @@ export default function ApplicationPackLanding() {
           <h2 className="text-lg font-serif font-bold text-navy text-center mb-5">Which one do I need?</h2>
           <div className="grid sm:grid-cols-2 gap-4">
             <div className="rounded-xl border border-slate-200 bg-white p-5">
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">A$9 · CV Review</p>
+              <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">A$9 · CV Review</p>
               <p className="font-serif font-bold text-navy mt-1">Sharpen your CV overall</p>
               <p className="text-sm text-slate-500 mt-2 leading-relaxed">
                 Best when you&apos;re applying across several similar roles and want your CV stronger
                 for all of them — score, keyword gaps, rewrites and priorities. See the{" "}
-                <Link href="/cv-review" className="text-teal hover:underline">CV review</Link>.
+                <Link href="/cv-review" className="text-teal-ink hover:underline">CV review</Link>.
               </p>
             </div>
             <div className="rounded-xl border-2 border-[#c8ecea] bg-teal-light/30 p-5">
-              <p className="text-xs font-semibold text-teal uppercase tracking-widest">A$19 · Application Pack</p>
+              <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest">A$19 · Application Pack</p>
               <p className="font-serif font-bold text-navy mt-1">Get ready for one specific job</p>
               <p className="text-sm text-slate-500 mt-2 leading-relaxed">
                 Best when you&apos;ve found the role you really want and you&apos;re about to apply —
@@ -145,7 +145,7 @@ export default function ApplicationPackLanding() {
             Paid securely via Stripe — we never see your card details. You download the pack instantly,
             with an optional emailed copy. If a pack isn&apos;t delivered or there&apos;s a genuine
             issue, email{" "}
-            <a href="mailto:info@dropmycv.app" className="text-teal hover:underline">info@dropmycv.app</a>{" "}
+            <a href="mailto:info@dropmycv.app" className="text-teal-ink hover:underline">info@dropmycv.app</a>{" "}
             and we&apos;ll make it right in line with Australian Consumer Law.
           </p>
           <Link
@@ -154,7 +154,7 @@ export default function ApplicationPackLanding() {
           >
             Match my CV to get started →
           </Link>
-          <p className="text-xs text-slate-400">Free match first · pick a role · the pack is the optional A$19 add-on</p>
+          <p className="text-xs text-slate-500">Free match first · pick a role · the pack is the optional A$19 add-on</p>
         </section>
       </div>
     </MarketingShell>

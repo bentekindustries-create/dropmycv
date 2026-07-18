@@ -38,7 +38,7 @@ function workType(job: JobMatch): string | null {
 }
 
 function scoreColors(score: number) {
-  if (score >= 85) return "bg-teal-light text-teal";
+  if (score >= 85) return "bg-teal-light text-teal-ink";
   if (score >= 65) return "bg-[#eef1f7] text-navy";
   return "bg-slate-100 text-slate-500";
 }
@@ -83,7 +83,7 @@ export function JobCard({ job, currency, onHideJob, onHideCompany, onLike, liked
       </div>
 
       {job.matchReason && (
-        <p className="text-xs text-slate-400 italic leading-snug">{job.matchReason}</p>
+        <p className="text-xs text-slate-500 italic leading-snug">{job.matchReason}</p>
       )}
 
       {job.matchedSkills && job.matchedSkills.length > 0 && (
@@ -114,7 +114,7 @@ export function JobCard({ job, currency, onHideJob, onHideCompany, onLike, liked
             💰 {salary}
           </span>
         ) : (
-          <span className="text-xs font-medium text-slate-400 bg-slate-50 px-2.5 py-1 rounded-full">
+          <span className="text-xs font-medium text-slate-500 bg-slate-50 px-2.5 py-1 rounded-full">
             Salary not listed
           </span>
         )}
@@ -146,7 +146,7 @@ export function JobCard({ job, currency, onHideJob, onHideCompany, onLike, liked
                 "inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full transition-colors",
                 liked
                   ? "bg-teal text-white hover:bg-teal-dark"
-                  : "bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600",
+                  : "bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-600",
               ].join(" ")}
             >
               {liked ? "✓ Shortlisted" : "👍 Shortlist"}
@@ -156,7 +156,7 @@ export function JobCard({ job, currency, onHideJob, onHideCompany, onLike, liked
             <button
               onClick={() => onHideJob(job.id)}
               title="Hide this and show fewer like it"
-              className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors"
+              className="inline-flex items-center gap-1 text-xs font-medium px-3 py-1.5 rounded-full bg-slate-50 text-slate-500 hover:bg-slate-100 hover:text-slate-600 transition-colors"
             >
               👎 Not for me
             </button>
@@ -165,7 +165,7 @@ export function JobCard({ job, currency, onHideJob, onHideCompany, onLike, liked
       )}
 
       {onHideCompany && job.company && (
-        <div className="flex items-center justify-center text-[11px] text-slate-300">
+        <div className="flex items-center justify-center text-[11px] text-slate-500">
           <button
             onClick={() => onHideCompany(job.company)}
             className="hover:text-slate-500 transition-colors"

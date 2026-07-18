@@ -8,6 +8,11 @@
   --teal: #3dbfb8;
   --teal-dark: #32a8a1;
   --teal-light: #eef8f7;
+  /* Accessible teal for TEXT on light backgrounds. Brand teal (#3dbfb8) only
+     reaches ~2.2:1 on white, failing WCAG AA; this hits 5.5:1 on white and
+     5.1:1 on --teal-light. Keep --teal for fills/borders/rings, and for text
+     on the navy header (where the bright teal is the high-contrast choice). */
+  --teal-ink: #0f766e;
 }
 
 @theme inline {
@@ -21,6 +26,7 @@
   --color-teal: var(--teal);
   --color-teal-dark: var(--teal-dark);
   --color-teal-light: var(--teal-light);
+  --color-teal-ink: var(--teal-ink);
 }
 
 body {

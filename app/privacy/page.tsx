@@ -19,7 +19,7 @@ export default function PrivacyPolicy() {
 
       <main className="max-w-3xl mx-auto px-6 py-12">
         <h1 className="text-3xl font-bold text-slate-800 mb-2">Privacy Policy</h1>
-        <p className="text-slate-400 text-sm mb-10">Last updated: June 2026</p>
+        <p className="text-slate-500 text-sm mb-10">Last updated: June 2026</p>
 
         <div className="prose prose-slate max-w-none space-y-8 text-slate-600 leading-relaxed">
 
@@ -35,7 +35,7 @@ export default function PrivacyPolicy() {
             </p>
             <p className="mt-3">
               For privacy enquiries, contact:{" "}
-              <a href="mailto:privacy@dropmycv.app" className="text-teal hover:underline">
+              <a href="mailto:privacy@dropmycv.app" className="text-teal-ink hover:underline">
                 privacy@dropmycv.app
               </a>
             </p>
@@ -114,7 +114,7 @@ export default function PrivacyPolicy() {
                   international transfers. These are Anthropic&apos;s terms rather than commitments
                   dropmycv can guarantee on Anthropic&apos;s behalf; please refer to Anthropic&apos;s
                   current{" "}
-                  <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">
+                  <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener noreferrer" className="text-teal-ink hover:underline">
                     Privacy Policy
                   </a>{" "}
                   and Data Processing Addendum.
@@ -130,22 +130,22 @@ export default function PrivacyPolicy() {
                 </p>
                 <ul className="text-sm mt-2 space-y-1 list-disc pl-5">
                   <li>
-                    <a href="https://www.adzuna.com/privacy" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">Adzuna</a>{" "}(United Kingdom)
+                    <a href="https://www.adzuna.com/privacy" target="_blank" rel="noopener noreferrer" className="text-teal-ink hover:underline">Adzuna</a>{" "}(United Kingdom)
                   </li>
                   <li>
-                    <a href="https://www.careerjet.com/privacy.html" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">Careerjet</a>{" "}(United Kingdom)
+                    <a href="https://www.careerjet.com/privacy.html" target="_blank" rel="noopener noreferrer" className="text-teal-ink hover:underline">Careerjet</a>{" "}(United Kingdom)
                   </li>
                   <li>
-                    <a href="https://jooble.org/privacy" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">Jooble</a>{" "}(Cyprus)
+                    <a href="https://jooble.org/privacy" target="_blank" rel="noopener noreferrer" className="text-teal-ink hover:underline">Jooble</a>{" "}(Cyprus)
                   </li>
                   <li>
-                    <a href="https://brave.com/privacy/browser/" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">Brave Search</a>{" "}(United States)
+                    <a href="https://brave.com/privacy/browser/" target="_blank" rel="noopener noreferrer" className="text-teal-ink hover:underline">Brave Search</a>{" "}(United States)
                   </li>
                   <li>
-                    <a href="https://remotive.com/" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">Remotive</a>{" "}(France)
+                    <a href="https://remotive.com/" target="_blank" rel="noopener noreferrer" className="text-teal-ink hover:underline">Remotive</a>{" "}(France)
                   </li>
                   <li>
-                    <a href="https://jobicy.com/" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">Jobicy</a>{" "}(United States)
+                    <a href="https://jobicy.com/" target="_blank" rel="noopener noreferrer" className="text-teal-ink hover:underline">Jobicy</a>{" "}(United States)
                   </li>
                 </ul>
               </div>
@@ -156,7 +156,7 @@ export default function PrivacyPolicy() {
                   <em>Analytics</em>{" "}below). Vercel processes standard request data such as your
                   IP address transiently in order to serve the site and provide cookieless,
                   anonymous visitor counts. See{" "}
-                  <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">
+                  <a href="https://vercel.com/legal/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-teal-ink hover:underline">
                     Vercel&apos;s Privacy Policy
                   </a>.
                 </p>
@@ -168,7 +168,7 @@ export default function PrivacyPolicy() {
                   Stripe&apos;s own checkout page. <strong>dropmycv never receives or stores your
                   card details</strong> — they are handled entirely by Stripe. We only learn whether
                   a payment succeeded. See{" "}
-                  <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">
+                  <a href="https://stripe.com/privacy" target="_blank" rel="noopener noreferrer" className="text-teal-ink hover:underline">
                     Stripe&apos;s Privacy Policy
                   </a>.
                 </p>
@@ -211,7 +211,7 @@ export default function PrivacyPolicy() {
               does not use cross-site tracking or device fingerprinting. Visitor counts are
               derived from a hashed, non-identifying signal that rotates daily, so it cannot be
               used to identify you or follow you across sessions or websites. See{" "}
-              <a href="https://vercel.com/docs/analytics/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">
+              <a href="https://vercel.com/docs/analytics/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-teal-ink hover:underline">
                 Vercel&apos;s analytics privacy documentation
               </a>.
             </p>
@@ -249,12 +249,12 @@ export default function PrivacyPolicy() {
             </p>
             <p className="mt-3">
               If you have a concern about how your information is handled, contact us at{" "}
-              <a href="mailto:privacy@dropmycv.app" className="text-teal hover:underline">
+              <a href="mailto:privacy@dropmycv.app" className="text-teal-ink hover:underline">
                 privacy@dropmycv.app
               </a>
               . You may also contact the Office of the Australian Information Commissioner (OAIC)
               at{" "}
-              <a href="https://www.oaic.gov.au" target="_blank" rel="noopener noreferrer" className="text-teal hover:underline">
+              <a href="https://www.oaic.gov.au" target="_blank" rel="noopener noreferrer" className="text-teal-ink hover:underline">
                 oaic.gov.au
               </a>
               . dropmycv is the operator responsible for this service; your point of contact for
@@ -274,7 +274,7 @@ export default function PrivacyPolicy() {
         </div>
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-12">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-12">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/terms" className="hover:text-white/80 transition-colors">Terms of Service</Link>

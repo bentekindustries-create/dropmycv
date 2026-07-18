@@ -42,7 +42,7 @@ function GhostJob() {
       </p>
       <p className={p}>
         That last point is where matching beats scrolling. When you{" "}
-        <Link href="/match-my-cv-to-jobs" className="text-teal hover:underline">match your CV to live jobs</Link>{" "}
+        <Link href="/match-my-cv-to-jobs" className="text-teal-ink hover:underline">match your CV to live jobs</Link>{" "}
         with dropmycv, every result shows <strong>how recently it was posted</strong>{" "}and a match score
         with the reason it fits — so you can skip the stale, low-fit listings and put your energy into
         the ones worth a tailored application. It&apos;s free, and your CV is never stored.
@@ -87,12 +87,12 @@ function CvKeywords() {
       <h2 className={h2}>The shortcut</h2>
       <p className={p}>
         Doing this by hand across every application is slow. dropmycv does the comparison for you: it{" "}
-        <Link href="/match-my-cv-to-jobs" className="text-teal hover:underline">matches your CV to live roles</Link>{" "}
+        <Link href="/match-my-cv-to-jobs" className="text-teal-ink hover:underline">matches your CV to live roles</Link>{" "}
         first, then the optional{" "}
-        <Link href="/cv-review" className="text-teal hover:underline">A$9 CV review</Link>{" "}
+        <Link href="/cv-review" className="text-teal-ink hover:underline">A$9 CV review</Link>{" "}
         shows the exact keywords those <em>specific</em>{" "}live jobs ask for that your CV is missing —
         so you&apos;re optimising for real, current demand, not a generic checklist. Or start with a{" "}
-        <Link href="/cv-checker" className="text-teal hover:underline">free CV check</Link>.
+        <Link href="/cv-checker" className="text-teal-ink hover:underline">free CV check</Link>.
       </p>
     </>
   );
@@ -133,9 +133,9 @@ function PrivateSearch() {
       </p>
       <p className={p}>
         More on how that works:{" "}
-        <Link href="/private-job-search" className="text-teal hover:underline">private job search</Link>{" "}
+        <Link href="/private-job-search" className="text-teal-ink hover:underline">private job search</Link>{" "}
         and{" "}
-        <Link href="/" className="text-teal hover:underline">match your CV privately</Link>.
+        <Link href="/" className="text-teal-ink hover:underline">match your CV privately</Link>.
       </p>
     </>
   );

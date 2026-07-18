@@ -162,12 +162,12 @@ export default async function JobsLanding({
 
       <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-12 space-y-10">
         <div className="space-y-2">
-          <nav aria-label="Breadcrumb" className="text-xs text-slate-400">
-            <Link href="/" className="hover:text-teal transition-colors">Home</Link>
+          <nav aria-label="Breadcrumb" className="text-xs text-slate-500">
+            <Link href="/" className="hover:text-teal-ink transition-colors">Home</Link>
             {countryHub && (
               <>
                 <span className="mx-1.5">›</span>
-                <Link href={`/jobs-in/${countryHub.slug}`} className="hover:text-teal transition-colors">
+                <Link href={`/jobs-in/${countryHub.slug}`} className="hover:text-teal-ink transition-colors">
                   Jobs in {countryHub.name}
                 </Link>
               </>
@@ -203,7 +203,7 @@ export default async function JobsLanding({
         {/* Live sample listings */}
         {jobs.length > 0 && (
           <div>
-            <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-3">
+            <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-3">
               Live {role} roles in {city}
             </h2>
             <div className="space-y-3">
@@ -231,7 +231,7 @@ export default async function JobsLanding({
                 );
               })}
             </div>
-            <p className="text-xs text-slate-400 mt-3">
+            <p className="text-xs text-slate-500 mt-3">
               Listings via Adzuna, refreshed daily. Drop your CV above to search all of our
               sources and get them ranked for you.
             </p>
@@ -247,27 +247,27 @@ export default async function JobsLanding({
             <>
               <p className="text-slate-600 leading-relaxed">{profile.blurb}</p>
               <div>
-                <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Common skills &amp; keywords</p>
+                <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Common skills &amp; keywords</p>
                 <div className="flex flex-wrap gap-1.5">
                   {profile.skills.map((s) => (
-                    <span key={s} className="text-xs font-medium text-teal bg-teal-light px-2.5 py-1 rounded-full">{s}</span>
+                    <span key={s} className="text-xs font-medium text-teal-ink bg-teal-light px-2.5 py-1 rounded-full">{s}</span>
                   ))}
                 </div>
               </div>
               <div className="grid sm:grid-cols-2 gap-5 pt-1">
                 <div>
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Who&apos;s usually hiring</p>
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Who&apos;s usually hiring</p>
                   <ul className="text-sm text-slate-600 space-y-1">
                     {profile.sectors.map((s) => (
-                      <li key={s} className="flex gap-2"><span className="text-teal">•</span>{s}</li>
+                      <li key={s} className="flex gap-2"><span className="text-teal-ink">•</span>{s}</li>
                     ))}
                   </ul>
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-2">Related job titles</p>
+                  <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest mb-2">Related job titles</p>
                   <ul className="text-sm text-slate-600 space-y-1">
                     {profile.titles.map((t) => (
-                      <li key={t} className="flex gap-2"><span className="text-teal">•</span>{t}</li>
+                      <li key={t} className="flex gap-2"><span className="text-teal-ink">•</span>{t}</li>
                     ))}
                   </ul>
                 </div>
@@ -315,7 +315,7 @@ export default async function JobsLanding({
 
         {/* Related searches — internal linking */}
         <section className="pt-2">
-          <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-3">Related searches</h2>
+          <h2 className="text-sm font-semibold text-slate-500 uppercase tracking-widest mb-3">Related searches</h2>
           <div className="grid sm:grid-cols-2 gap-x-8 gap-y-4 text-sm">
             {otherCities.length > 0 && (
               <div>
@@ -323,7 +323,7 @@ export default async function JobsLanding({
                 <ul className="space-y-1">
                   {otherCities.map((c) => (
                     <li key={c}>
-                      <Link href={`/jobs/${landingSlug(role, c)}`} className="text-teal hover:underline">
+                      <Link href={`/jobs/${landingSlug(role, c)}`} className="text-teal-ink hover:underline">
                         {role} jobs in {c}
                       </Link>
                     </li>
@@ -336,14 +336,14 @@ export default async function JobsLanding({
               <ul className="space-y-1">
                 {relatedRoles.map((r) => (
                   <li key={r}>
-                    <Link href={`/jobs/${landingSlug(r, city)}`} className="text-teal hover:underline">
+                    <Link href={`/jobs/${landingSlug(r, city)}`} className="text-teal-ink hover:underline">
                       {r} jobs in {city}
                     </Link>
                   </li>
                 ))}
                 {countryHub && (
                   <li>
-                    <Link href={`/jobs-in/${countryHub.slug}`} className="text-teal hover:underline">
+                    <Link href={`/jobs-in/${countryHub.slug}`} className="text-teal-ink hover:underline">
                       All jobs in {countryHub.name}
                     </Link>
                   </li>
@@ -368,19 +368,19 @@ export default async function JobsLanding({
 
         {/* Privacy reassurance + secondary links */}
         <div className="pt-6 border-t border-slate-100 text-sm text-slate-500 space-y-2">
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-500">
             🔒 Your CV is parsed on your device, contact details stripped before matching, and discarded after — nothing stored.
           </p>
           <p>
             Also useful:{" "}
-            <Link href="/cv-review" className="text-teal hover:underline">get an AI review of your CV</Link>{" "}
+            <Link href="/cv-review" className="text-teal-ink hover:underline">get an AI review of your CV</Link>{" "}
             ·{" "}
-            <Link href="/private-job-search" className="text-teal hover:underline">how we keep your job search private</Link>
+            <Link href="/private-job-search" className="text-teal-ink hover:underline">how we keep your job search private</Link>
           </p>
         </div>
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-8">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-8">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/privacy" className="hover:text-white/80 transition-colors">Privacy</Link>

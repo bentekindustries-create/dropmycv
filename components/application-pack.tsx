@@ -106,7 +106,7 @@ export function ApplicationPackResult({
     <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold text-teal uppercase tracking-widest">Application Pack</p>
+          <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest">Application Pack</p>
           <h3 className="text-xl font-serif font-bold text-navy mt-0.5">{role}</h3>
         </div>
         <div className="flex gap-2">
@@ -145,7 +145,7 @@ export function ApplicationPackResult({
             {pack.cvTweaks.map((t, i) => (
               <li key={i} className="text-sm">
                 <p className="text-slate-700 font-medium leading-relaxed">{t.after}</p>
-                {t.note && <p className="text-slate-400 text-xs mt-0.5">{t.note}</p>}
+                {t.note && <p className="text-slate-500 text-xs mt-0.5">{t.note}</p>}
               </li>
             ))}
           </ul>
@@ -156,7 +156,7 @@ export function ApplicationPackResult({
         <Section title="Keywords to include">
           <div className="flex flex-wrap gap-1.5">
             {pack.atsKeywords.map((k) => (
-              <span key={k} className="text-xs font-medium text-teal bg-teal-light px-2.5 py-1 rounded-full">
+              <span key={k} className="text-xs font-medium text-teal-ink bg-teal-light px-2.5 py-1 rounded-full">
                 {k}
               </span>
             ))}

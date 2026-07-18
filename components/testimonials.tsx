@@ -9,7 +9,7 @@ export function Testimonials() {
         {TESTIMONIALS.map((t) => (
           <figure key={t.name} className="bg-white rounded-xl border border-slate-100 p-4">
             <blockquote className="text-sm text-slate-600 leading-relaxed">&ldquo;{t.quote}&rdquo;</blockquote>
-            <figcaption className="text-xs text-slate-400 mt-2">
+            <figcaption className="text-xs text-slate-500 mt-2">
               — {t.name}{t.role ? `, ${t.role}` : ""}
             </figcaption>
           </figure>

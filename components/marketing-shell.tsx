@@ -11,7 +11,7 @@ export function MarketingShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
       <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-12">{children}</main>
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-8">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-8">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/ats-resume-checker" className="hover:text-white/80 transition-colors">ATS checker</Link>

@@ -103,7 +103,7 @@ export default function PrivateJobSearch() {
           <p>
             In other words: we designed the service so there&apos;s nothing for us to sell, leak, or
             be compelled to hand over. The full detail is in our{" "}
-            <Link href="/privacy" className="text-teal hover:underline">Privacy Policy</Link>.
+            <Link href="/privacy" className="text-teal-ink hover:underline">Privacy Policy</Link>.
           </p>
 
           <h2 className="text-xl font-semibold text-navy pt-2">Who private job search is for</h2>
@@ -113,16 +113,16 @@ export default function PrivateJobSearch() {
             database; if you&apos;re <strong>senior</strong>{" "}and tired of being harvested by agencies;
             or if you simply <strong>don&apos;t want your data sold</strong>. You still get the upside
             — see{" "}
-            <Link href="/what-jobs-can-i-get-with-my-cv" className="text-teal hover:underline">what jobs you can get with your CV</Link>{" "}
+            <Link href="/what-jobs-can-i-get-with-my-cv" className="text-teal-ink hover:underline">what jobs you can get with your CV</Link>{" "}
             or jump straight to{" "}
-            <Link href="/match-my-cv-to-jobs" className="text-teal hover:underline">matching your CV to jobs</Link>.
+            <Link href="/match-my-cv-to-jobs" className="text-teal-ink hover:underline">matching your CV to jobs</Link>.
           </p>
 
           <h2 className="text-xl font-semibold text-navy pt-2">Frequently asked</h2>
           <p>
             <strong>Do you store my CV?</strong>{" "}No. It&apos;s read in your browser and the stripped
             text is processed only to return matches, then discarded. See our{" "}
-            <Link href="/privacy" className="text-teal hover:underline">Privacy Policy</Link>.
+            <Link href="/privacy" className="text-teal-ink hover:underline">Privacy Policy</Link>.
           </p>
           <p>
             <strong>Do recruiters see my CV?</strong>{" "}No. There&apos;s no candidate database — we
@@ -134,14 +134,14 @@ export default function PrivateJobSearch() {
           <p>
             <strong>Is it free?</strong>{" "}Yes, matching is free. Two optional paid extras exist: a
             one-off A$9 AI{" "}
-            <Link href="/cv-review" className="text-teal hover:underline">CV review</Link>, and a
+            <Link href="/cv-review" className="text-teal-ink hover:underline">CV review</Link>, and a
             A$19 Application Pack tailored to a specific role you matched to. You can also try a{" "}
-            <Link href="/cv-checker" className="text-teal hover:underline">free CV check</Link>{" "}first.
+            <Link href="/cv-checker" className="text-teal-ink hover:underline">free CV check</Link>{" "}first.
           </p>
         </article>
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-8">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-8">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/privacy" className="hover:text-white/80 transition-colors">Privacy</Link>

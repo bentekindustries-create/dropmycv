@@ -23,7 +23,7 @@ const PENDING_PACK_KEY = "dropmycv_pending_pack"; // survives the Stripe redirec
 const MIN_JD = 40;
 
 function scoreColor(s: number) {
-  if (s >= 75) return "text-teal";
+  if (s >= 75) return "text-teal-ink";
   if (s >= 50) return "text-amber-600";
   return "text-rose-600";
 }
@@ -108,7 +108,7 @@ export default function JobMatchChecker() {
 
       <main className="flex-1 max-w-3xl mx-auto w-full px-6 py-12 space-y-8">
         <section className="text-center space-y-3">
-          <p className="text-xs font-semibold text-teal uppercase tracking-widest">Free job match checker</p>
+          <p className="text-xs font-semibold text-teal-ink uppercase tracking-widest">Free job match checker</p>
           <h1 className="text-3xl sm:text-4xl font-serif font-bold text-navy leading-tight">
             Does your CV match this job?
           </h1>
@@ -134,7 +134,7 @@ export default function JobMatchChecker() {
                   placeholder="Paste the full job ad here — responsibilities, requirements, the lot. It's sent only to produce your match, then discarded."
                   className="w-full rounded-xl border border-slate-200 p-3 text-slate-700 focus:border-teal focus:outline-none"
                 />
-                <p className={`text-xs mt-1 ${jdReady ? "text-slate-400" : "text-amber-600"}`}>
+                <p className={`text-xs mt-1 ${jdReady ? "text-slate-500" : "text-amber-600"}`}>
                   {jdReady ? "Looks good — now drop your CV below." : "Paste the job description first to unlock the CV upload."}
                 </p>
               </div>
@@ -151,14 +151,14 @@ export default function JobMatchChecker() {
 
             {/* Sample result — show the output before they commit */}
             <section>
-              <p className="text-xs uppercase tracking-widest text-slate-400 text-center mb-3">
+              <p className="text-xs uppercase tracking-widest text-slate-500 text-center mb-3">
                 Here&apos;s what your match check looks like
               </p>
               <div className="rounded-2xl border border-[#c8ecea] bg-teal-light/40 p-6 space-y-5 max-w-xl mx-auto">
                 <div className="flex items-start gap-4">
                   <div className="shrink-0 text-center">
-                    <div className="text-4xl font-serif font-bold text-teal">81</div>
-                    <div className="text-[10px] uppercase tracking-widest text-slate-400">% match</div>
+                    <div className="text-4xl font-serif font-bold text-teal-ink">81</div>
+                    <div className="text-[10px] uppercase tracking-widest text-slate-500">% match</div>
                   </div>
                   <div>
                     <h2 className="text-sm font-semibold text-navy uppercase tracking-widest mb-1">Example match</h2>
@@ -185,7 +185,7 @@ export default function JobMatchChecker() {
                   </div>
                 </div>
               </div>
-              <p className="text-center text-xs text-slate-400 mt-2">
+              <p className="text-center text-xs text-slate-500 mt-2">
                 Example output — your real check is based on your own CV and the job you paste.
               </p>
             </section>
@@ -216,7 +216,7 @@ export default function JobMatchChecker() {
                   <table className="w-full text-sm">
                     <thead>
                       <tr className="text-left">
-                        <th className="p-2 font-medium text-slate-400"></th>
+                        <th className="p-2 font-medium text-slate-500"></th>
                         <th className="p-2 font-semibold text-slate-600 text-center">Free check</th>
                         <th className="p-2 font-semibold text-navy text-center">A$19 pack</th>
                       </tr>
@@ -245,7 +245,7 @@ export default function JobMatchChecker() {
                 <p>
                   Your CV file is opened in your browser. Your email, phone and links are stripped
                   before any text is sent, and nothing is stored — no account, no profile, no
-                  recruiter database. <Link href="/private-job-search" className="text-teal hover:underline">How privacy works</Link>.
+                  recruiter database. <Link href="/private-job-search" className="text-teal-ink hover:underline">How privacy works</Link>.
                 </p>
               </div>
 
@@ -254,13 +254,13 @@ export default function JobMatchChecker() {
                 <div className="space-y-4 text-sm">
                   <p><strong className="text-slate-700">Is it really free?</strong><br />Yes — the match check is free with no account. The tailored Application Pack is an optional A$19.</p>
                   <p><strong className="text-slate-700">What match score is worth applying for?</strong><br />There&apos;s no hard cut-off, but a strong, well-evidenced fit beats a long-shot. The check shows you exactly which gaps to address so a borderline match becomes a credible one.</p>
-                  <p><strong className="text-slate-700">How is this different from matching to jobs?</strong><br />This checks your CV against <em>one</em> job you paste. To discover roles you match across the live market, use <Link href="/match-my-cv-to-jobs" className="text-teal hover:underline">match my CV to jobs</Link> instead.</p>
+                  <p><strong className="text-slate-700">How is this different from matching to jobs?</strong><br />This checks your CV against <em>one</em> job you paste. To discover roles you match across the live market, use <Link href="/match-my-cv-to-jobs" className="text-teal-ink hover:underline">match my CV to jobs</Link> instead.</p>
                 </div>
                 <p className="text-sm text-slate-500 mt-4">
                   Related:{" "}
-                  <Link href="/ats-resume-checker" className="text-teal hover:underline">ATS resume checker</Link>{" "}·{" "}
-                  <Link href="/cv-checker" className="text-teal hover:underline">free CV checker</Link>{" "}·{" "}
-                  <Link href="/application-pack" className="text-teal hover:underline">Application Pack</Link>
+                  <Link href="/ats-resume-checker" className="text-teal-ink hover:underline">ATS resume checker</Link>{" "}·{" "}
+                  <Link href="/cv-checker" className="text-teal-ink hover:underline">free CV checker</Link>{" "}·{" "}
+                  <Link href="/application-pack" className="text-teal-ink hover:underline">Application Pack</Link>
                 </p>
               </div>
             </section>
@@ -271,7 +271,7 @@ export default function JobMatchChecker() {
           <div className="flex flex-col items-center justify-center py-16 gap-4 text-center">
             <div className="w-12 h-12 border-4 border-slate-100 border-t-teal rounded-full animate-spin" />
             <p className="text-slate-600 font-medium">Checking your match…</p>
-            <p className="text-xs text-slate-400 flex items-center gap-1.5">
+            <p className="text-xs text-slate-500 flex items-center gap-1.5">
               <span>🔒</span> Your email, phone &amp; links removed in your browser — nothing stored
             </p>
           </div>
@@ -296,7 +296,7 @@ export default function JobMatchChecker() {
               <div className="flex items-start gap-4">
                 <div className="shrink-0 text-center">
                   <div className={`text-4xl font-serif font-bold ${scoreColor(match.matchScore)}`}>{match.matchScore}</div>
-                  <div className="text-[10px] uppercase tracking-widest text-slate-400">% match</div>
+                  <div className="text-[10px] uppercase tracking-widest text-slate-500">% match</div>
                 </div>
                 <div>
                   <h2 className="text-sm font-semibold text-navy uppercase tracking-widest mb-1">
@@ -354,11 +354,11 @@ export default function JobMatchChecker() {
               >
                 Build my Application Pack for this role — A$19 →
               </button>
-              <p className="text-xs text-slate-400">One-off · built instantly after checkout · nothing stored</p>
+              <p className="text-xs text-slate-500">One-off · built instantly after checkout · nothing stored</p>
               <div className="pt-1">
                 <button
                   onClick={matchAllJobs}
-                  className="text-sm text-teal hover:text-navy font-medium underline underline-offset-2"
+                  className="text-sm text-teal-ink hover:text-navy font-medium underline underline-offset-2"
                 >
                   Or see every live job your CV matches — free →
                 </button>
@@ -368,7 +368,7 @@ export default function JobMatchChecker() {
         )}
       </main>
 
-      <footer className="bg-navy py-5 text-center text-xs text-white/40 mt-8">
+      <footer className="bg-navy py-5 text-center text-xs text-white/70 mt-8">
         <Link href="/" className="hover:text-white/80 transition-colors">← Back to dropmycv</Link>
         <span className="mx-3">·</span>
         <Link href="/ats-resume-checker" className="hover:text-white/80 transition-colors">ATS checker</Link>

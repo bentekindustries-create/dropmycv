@@ -103,7 +103,7 @@ export function FeedbackWidget() {
                   <button
                     onClick={() => setOpen(false)}
                     aria-label="Close"
-                    className="shrink-0 text-slate-400 hover:text-slate-600 text-xl leading-none"
+                    className="shrink-0 text-slate-500 hover:text-slate-600 text-xl leading-none"
                   >
                     ×
                   </button>
@@ -141,7 +141,7 @@ export function FeedbackWidget() {
                 {error && <p className="text-sm text-rose-600 mt-2">{error}</p>}
 
                 <div className="flex items-center justify-between mt-3">
-                  <p className="text-[11px] text-slate-400">Goes to our inbox · not stored</p>
+                  <p className="text-[11px] text-slate-500">Goes to our inbox · not stored</p>
                   <button
                     onClick={submit}
                     disabled={message.trim().length < 3 || stage === "sending"}

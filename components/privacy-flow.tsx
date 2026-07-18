@@ -18,7 +18,7 @@ export function PrivacyFlow() {
             <p className="text-xs text-slate-500 mt-0.5 leading-snug">{s.desc}</p>
           </div>
           {i < STEPS.length - 1 && (
-            <div className="flex items-center justify-center text-teal font-bold shrink-0">
+            <div className="flex items-center justify-center text-teal-ink font-bold shrink-0">
               <span className="hidden sm:block">→</span>
               <span className="sm:hidden">↓</span>
             </div>

@@ -50,7 +50,7 @@ export default function WhatJobs() {
             </div>
           ))}
         </div>
-        <p className="text-xs text-slate-400">
+        <p className="text-xs text-slate-500">
           Illustrative — your actual matches depend on your CV and live demand.
         </p>
 
@@ -66,16 +66,16 @@ export default function WhatJobs() {
         <p>
           Every match comes with a plain-English reason — which of your skills line up, whether the
           seniority fits, and where the role is. If something&apos;s holding your CV back, a{" "}
-          <Link href="/cv-checker" className="text-teal hover:underline">free CV check</Link>{" "}gives
+          <Link href="/cv-checker" className="text-teal-ink hover:underline">free CV check</Link>{" "}gives
           you an instant score, and the full{" "}
-          <Link href="/cv-review" className="text-teal hover:underline">AI CV review</Link> (A$9)
+          <Link href="/cv-review" className="text-teal-ink hover:underline">AI CV review</Link> (A$9)
           shows the exact keyword gaps your matched roles want.
         </p>
 
         <h2 className="text-xl font-semibold text-navy pt-2">No CV handy?</h2>
         <p>
           You can also{" "}
-          <Link href="/" className="text-teal hover:underline">answer a few quick questions</Link>{" "}
+          <Link href="/" className="text-teal-ink hover:underline">answer a few quick questions</Link>{" "}
           instead, and we&apos;ll find roles from your answers. Either way: no account, and nothing
           stored.
         </p>
