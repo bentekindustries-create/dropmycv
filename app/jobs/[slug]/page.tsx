@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { parseSlug, locForCity, landingSlug, citiesForCountry, LANDING_COUNTRIES } from "@/lib/landing-data";
+import { parseSlug, locForCity, isKnownCity, landingSlug, citiesForCountry, LANDING_COUNTRIES } from "@/lib/landing-data";
 import { searchLandingJobs } from "@/lib/landing-jobs";
 import { roleProfileFor } from "@/lib/landing-roles";
 
@@ -31,7 +31,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const parsed = parseSlug(slug);
-  if (!parsed) return { title: "Jobs" };
+  // Unknown city -> this 404s below; return early so we never spend an Adzuna call on it.
+  if (!parsed || !isKnownCity(parsed.city)) return { title: "Jobs", robots: { index: false, follow: false } };
   const { role, city } = parsed;
 
   // A "find {role} jobs in {city}" page with zero live listings is a thin /
@@ -77,7 +78,8 @@ export default async function JobsLanding({
 }) {
   const { slug } = await params;
   const parsed = parseSlug(slug);
-  if (!parsed) notFound();
+  // Bound the slug space to known cities (roles stay open for long-tail SEO).
+  if (!parsed || !isKnownCity(parsed.city)) notFound();
   const { role, city } = parsed;
   const { country, currency } = locForCity(city);
   const profile = roleProfileFor(role);

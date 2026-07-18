@@ -1,27 +1,8 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { bump } from "@/lib/counters";
+import { isRateLimited } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
-
-// ─── Rate limiting (free + cheap model, but still guard abuse) ───────────────
-const WINDOW_MS = 60_000;
-const MAX_REQUESTS = 5;
-const MAX_MAP_SIZE = 10_000;
-const hits = new Map<string, { count: number; resetAt: number }>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = hits.get(ip);
-  if (!entry || now > entry.resetAt) {
-    hits.set(ip, { count: 1, resetAt: now + WINDOW_MS });
-    if (hits.size > MAX_MAP_SIZE) {
-      for (const [key, val] of hits) if (now > val.resetAt) hits.delete(key);
-    }
-    return false;
-  }
-  entry.count++;
-  return entry.count > MAX_REQUESTS;
-}
 
 const MAX_BODY_BYTES = 100_000;
 
@@ -41,7 +22,7 @@ export async function POST(request: Request) {
       request.headers.get("x-real-ip") ||
       "unknown";
 
-    if (isRateLimited(ip)) {
+    if (await isRateLimited("cv-check", ip, { max: 5 })) {
       return Response.json(
         { error: "Too many checks — please wait a minute and try again." },
         { status: 429 }

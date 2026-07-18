@@ -122,6 +122,15 @@ export function locForCity(city: string): { country: string; currency: string } 
   return hit ? { country: hit.country, currency: hit.currency } : { country: "au", currency: "$" };
 }
 
+// Landing slugs are accepted on demand (dynamicParams), which is deliberate for
+// long-tail role coverage — but an unbounded slug space means every novel URL
+// triggers a live Adzuna call, so anyone could burn the API quota that the
+// matcher also depends on. Bounding the CITY to this finite list keeps the
+// long-tail open for roles while making the surface finite.
+export function isKnownCity(city: string): boolean {
+  return LOC_BY_CITY.has(city.toLowerCase());
+}
+
 export function countryBySlug(slug: string): LandingCountry | undefined {
   return LANDING_COUNTRIES.find((c) => c.slug === slug);
 }

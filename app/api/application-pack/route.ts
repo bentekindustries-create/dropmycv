@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import Stripe from "stripe";
+import { isRateLimited } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -21,26 +22,6 @@ async function isPaid(sessionId: string): Promise<boolean> {
   } catch {
     return false;
   }
-}
-
-// ─── Rate limiting (tight — this calls Opus) ─────────────────────────────────
-const WINDOW_MS = 60_000;
-const MAX_REQUESTS = 3;
-const MAX_MAP_SIZE = 10_000;
-const hits = new Map<string, { count: number; resetAt: number }>();
-
-function isRateLimited(ip: string): boolean {
-  const now = Date.now();
-  const entry = hits.get(ip);
-  if (!entry || now > entry.resetAt) {
-    hits.set(ip, { count: 1, resetAt: now + WINDOW_MS });
-    if (hits.size > MAX_MAP_SIZE) {
-      for (const [key, val] of hits) if (now > val.resetAt) hits.delete(key);
-    }
-    return false;
-  }
-  entry.count++;
-  return entry.count > MAX_REQUESTS;
 }
 
 const MAX_BODY_BYTES = 100_000;
@@ -69,7 +50,7 @@ export async function POST(request: Request) {
       request.headers.get("x-real-ip") ||
       "unknown";
 
-    if (isRateLimited(ip)) {
+    if (await isRateLimited("application-pack", ip, { max: 3 })) {
       return Response.json(
         { error: "Too many requests — please wait a minute and try again." },
         { status: 429 }
